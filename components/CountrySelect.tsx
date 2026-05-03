@@ -102,12 +102,12 @@ export function CountrySelect({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded text-left hover:border-amber transition-colors focus:outline-none focus:ring-2 focus:ring-amber"
+        className="w-full flex items-center gap-2 px-4 py-3 bg-white text-gray-900 border border-gray-200 rounded text-left hover:border-amber transition-colors focus:outline-none focus:ring-2 focus:ring-amber"
       >
         {selected ? (
           <>
             <span className="text-xl">{selected.flag}</span>
-            <span className="font-medium truncate">{selected.name}</span>
+            <span className="font-medium text-gray-900 truncate">{selected.name}</span>
           </>
         ) : (
           <span className="text-gray-400">{placeholder}</span>
@@ -117,7 +117,7 @@ export function CountrySelect({
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded shadow-lg max-h-64 flex flex-col">
+        <div className="absolute z-50 mt-1 w-full bg-white text-gray-900 border border-gray-200 rounded shadow-lg max-h-64 flex flex-col">
           {/* Search */}
           <div className="p-2 border-b border-gray-100">
             <input
@@ -126,7 +126,7 @@ export function CountrySelect({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search country..."
-              className="w-full px-3 py-2 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-amber"
+              className="w-full px-3 py-2 text-sm text-gray-900 border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-amber"
             />
           </div>
 
@@ -144,12 +144,12 @@ export function CountrySelect({
                     setSearch('')
                   }}
                   className={clsx(
-                    'flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-cream text-sm',
+                    'flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-50 text-sm text-gray-900',
                     value === c.code && 'bg-amber/10 font-semibold'
                   )}
                 >
                   <span className="text-lg">{c.flag}</span>
-                  <span>{c.name}</span>
+                  <span className="text-gray-900">{c.name}</span>
                   <span className="ml-auto text-gray-400 font-mono text-xs">{c.code}</span>
                 </li>
               ))
