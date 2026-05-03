@@ -1,0 +1,18 @@
+{
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm ci",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "env": [
+    "DATABASE_URL",
+    "SENDGRID_API_KEY",
+    "SENDGRID_FROM_EMAIL"
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/scraper",
+      "schedule": "0 2 * * 0"
+    }
+  ]
+}

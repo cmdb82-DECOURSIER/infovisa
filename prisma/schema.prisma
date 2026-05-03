@@ -1,0 +1,148 @@
+// ============================================================
+// VISA COMPARATOR — Prisma Schema
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Country ─────────────────────────────────────────────────
+// Represents every country / territory in the world.
+// Used both as "from" (nationality) and "to" (destination) in
+// VisaRequirement entries.
+model Country {
+  id         String  @id @default(cuid())
+  code       String  @unique          // ISO 3166-1 alpha-2 ("FR", "US", …)
+  name       String                   // "France"
+  commonName String?                  // Alternative name used in search
+  region     String                   // "Europe" | "Asia" | "Americas" | …
+  subregion  String?                  // "Western Europe"
+  flag       String                   // Emoji flag or CDN URL
+  capital    String?
+  population Int?
+  languages  String[]                 // ["French"]
+  currency   String?                  // "EUR"
+  timezone   String?                  // "Europe/Paris"
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  visaRequirementsFrom VisaRequirement[] @relation("fromCountry")
+  visaRequirementsTo   VisaRequirement[] @relation("toCountry")
+  travelAdvisories     TravelAdvisory[]
+
+  @@index([region])
+}
+
+// ─── VisaRequirement ─────────────────────────────────────────
+// Core model: what passport holders of `fromCountry` need to
+// enter `toCountry` for a given `visaType`.
+model VisaRequirement {
+  id            String  @id @default(cuid())
+
+  // Origin & destination
+  fromCountry   Country @relation("fromCountry", fields: [fromCountryId], references: [id], onDelete: Cascade)
+  fromCountryId String
+  toCountry     Country @relation("toCountry",   fields: [toCountryId],   references: [id], onDelete: Cascade)
+  toCountryId   String
+
+  // Visa classification
+  visaType   String // "Tourist" | "Business" | "Student" | "Residence" | "Transit"
+  visaStatus String // "Not Required" | "Visa on Arrival" | "eVisa" | "Visa Required"
+
+  // Details
+  stayDuration           Int?     // Max stay in days (e.g. 90)
+  processingTimeDays     Int?     // Business days to process
+  costUSD                Int?     // Approx cost in USD
+  validity               String?  // "90 days", "1 year", "Multiple entry"
+  requiredDocuments      String[] // ["Passport", "Bank statement", …]
+  additionalRequirements String?  // Free-text notes on special requirements
+  notes                  String?  // Editor notes
+
+  // Metadata
+  lastUpdated DateTime @updatedAt
+  sourceUrl   String?              // Link to official government source
+  verified    Boolean @default(false)
+
+  // Audit trail
+  changeLogs ChangeLog[]
+
+  @@unique([fromCountryId, toCountryId, visaType])
+  @@index([fromCountryId])
+  @@index([toCountryId])
+  @@index([visaStatus])
+}
+
+// ─── TravelAdvisory ──────────────────────────────────────────
+// Government-issued travel warnings for a destination country.
+// Level: 1 = Exercise normal precautions → 4 = Do not travel.
+model TravelAdvisory {
+  id          String   @id @default(cuid())
+  country     Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  countryId   String
+  level       Int      // 1–4
+  title       String?
+  description String
+  sourceUrl   String?
+  lastUpdated DateTime @updatedAt
+
+  @@index([countryId])
+  @@index([level])
+}
+
+// ─── ChangeLog ───────────────────────────────────────────────
+// Tracks every modification to a VisaRequirement so users can
+// see exactly what changed and when.
+model ChangeLog {
+  id                String          @id @default(cuid())
+  visaRequirement   VisaRequirement @relation(fields: [visaRequirementId], references: [id], onDelete: Cascade)
+  visaRequirementId String
+
+  fieldChanged String // "stayDuration" | "costUSD" | "visaStatus" | …
+  oldValue     String
+  newValue     String
+  changedAt    DateTime @default(now())
+  source       String   // "Official" | "Scraper" | "Manual"
+
+  @@index([visaRequirementId])
+  @@index([changedAt])
+}
+
+// ─── UserAlert ───────────────────────────────────────────────
+// Email subscriptions for visa policy change notifications.
+model UserAlert {
+  id                String   @id @default(cuid())
+  email             String
+  fromCountry       String?  // ISO code, null = any nationality
+  toCountry         String?  // ISO code, null = any destination
+  alertTypes        String[] // ["policyChange", "costChange", "newRoute"]
+  frequency         String   @default("immediate") // "immediate" | "weekly" | "monthly"
+  verified          Boolean  @default(false)
+  verificationToken String?  @unique
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([email, fromCountry, toCountry])
+  @@index([email])
+}
+
+// ─── APIKey ──────────────────────────────────────────────────
+// API access for travel agencies and third-party integrations.
+model APIKey {
+  id               String    @id @default(cuid())
+  key              String    @unique
+  agencyName       String
+  contact          String    // Email of the agency contact
+  requestsPerMonth Int       @default(1000)
+  currentRequests  Int       @default(0)
+  createdAt        DateTime  @default(now())
+  expiresAt        DateTime?
+  active           Boolean   @default(true)
+
+  @@index([active])
+}
