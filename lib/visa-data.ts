@@ -1,0 +1,241 @@
+export type VisaStatus = 'Not Required' | 'Visa on Arrival' | 'eVisa' | 'Visa Required'
+
+export interface VisaEntry {
+  status: VisaStatus
+  days?: number
+  cost?: number
+  processingDays?: number
+  notes?: string
+  sourceUrl?: string
+  requiredDocuments?: string[]
+}
+
+const F = ['Valid passport (6+ months validity)', 'Return ticket', 'Proof of accommodation', 'Sufficient funds']
+const V = ['Valid passport (6+ months validity)', 'Return ticket', 'Passport photo', 'Cash for visa fee', 'Proof of accommodation']
+const E = ['Valid passport (6+ months validity)', 'Digital passport photo', 'Credit card', 'Travel itinerary']
+const M = ['Valid passport (6+ months validity)', 'Visa application form', 'Passport photos (2)', 'Bank statements (3 months)', 'Travel itinerary', 'Proof of accommodation', 'Travel insurance']
+
+const DATA: Record<string, Record<string, VisaEntry>> = {
+  FR: {
+    US: { status: 'Not Required', days: 90, notes: 'ESTA required ($21).', sourceUrl: 'https://esta.cbp.dhs.gov/', requiredDocuments: F },
+    GB: { status: 'Not Required', days: 180, notes: 'ETA required (£10) from Jan 2025.', requiredDocuments: F },
+    JP: { status: 'Not Required', days: 90, requiredDocuments: F },
+    CA: { status: 'Not Required', days: 180, notes: 'eTA required (CAD 7).', requiredDocuments: F },
+    AU: { status: 'Not Required', days: 90, notes: 'eVisitor visa (subclass 651) required — free.', requiredDocuments: F },
+    IN: { status: 'eVisa', days: 90, cost: 25, processingDays: 3, sourceUrl: 'https://indianvisaonline.gov.in/evisa/', requiredDocuments: E },
+    CN: { status: 'Visa Required', days: 30, cost: 140, processingDays: 4, notes: '15-day visa-free policy reinstated 2024 — verify.', requiredDocuments: M },
+    TH: { status: 'Not Required', days: 60, notes: 'Extended to 60 days in 2024.', requiredDocuments: F },
+    SG: { status: 'Not Required', days: 30, requiredDocuments: F },
+    KR: { status: 'Not Required', days: 90, requiredDocuments: F },
+    TR: { status: 'eVisa', days: 90, cost: 60, processingDays: 1, sourceUrl: 'https://www.evisa.gov.tr/', requiredDocuments: E },
+    EG: { status: 'Visa on Arrival', days: 30, cost: 25, requiredDocuments: V },
+    MA: { status: 'Not Required', days: 90, requiredDocuments: F },
+    AE: { status: 'Not Required', days: 90, requiredDocuments: F },
+    RU: { status: 'Visa Required', cost: 50, processingDays: 20, requiredDocuments: M },
+    BR: { status: 'Not Required', days: 90, requiredDocuments: F },
+    VN: { status: 'eVisa', days: 90, cost: 25, processingDays: 3, sourceUrl: 'https://evisa.xuatnhapcanh.gov.vn/', requiredDocuments: E },
+    ID: { status: 'Visa on Arrival', days: 30, cost: 35, requiredDocuments: V },
+    ZA: { status: 'Not Required', days: 90, requiredDocuments: F },
+    KE: { status: 'eVisa', days: 90, cost: 51, processingDays: 3, sourceUrl: 'https://www.etakenya.go.ke/', requiredDocuments: E },
+    SA: { status: 'eVisa', days: 90, cost: 130, processingDays: 1, sourceUrl: 'https://visa.visitsaudi.com/', requiredDocuments: E },
+    MX: { status: 'Not Required', days: 180, requiredDocuments: F },
+    AR: { status: 'Not Required', days: 90, requiredDocuments: F },
+    MY: { status: 'Not Required', days: 90, requiredDocuments: F },
+    IL: { status: 'Not Required', days: 90, requiredDocuments: F },
+    UA: { status: 'Not Required', days: 90, notes: 'Check travel advisories.', requiredDocuments: F },
+    NZ: { status: 'Not Required', days: 90, notes: 'NZeTA required (NZD 23).', requiredDocuments: F },
+    PH: { status: 'Not Required', days: 30, requiredDocuments: F },
+  },
+  DE: {
+    US: { status: 'Not Required', days: 90, notes: 'ESTA required ($21).', requiredDocuments: F },
+    FR: { status: 'Not Required', days: 90, notes: 'Schengen area.', requiredDocuments: F },
+    GB: { status: 'Not Required', days: 180, notes: 'ETA required from 2025.', requiredDocuments: F },
+    JP: { status: 'Not Required', days: 90, requiredDocuments: F },
+    IN: { status: 'eVisa', days: 90, cost: 25, processingDays: 3, requiredDocuments: E },
+    CN: { status: 'Visa Required', days: 30, cost: 140, processingDays: 4, notes: '15-day visa-free reinstated 2024.', requiredDocuments: M },
+    TH: { status: 'Not Required', days: 60, requiredDocuments: F },
+    AE: { status: 'Not Required', days: 90, requiredDocuments: F },
+    TR: { status: 'eVisa', days: 90, cost: 60, processingDays: 1, requiredDocuments: E },
+  },
+  US: {
+    FR: { status: 'Not Required', days: 90, notes: 'Schengen area. Max 90/180 days.', requiredDocuments: F },
+    DE: { status: 'Not Required', days: 90, requiredDocuments: F },
+    GB: { status: 'Not Required', days: 180, notes: 'ETA required (£10) from Jan 2025.', requiredDocuments: F },
+    JP: { status: 'Not Required', days: 90, requiredDocuments: F },
+    AU: { status: 'eVisa', days: 90, cost: 0, notes: 'Electronic Travel Authority (ETA) — free.', requiredDocuments: F },
+    CA: { status: 'Not Required', days: 180, requiredDocuments: F },
+    IN: { status: 'eVisa', days: 90, cost: 80, processingDays: 3, sourceUrl: 'https://indianvisaonline.gov.in/evisa/', requiredDocuments: E },
+    CN: { status: 'Visa Required', cost: 185, processingDays: 5, requiredDocuments: M },
+    MX: { status: 'Not Required', days: 180, requiredDocuments: F },
+    BR: { status: 'Not Required', days: 90, notes: 'Brazil removed visa req for US citizens 2024.', requiredDocuments: F },
+    TH: { status: 'Not Required', days: 60, requiredDocuments: F },
+    SG: { status: 'Not Required', days: 90, requiredDocuments: F },
+    TR: { status: 'eVisa', days: 90, cost: 60, processingDays: 1, sourceUrl: 'https://www.evisa.gov.tr/', requiredDocuments: E },
+    AE: { status: 'Not Required', days: 90, requiredDocuments: F },
+  },
+  GB: {
+    US: { status: 'Not Required', days: 90, notes: 'ESTA required ($21).', requiredDocuments: F },
+    FR: { status: 'Not Required', days: 90, notes: 'Schengen. Max 90/180 days post-Brexit.', requiredDocuments: F },
+    DE: { status: 'Not Required', days: 90, requiredDocuments: F },
+    JP: { status: 'Not Required', days: 90, requiredDocuments: F },
+    AU: { status: 'Not Required', days: 90, notes: 'eVisitor visa required — free.', requiredDocuments: F },
+    IN: { status: 'eVisa', days: 90, cost: 25, processingDays: 3, requiredDocuments: E },
+    TH: { status: 'Not Required', days: 60, requiredDocuments: F },
+    AE: { status: 'Not Required', days: 90, requiredDocuments: F },
+    TR: { status: 'eVisa', days: 90, cost: 60, processingDays: 1, requiredDocuments: E },
+  },
+  IN: {
+    US: { status: 'Visa Required', cost: 185, processingDays: 15, sourceUrl: 'https://ustraveldocs.com/in', requiredDocuments: M },
+    GB: { status: 'Visa Required', cost: 115, processingDays: 15, sourceUrl: 'https://www.gov.uk/standard-visitor', requiredDocuments: M },
+    FR: { status: 'Visa Required', cost: 80, processingDays: 15, notes: 'Schengen visa.', requiredDocuments: M },
+    DE: { status: 'Visa Required', cost: 80, processingDays: 15, notes: 'Schengen visa.', requiredDocuments: M },
+    JP: { status: 'Visa Required', cost: 25, processingDays: 5, requiredDocuments: M },
+    TH: { status: 'Not Required', days: 60, notes: 'Extended to 60 days in 2024.', requiredDocuments: F },
+    AE: { status: 'Visa on Arrival', days: 30, cost: 0, notes: 'UAE grants VOA to Indian passport holders.', requiredDocuments: V },
+    VN: { status: 'eVisa', days: 90, cost: 25, processingDays: 3, requiredDocuments: E },
+    MY: { status: 'Not Required', days: 30, requiredDocuments: F },
+    ID: { status: 'Visa on Arrival', days: 30, cost: 35, requiredDocuments: V },
+  },
+  CN: {
+    US: { status: 'Visa Required', cost: 185, processingDays: 10, requiredDocuments: M },
+    FR: { status: 'Not Required', days: 15, notes: '15-day visa-free policy 2024.', requiredDocuments: F },
+    DE: { status: 'Not Required', days: 15, notes: '15-day visa-free 2024.', requiredDocuments: F },
+    JP: { status: 'Visa Required', cost: 30, processingDays: 5, requiredDocuments: M },
+    TH: { status: 'Not Required', days: 30, requiredDocuments: F },
+    SG: { status: 'Not Required', days: 30, requiredDocuments: F },
+    AE: { status: 'Visa on Arrival', days: 30, cost: 0, requiredDocuments: V },
+  },
+  JP: {
+    US: { status: 'Not Required', days: 90, notes: 'ESTA required ($21).', requiredDocuments: F },
+    FR: { status: 'Not Required', days: 90, notes: 'Schengen area.', requiredDocuments: F },
+    GB: { status: 'Not Required', days: 180, notes: 'ETA required from 2025.', requiredDocuments: F },
+    AU: { status: 'eVisa', days: 90, cost: 0, notes: 'eVisitor visa required — free.', requiredDocuments: F },
+    KR: { status: 'Not Required', days: 90, requiredDocuments: F },
+    TH: { status: 'Not Required', days: 60, requiredDocuments: F },
+    SG: { status: 'Not Required', days: 90, requiredDocuments: F },
+    IN: { status: 'eVisa', days: 90, cost: 25, processingDays: 3, requiredDocuments: E },
+    CN: { status: 'Visa Required', cost: 30, processingDays: 5, notes: 'Visa required. 15-day transit visa-free.', requiredDocuments: M },
+  },
+  BR: {
+    US: { status: 'Visa Required', cost: 185, processingDays: 15, requiredDocuments: M },
+    FR: { status: 'Not Required', days: 90, notes: 'Bilateral agreement.', requiredDocuments: F },
+    DE: { status: 'Not Required', days: 90, requiredDocuments: F },
+    GB: { status: 'Not Required', days: 180, notes: 'ETA required from 2025.', requiredDocuments: F },
+    JP: { status: 'Not Required', days: 90, requiredDocuments: F },
+    AR: { status: 'Not Required', days: 90, requiredDocuments: F },
+    MX: { status: 'Not Required', days: 180, requiredDocuments: F },
+    AE: { status: 'Visa on Arrival', days: 30, cost: 0, requiredDocuments: V },
+    TH: { status: 'Not Required', days: 30, requiredDocuments: F },
+  },
+  AU: {
+    US: { status: 'Not Required', days: 90, notes: 'ESTA required ($21).', requiredDocuments: F },
+    GB: { status: 'Not Required', days: 180, notes: 'ETA required from 2025.', requiredDocuments: F },
+    FR: { status: 'Not Required', days: 90, notes: 'Schengen area.', requiredDocuments: F },
+    JP: { status: 'Not Required', days: 90, requiredDocuments: F },
+    CA: { status: 'Not Required', days: 180, notes: 'eTA required (CAD 7).', requiredDocuments: F },
+    NZ: { status: 'Not Required', days: 30, notes: 'NZeTA required.', requiredDocuments: F },
+    SG: { status: 'Not Required', days: 30, requiredDocuments: F },
+    TH: { status: 'Not Required', days: 60, requiredDocuments: F },
+    IN: { status: 'eVisa', days: 90, cost: 25, processingDays: 3, requiredDocuments: E },
+    ID: { status: 'Visa on Arrival', days: 30, cost: 35, requiredDocuments: V },
+    AE: { status: 'Not Required', days: 90, requiredDocuments: F },
+  },
+  KR: {
+    US: { status: 'Not Required', days: 90, notes: 'ESTA required ($21).', requiredDocuments: F },
+    JP: { status: 'Not Required', days: 90, requiredDocuments: F },
+    FR: { status: 'Not Required', days: 90, notes: 'Schengen area.', requiredDocuments: F },
+    GB: { status: 'Not Required', days: 180, notes: 'ETA required from 2025.', requiredDocuments: F },
+    TH: { status: 'Not Required', days: 60, requiredDocuments: F },
+    SG: { status: 'Not Required', days: 90, requiredDocuments: F },
+    CN: { status: 'Visa Required', cost: 30, processingDays: 5, requiredDocuments: M },
+    VN: { status: 'eVisa', days: 90, cost: 25, processingDays: 3, requiredDocuments: E },
+    IN: { status: 'eVisa', days: 90, cost: 25, processingDays: 3, requiredDocuments: E },
+  },
+  SG: {
+    US: { status: 'Not Required', days: 90, notes: 'ESTA required ($21).', requiredDocuments: F },
+    GB: { status: 'Not Required', days: 180, notes: 'ETA required from 2025.', requiredDocuments: F },
+    FR: { status: 'Not Required', days: 90, requiredDocuments: F },
+    JP: { status: 'Not Required', days: 90, requiredDocuments: F },
+    AU: { status: 'eVisa', days: 90, cost: 0, notes: 'eVisitor visa — free.', requiredDocuments: F },
+    MY: { status: 'Not Required', days: 30, requiredDocuments: F },
+    TH: { status: 'Not Required', days: 30, requiredDocuments: F },
+    IN: { status: 'eVisa', days: 90, cost: 25, processingDays: 3, requiredDocuments: E },
+    VN: { status: 'Not Required', days: 30, requiredDocuments: F },
+    AE: { status: 'Not Required', days: 90, requiredDocuments: F },
+  },
+  NG: {
+    US: { status: 'Visa Required', cost: 185, processingDays: 30, requiredDocuments: M },
+    GB: { status: 'Visa Required', cost: 115, processingDays: 15, requiredDocuments: M },
+    FR: { status: 'Visa Required', cost: 80, processingDays: 15, notes: 'Schengen visa.', requiredDocuments: M },
+    TR: { status: 'eVisa', days: 30, cost: 60, processingDays: 1, requiredDocuments: E },
+    AE: { status: 'Visa on Arrival', days: 30, cost: 0, notes: 'UAE grants Nigerians VOA.', requiredDocuments: V },
+    KE: { status: 'eVisa', days: 90, cost: 51, processingDays: 3, requiredDocuments: E },
+    BR: { status: 'Not Required', days: 90, requiredDocuments: F },
+    IN: { status: 'eVisa', days: 90, cost: 25, processingDays: 3, requiredDocuments: E },
+  },
+  ZA: {
+    US: { status: 'Visa Required', cost: 185, processingDays: 30, requiredDocuments: M },
+    GB: { status: 'Visa Required', cost: 115, processingDays: 15, requiredDocuments: M },
+    FR: { status: 'Visa Required', cost: 80, processingDays: 15, notes: 'Schengen visa.', requiredDocuments: M },
+    JP: { status: 'Not Required', days: 30, requiredDocuments: F },
+    TH: { status: 'Not Required', days: 30, requiredDocuments: F },
+    SG: { status: 'Not Required', days: 30, requiredDocuments: F },
+    AE: { status: 'Visa on Arrival', days: 30, cost: 0, requiredDocuments: V },
+    TR: { status: 'Not Required', days: 90, requiredDocuments: F },
+    KE: { status: 'eVisa', days: 90, cost: 51, processingDays: 3, requiredDocuments: E },
+  },
+  RU: {
+    TR: { status: 'Not Required', days: 60, requiredDocuments: F },
+    TH: { status: 'Not Required', days: 30, requiredDocuments: F },
+    AE: { status: 'Visa on Arrival', days: 30, cost: 0, requiredDocuments: V },
+    EG: { status: 'Visa on Arrival', days: 30, cost: 25, requiredDocuments: V },
+    CN: { status: 'Not Required', days: 15, notes: 'Visa-free for Russian citizens.', requiredDocuments: F },
+    US: { status: 'Visa Required', cost: 160, processingDays: 60, notes: 'B1/B2 visa. US Embassy in Russia suspended. Apply in third country.', requiredDocuments: M },
+    FR: { status: 'Visa Required', cost: 80, processingDays: 15, notes: 'Schengen visa. Many EU consulates suspended.', requiredDocuments: M },
+    IN: { status: 'eVisa', days: 90, cost: 25, processingDays: 3, requiredDocuments: E },
+    SA: { status: 'eVisa', days: 90, cost: 130, processingDays: 1, requiredDocuments: E },
+  },
+}
+
+export function getStaticVisaInfo(fromCode: string, toCode: string): VisaEntry | null {
+  const from = fromCode.toUpperCase()
+  const to   = toCode.toUpperCase()
+  if (from === to) return { status: 'Not Required', notes: 'You are already in your country.', requiredDocuments: ['Valid ID'] }
+  return DATA[from]?.[to] ?? null
+}
+
+export function buildVisaResponse(fromCode: string, toCode: string, entry: VisaEntry) {
+  const meta: Record<string, { name: string; flag: string }> = {
+    US:{name:'United States',flag:'🇺🇸'},FR:{name:'France',flag:'🇫🇷'},DE:{name:'Germany',flag:'🇩🇪'},
+    JP:{name:'Japan',flag:'🇯🇵'},AU:{name:'Australia',flag:'🇦🇺'},CA:{name:'Canada',flag:'🇨🇦'},
+    GB:{name:'United Kingdom',flag:'🇬🇧'},IT:{name:'Italy',flag:'🇮🇹'},ES:{name:'Spain',flag:'🇪🇸'},
+    PT:{name:'Portugal',flag:'🇵🇹'},NL:{name:'Netherlands',flag:'🇳🇱'},BE:{name:'Belgium',flag:'🇧🇪'},
+    CH:{name:'Switzerland',flag:'🇨🇭'},AT:{name:'Austria',flag:'🇦🇹'},SE:{name:'Sweden',flag:'🇸🇪'},
+    NO:{name:'Norway',flag:'🇳🇴'},DK:{name:'Denmark',flag:'🇩🇰'},FI:{name:'Finland',flag:'🇫🇮'},
+    GR:{name:'Greece',flag:'🇬🇷'},PL:{name:'Poland',flag:'🇵🇱'},CZ:{name:'Czech Republic',flag:'🇨🇿'},
+    HU:{name:'Hungary',flag:'🇭🇺'},RO:{name:'Romania',flag:'🇷🇴'},CN:{name:'China',flag:'🇨🇳'},
+    KR:{name:'South Korea',flag:'🇰🇷'},IN:{name:'India',flag:'🇮🇳'},TH:{name:'Thailand',flag:'🇹🇭'},
+    SG:{name:'Singapore',flag:'🇸🇬'},MY:{name:'Malaysia',flag:'🇲🇾'},ID:{name:'Indonesia',flag:'🇮🇩'},
+    PH:{name:'Philippines',flag:'🇵🇭'},VN:{name:'Vietnam',flag:'🇻🇳'},BR:{name:'Brazil',flag:'🇧🇷'},
+    AR:{name:'Argentina',flag:'🇦🇷'},MX:{name:'Mexico',flag:'🇲🇽'},CL:{name:'Chile',flag:'🇨🇱'},
+    CO:{name:'Colombia',flag:'🇨🇴'},PE:{name:'Peru',flag:'🇵🇪'},ZA:{name:'South Africa',flag:'🇿🇦'},
+    NG:{name:'Nigeria',flag:'🇳🇬'},EG:{name:'Egypt',flag:'🇪🇬'},MA:{name:'Morocco',flag:'🇲🇦'},
+    KE:{name:'Kenya',flag:'🇰🇪'},SA:{name:'Saudi Arabia',flag:'🇸🇦'},AE:{name:'United Arab Emirates',flag:'🇦🇪'},
+    TR:{name:'Turkey',flag:'🇹🇷'},RU:{name:'Russia',flag:'🇷🇺'},IL:{name:'Israel',flag:'🇮🇱'},
+    UA:{name:'Ukraine',flag:'🇺🇦'},NZ:{name:'New Zealand',flag:'🇳🇿'},
+  }
+  return {
+    id: `static-${fromCode}-${toCode}`,
+    visaStatus: entry.status,
+    visaType: 'Tourist',
+    stayDuration: entry.days,
+    processingTimeDays: entry.processingDays,
+    costUSD: entry.cost,
+    notes: entry.notes,
+    sourceUrl: entry.sourceUrl,
+    requiredDocuments: entry.requiredDocuments ?? F,
+    fromCountry: { code: fromCode, ...(meta[fromCode] ?? { name: fromCode, flag: '🌍' }) },
+    toCountry:   { code: toCode,   ...(meta[toCode]   ?? { name: toCode,   flag: '🌍' }) },
+    dataSource: 'Passport Index 2024 / Official government sources',
+  }
+}
