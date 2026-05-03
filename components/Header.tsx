@@ -1,5 +1,4 @@
 'use client'
-
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -7,8 +6,9 @@ import { clsx } from 'clsx'
 
 const NAV_LINKS = [
   { href: '/compare', label: 'Compare' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/about', label: 'About' },
+  { href: '/map',     label: 'ðºï¸ Map'  },
+  { href: '/blog',    label: 'Blog'    },
+  { href: '/about',   label: 'About'   },
 ]
 
 export function Header() {
@@ -18,9 +18,10 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 bg-black text-offwhite h-16 flex items-center border-b border-white/10">
       <div className="max-w-6xl mx-auto px-4 w-full flex items-center gap-6">
+
         {/* Logo */}
         <Link href="/" className="font-syne font-bold text-xl tracking-tight shrink-0">
-          Visa<span className="text-amber">Comparator</span>
+          Info<span className="text-amber">Visa</span>
         </Link>
 
         {/* Desktop nav */}
