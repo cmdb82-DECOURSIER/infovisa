@@ -69,7 +69,9 @@
         zoom: 2,
         minZoom: 2,
         maxZoom: 6,
-        worldCopyJump: true,
+        worldCopyJump: false,
+        maxBounds: [[-85, -180], [85, 180]],
+        maxBoundsViscosity: 1.0,
         zoomControl: true,
         attributionControl: false,
         scrollWheelZoom: 'center',
@@ -244,6 +246,4 @@
     if (!el) return;
     window.__worldMap = new WorldMap(el);
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
-})();
+  if (document.readyState === 'loadi
