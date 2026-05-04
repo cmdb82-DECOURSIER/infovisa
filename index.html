@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InfoVisa.lu — Schengen visa, in 5 languages</title>
+<meta name="description" content="The complete Schengen visa guide in English, French, German, Spanish and Portuguese. Choose your language.">
+<link rel="canonical" href="https://www.infovisa.lu/">
+<link rel="alternate" hreflang="en" href="https://www.infovisa.lu/en/">
+  <link rel="alternate" hreflang="fr" href="https://www.infovisa.lu/fr/">
+  <link rel="alternate" hreflang="de" href="https://www.infovisa.lu/de/">
+  <link rel="alternate" hreflang="es" href="https://www.infovisa.lu/es/">
+  <link rel="alternate" hreflang="pt" href="https://www.infovisa.lu/pt/">
+  <link rel="alternate" hreflang="x-default" href="https://www.infovisa.lu/en/">
+<meta name="theme-color" content="#003399">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<script>
+// Auto-redirect to user's browser language (if supported), otherwise to English.
+(function () {
+  try {
+    var supported = ["en","fr","de","es","pt"];
+    var stored = localStorage.getItem("infovisa_lang");
+    var browser = (navigator.language || "en").slice(0,2).toLowerCase();
+    var pick = stored && supported.indexOf(stored) !== -1 ? stored
+             : (supported.indexOf(browser) !== -1 ? browser : "en");
+    if (window.location.pathname === "/" || window.location.pathname === "/index.html") {
+      window.location.replace("/" + pick + "/");
+    }
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="lang-picker">
+  <main class="container">
+    <div class="lang-picker-card">
+      <div class="brand">
+        <span class="brand-mark">🛂</span>
+        <span class="brand-text">InfoVisa<span class="brand-tld">.lu</span></span>
+      </div>
+      <h1>Choose your language</h1>
+      <p class="muted">The complete Schengen visa guide — clear, accurate, up to date.</p>
+      <div class="lang-grid">
+        <a class="lang-card" href="/en/" hreflang="en" lang="en"><span class="lang-flag">🇬🇧</span><span class="lang-name">English</span></a><a class="lang-card" href="/fr/" hreflang="fr" lang="fr"><span class="lang-flag">🇫🇷</span><span class="lang-name">Français</span></a><a class="lang-card" href="/de/" hreflang="de" lang="de"><span class="lang-flag">🇩🇪</span><span class="lang-name">Deutsch</span></a><a class="lang-card" href="/es/" hreflang="es" lang="es"><span class="lang-flag">🇪🇸</span><span class="lang-name">Español</span></a><a class="lang-card" href="/pt/" hreflang="pt" lang="pt"><span class="lang-flag">🇵🇹</span><span class="lang-name">Português</span></a>
+      </div>
+      <p class="muted small">© <span id="year"></span> InfoVisa.lu</p>
+    </div>
+  </main>
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>

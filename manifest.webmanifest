@@ -1,0 +1,12 @@
+{
+  "name": "InfoVisa.lu — Schengen visa guide",
+  "short_name": "InfoVisa.lu",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#003399",
+  "lang": "en",
+  "icons": [
+    { "src": "/assets/favicon.svg", "type": "image/svg+xml", "sizes": "any" }
+  ]
+}
