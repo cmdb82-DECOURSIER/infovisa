@@ -1,10 +1,13 @@
 // Fonction serveur Vercel : actualités en direct via le flux RSS de Google Actualités.
-// GET /api/news?q=<recherche>&lang=fr|en  ->  { items: [{ title, url, source, date }] }
+// GET /api/news?q=<recherche>&lang=fr|en|de|es|pt  ->  { items: [{ title, url, source, date }] }
 // Sans q : rubrique International. Réponse mise en cache 10 min sur le CDN.
 
 const LOCALE = {
   fr: 'hl=fr&gl=FR&ceid=FR:fr',
-  en: 'hl=en-US&gl=US&ceid=US:en',
+  en: 'hl=en-GB&gl=GB&ceid=GB:en',
+  de: 'hl=de&gl=DE&ceid=DE:de',
+  es: 'hl=es&gl=ES&ceid=ES:es',
+  pt: 'hl=pt-PT&gl=PT&ceid=PT:pt-150',
 };
 
 const decode = (s) =>
@@ -22,7 +25,7 @@ const tag = (block, name) => {
 };
 
 module.exports = async (req, res) => {
-  const lang = req.query.lang === 'en' ? 'en' : 'fr';
+  const lang = Object.prototype.hasOwnProperty.call(LOCALE, req.query.lang) ? req.query.lang : 'fr';
   const q = req.query.q ? String(req.query.q).slice(0, 300) : '';
   // Sans recherche : rubrique « International » de Google Actualités.
   const url = q

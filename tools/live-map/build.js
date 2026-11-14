@@ -152,27 +152,63 @@ RTXT.split('\n').forEach(l => { const [n, codes] = l.split('|'); const a3 = ALIA
 const noReason = Object.keys(risk).filter(k => !reasons[k]);
 console.log('reasons unresolved:', rmiss, 'risk without reasons:', noReason, 'reasons without risk:', Object.keys(reasons).filter(k => !risk[k]));
 
-const REG = { Africa: "Afrique", Americas: "Amériques", Asia: "Asie", Europe: "Europe", Oceania: "Océanie", Antarctic: "Antarctique" };
-const SUB = { "Western Europe": "Europe de l'Ouest", "Eastern Europe": "Europe de l'Est", "Northern Europe": "Europe du Nord", "Southern Europe": "Europe du Sud", "Southeast Europe": "Europe du Sud-Est", "Central Europe": "Europe centrale", "Western Asia": "Asie de l'Ouest", "Southern Asia": "Asie du Sud", "South-Eastern Asia": "Asie du Sud-Est", "Eastern Asia": "Asie de l'Est", "Central Asia": "Asie centrale", "Northern Africa": "Afrique du Nord", "Western Africa": "Afrique de l'Ouest", "Eastern Africa": "Afrique de l'Est", "Middle Africa": "Afrique centrale", "Southern Africa": "Afrique australe", "North America": "Amérique du Nord", "South America": "Amérique du Sud", "Central America": "Amérique centrale", "Caribbean": "Caraïbes", "Australia and New Zealand": "Australie et Nouvelle-Zélande", "Melanesia": "Mélanésie", "Micronesia": "Micronésie", "Polynesia": "Polynésie" };
-const countries = wc.map(c => {
+const I18N = require('./i18n.js');
+const LANGS = Object.keys(I18N);
+const TR = { fr: 'fra', de: 'deu', es: 'spa', pt: 'por' };
+const REG = {
+  fr: { Africa: "Afrique", Americas: "Amériques", Asia: "Asie", Europe: "Europe", Oceania: "Océanie", Antarctic: "Antarctique" },
+  de: { Africa: "Afrika", Americas: "Amerika", Asia: "Asien", Europe: "Europa", Oceania: "Ozeanien", Antarctic: "Antarktis" },
+  es: { Africa: "África", Americas: "América", Asia: "Asia", Europe: "Europa", Oceania: "Oceanía", Antarctic: "Antártida" },
+  pt: { Africa: "África", Americas: "Américas", Asia: "Ásia", Europe: "Europa", Oceania: "Oceânia", Antarctic: "Antártida" },
+};
+const SUB_FR = { "Western Europe": "Europe de l'Ouest", "Eastern Europe": "Europe de l'Est", "Northern Europe": "Europe du Nord", "Southern Europe": "Europe du Sud", "Southeast Europe": "Europe du Sud-Est", "Central Europe": "Europe centrale", "Western Asia": "Asie de l'Ouest", "Southern Asia": "Asie du Sud", "South-Eastern Asia": "Asie du Sud-Est", "Eastern Asia": "Asie de l'Est", "Central Asia": "Asie centrale", "Northern Africa": "Afrique du Nord", "Western Africa": "Afrique de l'Ouest", "Eastern Africa": "Afrique de l'Est", "Middle Africa": "Afrique centrale", "Southern Africa": "Afrique australe", "North America": "Amérique du Nord", "South America": "Amérique du Sud", "Central America": "Amérique centrale", "Caribbean": "Caraïbes", "Australia and New Zealand": "Australie et Nouvelle-Zélande", "Melanesia": "Mélanésie", "Micronesia": "Micronésie", "Polynesia": "Polynésie" };
+// Villes de la couche météo : [nom FR, nom EN, lat, lon]
+const CITY = [["Luxembourg","Luxembourg",49.61,6.13],["Paris","Paris",48.86,2.35],["Londres","London",51.51,-0.13],["Madrid","Madrid",40.42,-3.7],["Lisbonne","Lisbon",38.72,-9.14],["Rome","Rome",41.9,12.5],["Berlin","Berlin",52.52,13.4],["Stockholm","Stockholm",59.33,18.07],["Varsovie","Warsaw",52.23,21.01],["Kyiv","Kyiv",50.45,30.52],["Moscou","Moscow",55.75,37.62],["Istanbul","Istanbul",41.01,28.98],["Le Caire","Cairo",30.04,31.24],["Casablanca","Casablanca",33.57,-7.59],["Dakar","Dakar",14.72,-17.47],["Lagos","Lagos",6.52,3.38],["Nairobi","Nairobi",-1.29,36.82],["Kinshasa","Kinshasa",-4.44,15.27],["Johannesburg","Johannesburg",-26.2,28.05],["Riyad","Riyadh",24.71,46.68],["Dubaï","Dubai",25.2,55.27],["Téhéran","Tehran",35.69,51.39],["Karachi","Karachi",24.86,67.0],["Delhi","Delhi",28.61,77.21],["Mumbai","Mumbai",19.08,72.88],["Dacca","Dhaka",23.81,90.41],["Bangkok","Bangkok",13.76,100.5],["Singapour","Singapore",1.35,103.82],["Jakarta","Jakarta",-6.21,106.85],["Hong Kong","Hong Kong",22.32,114.17],["Pékin","Beijing",39.9,116.4],["Séoul","Seoul",37.57,126.98],["Tokyo","Tokyo",35.68,139.69],["Manille","Manila",14.6,120.98],["Sydney","Sydney",-33.87,151.21],["Auckland","Auckland",-36.85,174.76],["Anchorage","Anchorage",61.22,-149.9],["Vancouver","Vancouver",49.28,-123.12],["Los Angeles","Los Angeles",34.05,-118.24],["Mexico","Mexico City",19.43,-99.13],["Chicago","Chicago",41.88,-87.63],["New York","New York",40.71,-74.01],["Miami","Miami",25.76,-80.19],["Montréal","Montreal",45.5,-73.57],["Bogota","Bogotá",4.71,-74.07],["Lima","Lima",-12.05,-77.04],["São Paulo","São Paulo",-23.55,-46.63],["Buenos Aires","Buenos Aires",-34.6,-58.38],["Santiago","Santiago",-33.45,-70.67],["Reykjavik","Reykjavík",64.15,-21.94],["Almaty","Almaty",43.24,76.89],["Addis-Abeba","Addis Ababa",9.03,38.74],["Alger","Algiers",36.75,3.06]];
+
+const countriesFor = lang => wc.map(c => {
   const cur = Object.entries(c.currencies || {})[0];
   const idd = c.idd && c.idd.root ? c.idd.root + (c.idd.suffixes && c.idd.suffixes.length === 1 ? c.idd.suffixes[0] : '') : '';
-  return { n: c.ccn3 || '', a3: c.cca3, a2: c.cca2, fr: (c.translations.fra && c.translations.fra.common) || c.name.common, en: c.name.common, cap: (c.capital || [])[0] || '', reg: REG[c.region] || c.region || '', sub: SUB[c.subregion] || '', cur: cur ? `${cur[0]}${cur[1].symbol ? ' (' + cur[1].symbol + ')' : ''}` : '', idd, ll: (c.latlng || [0, 0]).map(x => Math.round(x * 100) / 100) };
+  const t = TR[lang] && c.translations[TR[lang]];
+  return { n: c.ccn3 || '', a3: c.cca3, a2: c.cca2, fr: (t && t.common) || c.name.common, en: c.name.common, cap: (c.capital || [])[0] || '',
+    reg: (REG[lang] && REG[lang][c.region]) || c.region || '', sub: lang === 'fr' ? (SUB_FR[c.subregion] || '') : lang === 'en' ? (c.subregion || '') : '',
+    cur: cur ? `${cur[0]}${cur[1].symbol ? ' (' + cur[1].symbol + ')' : ''}` : '', idd, ll: (c.latlng || [0, 0]).map(x => Math.round(x * 100) / 100) };
 });
-const ids = new Set(countries.map(c => c.n));
-const noMatch = topo.objects.countries.geometries.filter(g => !ids.has(g.id)).map(g => g.properties.name);
-console.log('map features without country record:', noMatch);
+const ids = new Set(wc.map(c => c.ccn3));
+console.log('map features without country record:', topo.objects.countries.geometries.filter(g => !ids.has(g.id)).map(g => g.properties.name));
 
 const safe = s => s.split('</script').join('<\\/script');
-let html = fs.readFileSync('template.html', 'utf8');
-const rep = (k, v) => { if (!html.includes(k)) throw new Error('missing ' + k); html = html.split(k).join(v); };
-rep('/*__D3__*/', safe(fs.readFileSync('node_modules/d3/dist/d3.min.js', 'utf8')));
-rep('/*__TOPOJSON__*/', safe(fs.readFileSync('node_modules/topojson-client/dist/topojson-client.min.js', 'utf8')));
-rep('/*__TOPO__*/', safe(JSON.stringify(topo)));
-rep('/*__COUNTRIES__*/', safe(JSON.stringify(countries)));
-rep('/*__RISK__*/', JSON.stringify(risk));
-rep('/*__REASONS__*/', JSON.stringify(reasons));
-rep('/*__RISKDATE__*/', '2026-11-13');
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const D3 = safe(fs.readFileSync('node_modules/d3/dist/d3.min.js', 'utf8'));
+const TOPOJS = safe(fs.readFileSync('node_modules/topojson-client/dist/topojson-client.min.js', 'utf8'));
+const TOPOSTR = safe(JSON.stringify(topo));
+const RISKDATE = '2026-11-13';
 fs.mkdirSync('out', { recursive: true });
-fs.writeFileSync('out/infovisa-live.html', html);
-console.log('written', (html.length / 1024).toFixed(0) + ' KB');
+
+for (const lang of LANGS) {
+  const L = I18N[lang];
+  let html = fs.readFileSync('template.html', 'utf8');
+  const rep = (k, v) => { if (!html.includes(k)) throw new Error('missing ' + k); html = html.split(k).join(v); };
+  const hreflang = LANGS.map(l => `<link rel="alternate" hreflang="${l}" href="https://www.infovisa.lu${I18N[l].path}">`).join('\n') + `\n<link rel="alternate" hreflang="x-default" href="https://www.infovisa.lu/">`;
+  const langnav = LANGS.map(l => `<a href="${I18N[l].path}" hreflang="${l}" lang="${l}"${l === lang ? ' class="on" aria-current="page"' : ''}>${l.toUpperCase()}</a>`).join('');
+  const html_tokens = { lang, hreflang, langnav };
+  html = html.replace(/\{\{(\w+)\}\}/g, (m, k) => {
+    if (k in html_tokens) return html_tokens[k];
+    if (!(k in L)) throw new Error(`${lang}: missing key ${k}`);
+    return esc(L[k]);
+  });
+  const S = Object.assign({}, L, { lang });
+  delete S.cities;
+  rep('/*__D3__*/', D3);
+  rep('/*__TOPOJSON__*/', TOPOJS);
+  rep('/*__TOPO__*/', TOPOSTR);
+  rep('/*__COUNTRIES__*/', safe(JSON.stringify(countriesFor(lang))));
+  rep('/*__RISK__*/', JSON.stringify(risk));
+  rep('/*__REASONS__*/', JSON.stringify(reasons));
+  rep('/*__S__*/', safe(JSON.stringify(S)));
+  rep('/*__CITIES__*/', JSON.stringify(CITY.map(c => [L.cities === 'en' ? c[1] : c[0], c[2], c[3]])));
+  rep('/*__RISKDATE__*/', RISKDATE);
+  const file = `out${L.path}index.html`;
+  fs.mkdirSync(require('path').dirname(file), { recursive: true });
+  fs.writeFileSync(file, html);
+  console.log('written', file, (html.length / 1024).toFixed(0) + ' KB');
+}
