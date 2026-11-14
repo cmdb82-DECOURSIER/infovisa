@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InfoVisa Live — Le monde en direct : risques, météo, géopolitique</title>
+<meta name="description" content="Carte mondiale en direct : niveau de risque par pays, météo, séismes, catastrophes naturelles et actualité géopolitique. Pour voyageurs et entreprises.">
+<link rel="canonical" href="https://www.infovisa.lu/">
+<meta name="theme-color" content="#0a0f16">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:url" content="https://www.infovisa.lu/">
+<meta property="og:title" content="InfoVisa Live — Le monde en direct">
+<meta property="og:description" content="Carte mondiale en direct : niveau de risque par pays et ses raisons, météo, séismes, catastrophes naturelles et actualité géopolitique.">
+<style>
+:root{
+  --bg:#0a0f16; --panel:#111924; --panel2:#162130; --line:#223044; --ink:#e8eef6; --mut:#8b9bb0; --dim:#5d6c80;
+  --acc:#4cc2ff; --l0:#2a3646; --l1:#2f8f6b; --l2:#d9b63a; --l3:#e07a2f; --l4:#d63b4b; --ev:#b58cff;
+  --sea:#0c1622; --r:10px;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 var(--sans)}
+a{color:var(--acc);text-decoration:none} a:hover{text-decoration:underline}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+header{display:flex;align-items:center;gap:16px;padding:10px 18px;border-bottom:1px solid var(--line);background:#0c121b;position:sticky;top:0;z-index:20;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:8px;font-weight:700;font-size:17px;letter-spacing:.2px}
+.brand b{color:var(--acc);font-weight:700}
+.live{display:inline-flex;align-items:center;gap:6px;font:600 11px var(--mono);color:#ff6b78;border:1px solid #5a2630;border-radius:99px;padding:2px 8px;letter-spacing:.8px}
+.live i{width:7px;height:7px;border-radius:50%;background:#ff4d5e;animation:blink 1.6s infinite}
+@keyframes blink{50%{opacity:.25}}
+.gnav{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mut)}.gnav a{border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--ink);font:600 11px var(--mono)}.gnav a:hover{border-color:var(--acc);text-decoration:none}
+.search{flex:1;min-width:180px;max-width:340px;margin-left:auto}
+.search input{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 11px}
+.clock{font:500 12px var(--mono);color:var(--mut);white-space:nowrap}
+.status{display:flex;gap:14px;flex-wrap:wrap;padding:6px 18px;border-bottom:1px solid var(--line);font:11px var(--mono);color:var(--mut);background:#0b1119}
+.status span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--dim)}
+.dot.ok{background:#35d08a}.dot.err{background:#ff4d5e}.dot.wait{background:#d9b63a}.dot.snap{background:var(--acc)}
+main{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:14px;padding:14px 18px;max-width:1600px;margin:0 auto}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.card h2{margin:0;padding:10px 14px;font:600 11px var(--mono);letter-spacing:1px;text-transform:uppercase;color:var(--mut);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px}
+.card h2 small{font-weight:400;letter-spacing:0;text-transform:none;color:var(--dim)}
+#mapwrap{position:relative;background:var(--sea)}
+#map{display:block;width:100%;height:auto;touch-action:none;cursor:grab}
+#map:active{cursor:grabbing}
+.country{stroke:#0a0f16;stroke-width:.4;vector-effect:non-scaling-stroke;cursor:pointer;transition:opacity .15s}
+.country:hover{opacity:.78}
+.country.sel{stroke:#fff;stroke-width:1.6}
+.sphere{fill:var(--sea);stroke:var(--line)}
+.grat{fill:none;stroke:#152234;stroke-width:.5;vector-effect:non-scaling-stroke}
+.quake{fill:rgba(255,255,255,.14);stroke:#fff;vector-effect:non-scaling-stroke;stroke-width:1.2;cursor:pointer}
+.quake.fresh{animation:pulse 1.8s infinite}
+@keyframes pulse{50%{fill:rgba(255,255,255,.55)}}
+.event{fill:var(--ev);stroke:#0a0f16;vector-effect:non-scaling-stroke;stroke-width:.8;cursor:pointer}
+.wx{font-family:var(--mono);font-weight:700;fill:#dff3ff;paint-order:stroke;stroke:#06101a;stroke-linejoin:round;pointer-events:none}
+.layers{position:absolute;top:10px;left:10px;display:flex;gap:6px;flex-wrap:wrap;max-width:calc(100% - 70px)}
+.chip{background:rgba(12,18,27,.88);border:1px solid var(--line);border-radius:99px;padding:5px 11px;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--mut)}
+.chip[aria-pressed=true]{color:var(--ink);border-color:#3a5878;background:rgba(22,40,60,.95)}
+.chip i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.zoom{position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:4px}
+.zoom button{width:30px;height:30px;border-radius:8px;background:rgba(12,18,27,.88);border:1px solid var(--line);cursor:pointer;font-size:16px;line-height:1}
+.legend{display:flex;gap:14px;flex-wrap:wrap;padding:9px 14px;border-top:1px solid var(--line);font-size:12px;color:var(--mut)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:11px;height:11px;border-radius:3px;display:inline-block}
+.legend b{color:var(--ink);font-family:var(--mono);font-weight:600}
+#tip{position:fixed;pointer-events:none;background:#06101a;border:1px solid #2c4058;border-radius:8px;padding:6px 9px;font-size:12px;z-index:50;display:none;max-width:260px;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+#tip b{display:block}
+aside{display:flex;flex-direction:column;gap:14px;min-width:0}
+.pad{padding:14px}
+.cname{font-size:20px;font-weight:700;margin:0 0 2px;display:flex;align-items:center;gap:8px}
+.csub{color:var(--mut);font-size:12px;margin-bottom:12px}
+.badge{display:flex;align-items:center;gap:10px;border-radius:8px;padding:10px 12px;margin-bottom:12px;background:var(--panel2);border-left:4px solid var(--l0)}
+.badge .n{font:700 22px var(--mono)}
+.badge .t{font-weight:600}.badge .s{font-size:11px;color:var(--mut)}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;margin:0 0 12px}
+.facts dt{color:var(--mut)}.facts dd{margin:0;text-align:right}
+.wxnow{display:flex;align-items:center;gap:12px;background:var(--panel2);border-radius:8px;padding:10px 12px}
+.wxnow .big{font:700 28px var(--mono)}
+.wxnow .ico{font-size:30px;line-height:1}
+.wxdays{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.wxdays div{background:var(--panel2);border-radius:8px;padding:6px;text-align:center;font-size:12px}
+.wxdays b{display:block;font-family:var(--mono)}
+.why{margin-bottom:12px}.whyp{margin:0 0 8px;font-size:13px}.whyl{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}.whyl li{background:var(--panel2);border-radius:8px;padding:7px 10px;font-size:12.5px;color:var(--mut)}.whyl b{color:var(--ink)}.whyn{margin:8px 0 0;font-size:11px;color:var(--dim)}
+.sec{font:600 11px var(--mono);letter-spacing:1px;text-transform:uppercase;color:var(--mut);margin:14px 0 6px}
+.links{display:flex;flex-direction:column;gap:4px;font-size:13px}
+.feeds{grid-column:1/-1;display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:14px}
+ul.feed{list-style:none;margin:0;padding:0;max-height:340px;overflow:auto}
+ul.feed li{padding:9px 14px;border-bottom:1px solid #18222f;font-size:13px}
+ul.feed li:last-child{border-bottom:0}
+ul.feed .m{font:11px var(--mono);color:var(--dim);display:block;margin-top:2px}
+ul.feed a{color:var(--ink)}
+.mag{font:700 12px var(--mono);display:inline-block;min-width:34px;padding:1px 5px;border-radius:5px;background:#243245;text-align:center;margin-right:6px}
+.mag.hi{background:#7a2530}.mag.mid{background:#7a4a1c}
+.empty{padding:14px;color:var(--mut);font-size:13px}
+footer{max-width:1600px;margin:0 auto;padding:6px 18px 26px;color:var(--dim);font-size:12px}
+@media (max-width:1000px){main{grid-template-columns:1fr}.feeds{grid-template-columns:1fr}.clock{display:none}}
+@media (prefers-reduced-motion:reduce){.live i,.quake.fresh{animation:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><span>Info<b>Visa</b></span><span class="live"><i></i>LIVE</span></div>
+  <nav class="gnav" aria-label="Guides visa"><span>Guides visa :</span><a href="/fr/" hreflang="fr">FR</a><a href="/en/" hreflang="en">EN</a><a href="/de/" hreflang="de">DE</a><a href="/es/" hreflang="es">ES</a><a href="/pt/" hreflang="pt">PT</a></nav>
+  <div class="clock" id="clock"></div>
+  <div class="search"><input id="q" list="clist" placeholder="Rechercher un pays…" aria-label="Rechercher un pays" autocomplete="off"><datalist id="clist"></datalist></div>
+</header>
+<div class="status" id="status" aria-live="polite"></div>
+<main>
+  <section class="card">
+    <h2>Carte mondiale <small id="mapnote">Cliquez sur un pays</small></h2>
+    <div id="mapwrap">
+      <svg id="map" viewBox="0 0 960 500" role="img" aria-label="Carte mondiale des niveaux de risque"></svg>
+      <div class="layers" id="layers"></div>
+      <div class="zoom"><button id="zin" aria-label="Zoomer">+</button><button id="zout" aria-label="Dézoomer">−</button><button id="zreset" aria-label="Réinitialiser la vue">⌂</button></div>
+    </div>
+    <div class="legend" id="legend"></div>
+  </section>
+  <aside>
+    <section class="card"><h2>Fiche pays</h2><div class="pad" id="panel"></div></section>
+  </aside>
+  <div class="feeds">
+    <section class="card"><h2>Géopolitique en direct <small id="newsnote">GDELT · presse francophone</small></h2><ul class="feed" id="news"><li class="empty">Chargement…</li></ul></section>
+    <section class="card"><h2>Séismes <small>USGS · M4.5+ · 7 jours</small></h2><ul class="feed" id="quakes"><li class="empty">Chargement…</li></ul></section>
+    <section class="card"><h2>Événements naturels <small>NASA EONET · en cours</small></h2><ul class="feed" id="events"><li class="empty">Chargement…</li></ul></section>
+  </div>
+</main>
+<footer>
+  Niveaux de risque : avis aux voyageurs du Département d'État américain, instantané du <span id="riskdate"></span> — établis pour des ressortissants américains, à croiser avec les conseils du MAEE luxembourgeois ou de France Diplomatie avant tout départ. Données live : USGS, NASA EONET, Open-Meteo, GDELT. Site d'information indépendant, sans valeur officielle.
+</footer>
+<div id="tip"></div>
+
+<script>/*__D3__*/</script>
+<script>/*__TOPOJSON__*/</script>
+<script>
+const TOPO=/*__TOPO__*/;
+const C=/*__COUNTRIES__*/;
+const RISK=/*__RISK__*/;
+const WHY=/*__REASONS__*/;
+const RZ={C:["Criminalité","Vols, agressions ou criminalité violente fréquents, y compris dans les zones touristiques."],T:["Terrorisme","Risque d'attentats pouvant viser lieux publics, transports, hôtels ou rassemblements."],U:["Troubles civils","Manifestations, violences politiques ou émeutes pouvant éclater sans préavis."],K:["Enlèvements","Risque d'enlèvement ou de prise d'otage, parfois ciblant les étrangers."],H:["Santé","Épidémie en cours ou système de soins limité : prise en charge médicale difficile."],D:["Détention arbitraire","Risque d'arrestation ou de détention injustifiée de ressortissants étrangers."],N:["Catastrophes naturelles","Exposition aux séismes, cyclones, inondations ou éruptions, avec secours parfois lents."],A:["Conflit armé","Combats, frappes ou hostilités militaires en cours ou à proximité."],M:["Mines et engins explosifs","Présence de mines ou de munitions non explosées dans certaines zones."],L:["Lois locales","Application stricte ou arbitraire de lois locales, avec sanctions lourdes possibles."],P:["Piraterie","Actes de piraterie ou attaques armées en mer et sur les côtes."],E:["Interdictions de sortie","Les autorités peuvent empêcher des étrangers de quitter le territoire."],S:["Secours limités","Services d'urgence et d'évacuation très limités, zones isolées."],B:["Tensions frontalières","Incidents ou tensions militaires dans les zones frontalières."],O:["Coupures de courant","Pannes d'électricité prolongées affectant services et approvisionnement."],R:["Sécurité routière","Routes dangereuses et accidents fréquents."],X:["Accès consulaire limité","Assistance consulaire restreinte en cas de problème."],I:["Coupures des communications","Internet et téléphone peuvent être coupés par les autorités."],W:["Droits des femmes et des personnes LGBTQ+","Risques de mauvais traitements ou de poursuites."]};
+const LVWHY={1:"Niveau le plus bas : aucun risque particulier n'est signalé au-delà des précautions habituelles de tout voyage à l'étranger.",2:"Des risques précis existent dans ce pays. Le voyage reste possible en restant attentif et informé.",3:"Les risques sont jugés sérieux. Il est conseillé de reporter les voyages non indispensables.",4:"Risques jugés extrêmes, pouvant mettre la vie en danger, avec une aide consulaire très limitée sur place."};
+const RISK_DATE="/*__RISKDATE__*/";
+const CITIES=[["Luxembourg",49.61,6.13],["Paris",48.86,2.35],["Londres",51.51,-0.13],["Madrid",40.42,-3.7],["Lisbonne",38.72,-9.14],["Rome",41.9,12.5],["Berlin",52.52,13.4],["Stockholm",59.33,18.07],["Varsovie",52.23,21.01],["Kyiv",50.45,30.52],["Moscou",55.75,37.62],["Istanbul",41.01,28.98],["Le Caire",30.04,31.24],["Casablanca",33.57,-7.59],["Dakar",14.72,-17.47],["Lagos",6.52,3.38],["Nairobi",-1.29,36.82],["Kinshasa",-4.44,15.27],["Johannesburg",-26.2,28.05],["Riyad",24.71,46.68],["Dubaï",25.2,55.27],["Téhéran",35.69,51.39],["Karachi",24.86,67.0],["Delhi",28.61,77.21],["Mumbai",19.08,72.88],["Dacca",23.81,90.41],["Bangkok",13.76,100.5],["Singapour",1.35,103.82],["Jakarta",-6.21,106.85],["Hong Kong",22.32,114.17],["Pékin",39.9,116.4],["Séoul",37.57,126.98],["Tokyo",35.68,139.69],["Manille",14.6,120.98],["Sydney",-33.87,151.21],["Auckland",-36.85,174.76],["Anchorage",61.22,-149.9],["Vancouver",49.28,-123.12],["Los Angeles",34.05,-118.24],["Mexico",19.43,-99.13],["Chicago",41.88,-87.63],["New York",40.71,-74.01],["Miami",25.76,-80.19],["Montréal",45.5,-73.57],["Bogota",4.71,-74.07],["Lima",-12.05,-77.04],["São Paulo",-23.55,-46.63],["Buenos Aires",-34.6,-58.38],["Santiago",-33.45,-70.67],["Reykjavik",64.15,-21.94],["Almaty",43.24,76.89],["Addis-Abeba",9.03,38.74],["Alger",36.75,3.06]];
+const LV={0:{t:"Non évalué",s:"Pas d'avis dans la source",c:"var(--l0)"},1:{t:"Précautions normales",s:"Niveau 1 sur 4",c:"var(--l1)"},2:{t:"Vigilance renforcée",s:"Niveau 2 sur 4",c:"var(--l2)"},3:{t:"Voyage à reconsidérer",s:"Niveau 3 sur 4",c:"var(--l3)"},4:{t:"Ne pas voyager",s:"Niveau 4 sur 4",c:"var(--l4)"}};
+const WMO=c=>c===0?["☀️","Ciel dégagé"]:c<=2?["🌤️","Peu nuageux"]:c===3?["☁️","Couvert"]:c<=48?["🌫️","Brouillard"]:c<=57?["🌦️","Bruine"]:c<=67?["🌧️","Pluie"]:c<=77?["🌨️","Neige"]:c<=82?["🌧️","Averses"]:c<=86?["🌨️","Averses de neige"]:["⛈️","Orage"];
+const $=s=>document.querySelector(s);
+const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[x,v]of Object.entries(a)){if(x==="text")e.textContent=v;else if(x==="class")e.className=v;else e.setAttribute(x,v)}k.forEach(c=>e.append(c));return e};
+const byN=new Map(C.map(c=>[c.n,c])),byA3=new Map(C.map(c=>[c.a3,c]));
+const level=c=>c?(c.a3==="USA"?0:(RISK[c.a3]||1)):0;
+const flag=a2=>a2&&a2.length===2?String.fromCodePoint(...[...a2].map(x=>127397+x.charCodeAt(0))):"";
+const ago=t=>{const m=Math.round((Date.now()-t)/6e4);return m<1?"à l'instant":m<60?`il y a ${m} min`:m<1440?`il y a ${Math.round(m/60)} h`:`il y a ${Math.round(m/1440)} j`};
+const safeUrl=u=>/^https?:\/\//i.test(u||"")?u:"#";
+
+/* ---------- état des sources ---------- */
+const SRC={risk:["Risque pays","snap","instantané "+fmtDate(RISK_DATE)],usgs:["Séismes","wait","…"],eonet:["Événements naturels","wait","…"],meteo:["Météo","wait","…"],gdelt:["Géopolitique","wait","…"]};
+function fmtDate(d){return new Date(d+"T12:00:00Z").toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"})}
+function setSrc(k,state,txt){SRC[k][1]=state;SRC[k][2]=txt;drawStatus()}
+function drawStatus(){const s=$("#status");s.replaceChildren(...Object.values(SRC).map(([n,st,t])=>el("span",{},el("i",{class:"dot "+st}),document.createTextNode(`${n} · ${t}`))))}
+const hhmm=()=>new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+async function getJSON(url,ms=15000){const ac=new AbortController(),t=setTimeout(()=>ac.abort(),ms);try{const r=await fetch(url,{signal:ac.signal});if(!r.ok)throw new Error(r.status);return JSON.parse(await r.text())}finally{clearTimeout(t)}}
+
+/* ---------- carte ---------- */
+const svg=d3.select("#map"),W=960,H=500;
+const proj=d3.geoNaturalEarth1().fitExtent([[6,6],[W-6,H-6]],{type:"Sphere"}),path=d3.geoPath(proj);
+const root=svg.append("g");
+root.append("path").attr("class","sphere").attr("d",path({type:"Sphere"}));
+root.append("path").attr("class","grat").attr("d",path(d3.geoGraticule10()));
+const feats=topojson.feature(TOPO,TOPO.objects.countries).features.filter(f=>f.id!=="010");
+const cOf=f=>byN.get(f.id)||(f.properties&&f.properties.name==="Kosovo"?byA3.get("UNK"):null);
+const gC=root.append("g"),gE=root.append("g"),gQ=root.append("g"),gW=root.append("g");
+let K=1,selected=null;
+const tip=$("#tip");
+function showTip(ev,title,sub){tip.replaceChildren(el("b",{text:title}),document.createTextNode(sub||""));tip.style.display="block";moveTip(ev)}
+function moveTip(ev){const x=Math.min(ev.clientX+14,innerWidth-270),y=Math.min(ev.clientY+14,innerHeight-70);tip.style.left=x+"px";tip.style.top=y+"px"}
+const hideTip=()=>tip.style.display="none";
+const paths=gC.selectAll("path").data(feats).join("path").attr("class","country").attr("d",path)
+  .attr("fill",f=>LV[level(cOf(f))].c)
+  .on("mousemove",(ev,f)=>{const c=cOf(f);showTip(ev,c?c.fr:(f.properties.name||"—"),c?LV[level(c)].t+((WHY[c.a3]||[]).length?" · "+WHY[c.a3].slice(0,3).map(k=>RZ[k]?RZ[k][0]:"").filter(Boolean).join(", "):""):"")})
+  .on("mouseleave",hideTip)
+  .on("click",(ev,f)=>{const c=cOf(f);if(c)select(c,f)});
+const zoom=d3.zoom().scaleExtent([1,14]).translateExtent([[0,0],[W,H]]).on("zoom",ev=>{root.attr("transform",ev.transform);K=ev.transform.k;rescale()});
+svg.call(zoom);
+function rescale(){gQ.selectAll("circle").attr("r",d=>d.r/K);gE.selectAll("rect").each(function(d){const s=7/K;d3.select(this).attr("width",s).attr("height",s).attr("x",d.x-s/2).attr("y",d.y-s/2).attr("transform",`rotate(45 ${d.x} ${d.y})`)});gW.selectAll("text").attr("font-size",10/Math.pow(K,.82)).attr("stroke-width",2.5/K)}
+$("#zin").onclick=()=>svg.transition().duration(250).call(zoom.scaleBy,1.6);
+$("#zout").onclick=()=>svg.transition().duration(250).call(zoom.scaleBy,1/1.6);
+$("#zreset").onclick=()=>svg.transition().duration(400).call(zoom.transform,d3.zoomIdentity);
+function zoomTo(f){const[[x0,y0],[x1,y1]]=path.bounds(f),k=Math.max(1,Math.min(10,.75/Math.max((x1-x0)/W,(y1-y0)/H)));svg.transition().duration(600).call(zoom.transform,d3.zoomIdentity.translate(W/2,H/2).scale(k).translate(-(x0+x1)/2,-(y0+y1)/2))}
+
+/* ---------- couches ---------- */
+const LAY={risk:["Risque pays","var(--l3)",true],quake:["Séismes","#fff",true],event:["Événements naturels","var(--ev)",true],wx:["Météo","var(--acc)",true]};
+function drawLayers(){$("#layers").replaceChildren(...Object.entries(LAY).map(([k,[n,c,on]])=>{const b=el("button",{class:"chip","aria-pressed":on},el("i",{style:`background:${c}`}),document.createTextNode(n));b.onclick=()=>{LAY[k][2]=!LAY[k][2];applyLayers();drawLayers()};return b}))}
+function applyLayers(){paths.attr("fill",f=>LAY.risk[2]?LV[level(cOf(f))].c:"var(--l0)");gQ.style("display",LAY.quake[2]?null:"none");gE.style("display",LAY.event[2]?null:"none");gW.style("display",LAY.wx[2]?null:"none")}
+function drawLegend(){const n={0:0,1:0,2:0,3:0,4:0};feats.forEach(f=>{const c=cOf(f);if(c)n[level(c)]++});$("#legend").replaceChildren(...[1,2,3,4,0].map(l=>el("span",{},el("i",{class:"sw",style:`background:${LV[l].c}`}),document.createTextNode(LV[l].t+" "),el("b",{text:n[l]}))))}
+
+/* ---------- fiche pays ---------- */
+let reqId=0;
+function whyBlock(c,l){const box=el("div",{class:"why"});if(!l)return box;
+  box.append(el("div",{class:"sec",style:"margin-top:0",text:"Pourquoi ce niveau ?"}),el("p",{class:"whyp",text:LVWHY[l]}));
+  const codes=(WHY[c.a3]||[]).filter(k=>RZ[k]);
+  if(codes.length){box.append(el("ul",{class:"whyl"},...codes.map(k=>el("li",{},el("b",{text:RZ[k][0]}),document.createTextNode(" — "+RZ[k][1])))));
+    box.append(el("p",{class:"whyn",text:"Motifs cités dans l'avis officiel. Certaines régions du pays peuvent avoir un niveau plus élevé que le niveau national."}))}
+  return box}
+function overview(){const p=$("#panel");const n={1:0,2:0,3:0,4:0};C.forEach(c=>{const l=level(c);if(l)n[l]++});
+  p.replaceChildren(el("p",{class:"cname",text:"Vue mondiale"}),el("div",{class:"csub",text:"Sélectionnez un pays sur la carte ou via la recherche pour sa fiche : risque, météo en direct, heure locale et dernières actualités."}),
+    ...[4,3].map(l=>{const b=el("div",{class:"badge",style:`border-left-color:${LV[l].c}`},el("span",{class:"n",text:n[l]}),el("div",{},el("div",{class:"t",text:LV[l].t}),el("div",{class:"s",text:C.filter(c=>level(c)===l).map(c=>c.fr).sort((a,b)=>a.localeCompare(b,"fr")).join(", ")})));return b}))}
+function select(c,f){selected=c;const my=++reqId;paths.classed("sel",d=>cOf(d)===c);f=f||feats.find(d=>cOf(d)===c);if(f){zoomTo(f);gC.selectAll("path.sel").raise()}
+  const l=level(c),p=$("#panel");
+  const wx=el("div",{id:"cwx",class:"empty",text:"Météo en cours de chargement…"}),nw=el("ul",{class:"feed",id:"cnews"},el("li",{class:"empty",text:"Recherche des actualités…"}));
+  const enc=encodeURIComponent;
+  p.replaceChildren(
+    el("p",{class:"cname"},document.createTextNode(flag(c.a2)+" "+c.fr)),
+    el("div",{class:"csub",text:[c.reg,c.sub].filter(Boolean).join(" · ")}),
+    el("div",{class:"badge",style:`border-left-color:${LV[l].c}`},el("span",{class:"n",text:l||"–"}),el("div",{},el("div",{class:"t",text:LV[l].t}),el("div",{class:"s",text:l?LV[l].s+" · avis du "+fmtDate(RISK_DATE):"Les États-Unis ne publient pas d'avis sur eux-mêmes"}))),
+    whyBlock(c,l),
+    el("dl",{class:"facts"},...[["Capitale",c.cap||"—"],["Monnaie",c.cur||"—"],["Indicatif",c.idd||"—"],["Heure locale",el("span",{id:"ctime",text:"…"})]].flatMap(([a,b])=>[el("dt",{text:a}),el("dd",{},b instanceof Node?b:document.createTextNode(b))])),
+    el("div",{class:"sec",text:"Météo en direct"+(c.cap?" · "+c.cap:"")}),wx,
+    el("div",{class:"sec",text:"Dernières actualités"}),el("div",{class:"card"},nw),
+    el("div",{class:"sec",text:"Sources officielles"}),
+    el("div",{class:"links"},
+      el("a",{href:"https://www.diplomatie.gouv.fr/fr/conseils-aux-voyageurs/conseils-par-pays-destination/",target:"_blank",rel:"noopener",text:"France Diplomatie — Conseils aux voyageurs ↗"}),
+      el("a",{href:"https://maee.gouvernement.lu/fr/services-aux-citoyens/conseils-aux-voyageurs.html",target:"_blank",rel:"noopener",text:"MAEE Luxembourg — Conseils aux voyageurs ↗"}),
+      el("a",{href:"https://travel.state.gov/en/international-travel/travel-advisories.html",target:"_blank",rel:"noopener",text:"US State Department — Travel Advisories ↗"}),
+      el("a",{href:"https://news.google.com/search?q="+enc(c.fr)+"&hl=fr",target:"_blank",rel:"noopener",text:"Toute l'actualité sur "+c.fr+" ↗"})));
+  $("#mapnote").textContent=c.fr;
+  countryWeather(c,my);countryNews(c,my);
+}
+async function countryWeather(c,my){const box=$("#cwx");try{
+  let lat=c.ll[0],lon=c.ll[1];
+  if(c.cap){try{const g=await getJSON(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(c.cap)}&count=1&language=fr&countryCode=${c.a2}`);if(g.results&&g.results[0]){lat=g.results[0].latitude;lon=g.results[0].longitude}}catch(e){}}
+  const d=await getJSON(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m&daily=weather_code,temperature_2m_max,temperature_2m_min&forecast_days=4&timezone=auto`);
+  if(my!==reqId)return;const cu=d.current,[ico,lab]=WMO(cu.weather_code);
+  box.className="";box.replaceChildren(
+    el("div",{class:"wxnow"},el("span",{class:"ico",text:ico}),el("span",{class:"big",text:Math.round(cu.temperature_2m)+"°"}),el("div",{},el("div",{text:lab}),el("div",{class:"csub",style:"margin:0",text:`Ressenti ${Math.round(cu.apparent_temperature)}° · vent ${Math.round(cu.wind_speed_10m)} km/h · humidité ${cu.relative_humidity_2m}%`}))),
+    el("div",{class:"wxdays"},...[1,2,3].map(i=>el("div",{},document.createTextNode(new Date(d.daily.time[i]+"T12:00").toLocaleDateString("fr-FR",{weekday:"short"})+" "+WMO(d.daily.weather_code[i])[0]),el("b",{text:`${Math.round(d.daily.temperature_2m_min[i])}° / ${Math.round(d.daily.temperature_2m_max[i])}°`})))));
+  const t=$("#ctime");if(t&&d.timezone){t.dataset.tz=d.timezone;tick()}
+ }catch(e){if(my===reqId){box.className="empty";box.textContent="Météo indisponible pour le moment."}}}
+
+/* ---------- GDELT (file d'attente : 1 requête / 6 s) ---------- */
+let gq=Promise.resolve(),gLast=0;
+function gdelt(q,span){const run=async()=>{const w=8000-(Date.now()-gLast);if(w>0)await new Promise(r=>setTimeout(r,w));gLast=Date.now();const d=await getJSON(`https://api.gdeltproject.org/api/v2/doc/doc?query=${encodeURIComponent(q)}&mode=artlist&format=json&maxrecords=14&sort=datedesc&timespan=${span}`,45000);return d.articles||[]};const p=gq.then(run,run);gq=p.catch(()=>{});return p}
+const gTime=s=>{const m=/^(\d{4})(\d\d)(\d\d)T(\d\d)(\d\d)/.exec(s||"");return m?Date.UTC(m[1],m[2]-1,m[3],m[4],m[5]):Date.now()};
+function newsItems(arts,max){const seen=new Set(),out=[];for(const a of arts){const k=(a.title||"").toLowerCase().slice(0,60);if(!a.title||seen.has(k))continue;seen.add(k);out.push(el("li",{},el("a",{href:safeUrl(a.url),target:"_blank",rel:"noopener noreferrer",text:a.title}),el("span",{class:"m",text:`${a.domain||""} · ${ago(gTime(a.seendate))}`})));if(out.length>=max)break}return out}
+async function loadNews(){try{let a=await gdelt('(guerre OR conflit OR sanctions OR diplomatie OR frontière) sourcelang:french',"1d");if(a.length<4){$("#newsnote").textContent="GDELT · presse internationale";a=a.concat(await gdelt('(war OR conflict OR sanctions OR ceasefire OR coup OR diplomacy) sourcelang:english',"1d"))}const it=newsItems(a,14);$("#news").replaceChildren(...(it.length?it:[el("li",{class:"empty",text:"Aucun titre récent."})]));setSrc("gdelt","ok","live "+hhmm())}catch(e){setSrc("gdelt","err","indisponible, nouvel essai");setTimeout(loadNews,9e4);if($("#news .empty"))$("#news").replaceChildren(el("li",{class:"empty",text:"Flux d'actualité momentanément indisponible. Nouvelle tentative automatique."}))}}
+async function countryNews(c,my){const box=()=>$("#cnews");try{
+  let a=await gdelt(`"${c.fr}" sourcelang:french`,"3d");if(my!==reqId)return;
+  if(a.length<3){const b=await gdelt(`"${c.en}" sourcelang:english`,"3d");if(my!==reqId)return;a=a.concat(b)}
+  const it=newsItems(a,6);box().replaceChildren(...(it.length?it:[el("li",{class:"empty",text:"Aucun article récent trouvé."})]))
+ }catch(e){if(my===reqId&&box())box().replaceChildren(el("li",{class:"empty",text:"Actualités indisponibles pour le moment."}))}}
+
+/* ---------- séismes ---------- */
+async function loadQuakes(){try{const d=await getJSON("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_week.geojson");
+  const q=d.features.map(f=>{const[lon,lat]=f.geometry.coordinates,p=proj([lon,lat]);return{x:p[0],y:p[1],m:f.properties.mag,t:f.properties.time,pl:f.properties.place||"",u:f.properties.url,r:Math.max(2.5,(f.properties.mag-3.5)*2.6)}}).sort((a,b)=>b.t-a.t);
+  gQ.selectAll("circle").data(q).join("circle").attr("class",d=>"quake"+(Date.now()-d.t<36e5*3?" fresh":"")).attr("cx",d=>d.x).attr("cy",d=>d.y)
+    .on("mousemove",(ev,d)=>showTip(ev,`Séisme M${d.m.toFixed(1)}`,`${d.pl} · ${ago(d.t)}`)).on("mouseleave",hideTip);
+  $("#quakes").replaceChildren(...q.slice(0,25).map(d=>el("li",{},el("span",{class:"mag"+(d.m>=6?" hi":d.m>=5.5?" mid":""),text:"M"+d.m.toFixed(1)}),el("a",{href:safeUrl(d.u),target:"_blank",rel:"noopener noreferrer",text:d.pl}),el("span",{class:"m",text:ago(d.t)}))));
+  rescale();setSrc("usgs","ok",`live ${hhmm()} · ${q.length}`)}catch(e){setSrc("usgs","err","indisponible");if($("#quakes .empty"))$("#quakes .empty").textContent="Flux USGS indisponible."}}
+
+/* ---------- événements naturels ---------- */
+const CAT={severeStorms:"Tempête / cyclone",volcanoes:"Volcan",wildfires:"Incendie",floods:"Inondation",landslides:"Glissement de terrain",drought:"Sécheresse",dustHaze:"Poussière / brume",tempExtremes:"Température extrême",snow:"Neige",earthquakes:"Séisme"};
+async function loadEvents(){try{const d=await getJSON("https://eonet.gsfc.nasa.gov/api/v3/events?status=open&days=14&limit=250",25000);
+  const ev=d.events.filter(e=>e.categories[0]&&e.categories[0].id!=="seaLakeIce").map(e=>{const g=e.geometry[e.geometry.length-1];if(!g||g.type!=="Point")return null;const p=proj(g.coordinates);return{x:p[0],y:p[1],n:e.title,cat:CAT[e.categories[0].id]||e.categories[0].title,t:Date.parse(g.date),u:e.sources&&e.sources[0]?e.sources[0].url:e.link}}).filter(Boolean).sort((a,b)=>b.t-a.t);
+  gE.selectAll("rect").data(ev).join("rect").attr("class","event").on("mousemove",(e,d)=>showTip(e,d.cat,`${d.n} · ${ago(d.t)}`)).on("mouseleave",hideTip);
+  const pri=ev.filter(e=>e.cat!=="Incendie").concat(ev.filter(e=>e.cat==="Incendie"));
+  $("#events").replaceChildren(...(pri.length?pri.slice(0,25).map(d=>el("li",{},el("a",{href:safeUrl(d.u),target:"_blank",rel:"noopener noreferrer",text:d.n}),el("span",{class:"m",text:`${d.cat} · ${ago(d.t)}`}))):[el("li",{class:"empty",text:"Aucun événement en cours."})]));
+  rescale();setSrc("eonet","ok",`live ${hhmm()} · ${ev.length}`)}catch(e){setSrc("eonet","err","indisponible");if($("#events .empty"))$("#events .empty").textContent="Flux NASA EONET indisponible."}}
+
+/* ---------- météo mondiale ---------- */
+async function loadWeather(){try{const d=await getJSON(`https://api.open-meteo.com/v1/forecast?latitude=${CITIES.map(c=>c[1]).join(",")}&longitude=${CITIES.map(c=>c[2]).join(",")}&current=temperature_2m,weather_code`);
+  const w=(Array.isArray(d)?d:[d]).map((r,i)=>{const p=proj([CITIES[i][2],CITIES[i][1]]);return{x:p[0],y:p[1],n:CITIES[i][0],t:Math.round(r.current.temperature_2m),c:r.current.weather_code}});
+  gW.selectAll("text").data(w).join("text").attr("class","wx").attr("x",d=>d.x).attr("y",d=>d.y).attr("text-anchor","middle").text(d=>d.t+"°").append("title").text(d=>`${d.n} : ${d.t}° · ${WMO(d.c)[1]}`);
+  rescale();setSrc("meteo","ok","live "+hhmm())}catch(e){setSrc("meteo","err","indisponible")}}
+
+/* ---------- horloge, recherche, démarrage ---------- */
+function tick(){$("#clock").textContent=new Date().toLocaleString("fr-FR",{weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit",second:"2-digit"})+" · UTC "+new Date().toISOString().slice(11,16);
+  const t=$("#ctime");if(t&&t.dataset.tz){try{t.textContent=new Date().toLocaleTimeString("fr-FR",{timeZone:t.dataset.tz,hour:"2-digit",minute:"2-digit"})}catch(e){}}}
+const norm=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim();
+$("#clist").replaceChildren(...C.map(c=>c.fr).sort((a,b)=>a.localeCompare(b,"fr")).map(n=>el("option",{value:n})));
+function trySearch(){const v=norm($("#q").value);if(!v)return;const c=C.find(c=>norm(c.fr)===v)||C.find(c=>norm(c.en)===v);if(c){select(c);$("#q").blur()}}
+$("#q").addEventListener("change",trySearch);$("#q").addEventListener("keydown",e=>{if(e.key==="Enter"){const v=norm($("#q").value);const c=C.find(c=>norm(c.fr)===v)||C.find(c=>norm(c.fr).startsWith(v));if(c)select(c)}});
+$("#riskdate").textContent=fmtDate(RISK_DATE);
+drawStatus();drawLayers();drawLegend();overview();tick();setInterval(tick,1000);
+loadQuakes();loadEvents();loadWeather();loadNews();
+setInterval(loadQuakes,5*6e4);setInterval(loadEvents,30*6e4);setInterval(loadWeather,15*6e4);setInterval(loadNews,10*6e4);
+</script>
+</body>
+</html>
