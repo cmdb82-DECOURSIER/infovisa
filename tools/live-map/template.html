@@ -123,13 +123,13 @@ footer{max-width:1600px;margin:0 auto;padding:6px 18px 26px;color:var(--dim);fon
     <section class="card"><h2>Fiche pays</h2><div class="pad" id="panel"></div></section>
   </aside>
   <div class="feeds">
-    <section class="card"><h2>Géopolitique en direct <small id="newsnote">GDELT · presse francophone</small></h2><ul class="feed" id="news"><li class="empty">Chargement…</li></ul></section>
+    <section class="card"><h2>Géopolitique en direct <small id="newsnote">presse francophone · 48 h</small></h2><ul class="feed" id="news"><li class="empty">Chargement…</li></ul></section>
     <section class="card"><h2>Séismes <small>USGS · M4.5+ · 7 jours</small></h2><ul class="feed" id="quakes"><li class="empty">Chargement…</li></ul></section>
     <section class="card"><h2>Événements naturels <small>NASA EONET · en cours</small></h2><ul class="feed" id="events"><li class="empty">Chargement…</li></ul></section>
   </div>
 </main>
 <footer>
-  Niveaux de risque : avis aux voyageurs du Département d'État américain, instantané du <span id="riskdate"></span> — établis pour des ressortissants américains, à croiser avec les conseils du MAEE luxembourgeois ou de France Diplomatie avant tout départ. Données live : USGS, NASA EONET, Open-Meteo, GDELT. Site d'information indépendant, sans valeur officielle.
+  Niveaux de risque : avis aux voyageurs du Département d'État américain, instantané du <span id="riskdate"></span> — établis pour des ressortissants américains, à croiser avec les conseils du MAEE luxembourgeois ou de France Diplomatie avant tout départ. Données live : USGS, NASA EONET, Open-Meteo, Google Actualités. Site d'information indépendant, sans valeur officielle.
 </footer>
 <div id="tip"></div>
 
@@ -238,15 +238,13 @@ async function countryWeather(c,my){const box=$("#cwx");try{
   const t=$("#ctime");if(t&&d.timezone){t.dataset.tz=d.timezone;tick()}
  }catch(e){if(my===reqId){box.className="empty";box.textContent="Météo indisponible pour le moment."}}}
 
-/* ---------- GDELT (file d'attente : 1 requête / 6 s) ---------- */
-let gq=Promise.resolve(),gLast=0;
-function gdelt(q,span){const run=async()=>{const w=8000-(Date.now()-gLast);if(w>0)await new Promise(r=>setTimeout(r,w));gLast=Date.now();const d=await getJSON(`https://api.gdeltproject.org/api/v2/doc/doc?query=${encodeURIComponent(q)}&mode=artlist&format=json&maxrecords=14&sort=datedesc&timespan=${span}`,45000);return d.articles||[]};const p=gq.then(run,run);gq=p.catch(()=>{});return p}
-const gTime=s=>{const m=/^(\d{4})(\d\d)(\d\d)T(\d\d)(\d\d)/.exec(s||"");return m?Date.UTC(m[1],m[2]-1,m[3],m[4],m[5]):Date.now()};
-function newsItems(arts,max){const seen=new Set(),out=[];for(const a of arts){const k=(a.title||"").toLowerCase().slice(0,60);if(!a.title||seen.has(k))continue;seen.add(k);out.push(el("li",{},el("a",{href:safeUrl(a.url),target:"_blank",rel:"noopener noreferrer",text:a.title}),el("span",{class:"m",text:`${a.domain||""} · ${ago(gTime(a.seendate))}`})));if(out.length>=max)break}return out}
-async function loadNews(){try{let a=await gdelt('(guerre OR conflit OR sanctions OR diplomatie OR frontière) sourcelang:french',"1d");if(a.length<4){$("#newsnote").textContent="GDELT · presse internationale";a=a.concat(await gdelt('(war OR conflict OR sanctions OR ceasefire OR coup OR diplomacy) sourcelang:english',"1d"))}const it=newsItems(a,14);$("#news").replaceChildren(...(it.length?it:[el("li",{class:"empty",text:"Aucun titre récent."})]));setSrc("gdelt","ok","live "+hhmm())}catch(e){setSrc("gdelt","err","indisponible, nouvel essai");setTimeout(loadNews,9e4);if($("#news .empty"))$("#news").replaceChildren(el("li",{class:"empty",text:"Flux d'actualité momentanément indisponible. Nouvelle tentative automatique."}))}}
+/* ---------- actualités : /api/news (Google Actualités, cache 10 min) ---------- */
+async function news(q,lang){const d=await getJSON("/api/news?lang="+lang+(q?"&q="+encodeURIComponent(q):""),15000);return d.items||[]}
+function newsItems(arts,max){const seen=new Set(),out=[];for(const a of arts){const k=(a.title||"").toLowerCase().slice(0,60);if(!a.title||seen.has(k))continue;seen.add(k);out.push(el("li",{},el("a",{href:safeUrl(a.url),target:"_blank",rel:"noopener noreferrer",text:a.title}),el("span",{class:"m",text:`${a.source||""}${a.date?" · "+ago(a.date):""}`})));if(out.length>=max)break}return out}
+async function loadNews(){try{let a=await news("","fr");if(a.length<4){$("#newsnote").textContent="presse internationale";a=a.concat(await news("","en"))}const it=newsItems(a,14);if(!it.length)throw 0;$("#news").replaceChildren(...it);setSrc("gdelt","ok","live "+hhmm())}catch(e){setSrc("gdelt","err","indisponible, nouvel essai");setTimeout(loadNews,9e4);if($("#news .empty"))$("#news").replaceChildren(el("li",{class:"empty",text:"Flux d'actualité momentanément indisponible. Nouvelle tentative automatique."}))}}
 async function countryNews(c,my){const box=()=>$("#cnews");try{
-  let a=await gdelt(`"${c.fr}" sourcelang:french`,"3d");if(my!==reqId)return;
-  if(a.length<3){const b=await gdelt(`"${c.en}" sourcelang:english`,"3d");if(my!==reqId)return;a=a.concat(b)}
+  let a=await news(`"${c.fr}"`,"fr");if(my!==reqId)return;
+  if(a.length<3){a=a.concat(await news(`"${c.en}"`,"en"));if(my!==reqId)return}
   const it=newsItems(a,6);box().replaceChildren(...(it.length?it:[el("li",{class:"empty",text:"Aucun article récent trouvé."})]))
  }catch(e){if(my===reqId&&box())box().replaceChildren(el("li",{class:"empty",text:"Actualités indisponibles pour le moment."}))}}
 

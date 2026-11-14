@@ -8,5 +8,5 @@
 
 Les niveaux de risque (`L2`, `L3`, `L4`) et leurs motifs (`RTXT`) sont un instantané daté
 (`RISKDATE` dans `build.js`), à mettre à jour depuis les avis officiels avant chaque régénération.
-Séismes (USGS), événements naturels (NASA EONET), météo (Open-Meteo) et actualités (GDELT)
+Séismes (USGS), événements naturels (NASA EONET), météo (Open-Meteo) et actualités (fonction `/api/news`, Google Actualités)
 sont chargés en direct par le navigateur.
