@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
   url.search = new URLSearchParams({nearby:`${lat},${lon},${radius}`,limit:'24',include:'images,location,player,urls',lang}).toString();
   try {
     const upstream = await fetch(url, {headers:{'x-windy-api-key':key},signal:AbortSignal.timeout(10000),redirect:'error'});
-    if (!upstream.ok) return res.status(upstream.status===429?429:502).json({error:upstream.status===429?'webcams_rate_limited':'webcams_unavailable'});
+    if (!upstream.ok) { console.warn('webcams: provider status',upstream.status); return res.status(upstream.status===429?429:502).json({error:upstream.status===429?'webcams_rate_limited':'webcams_unavailable'}); }
     const data = await upstream.json();
     if (!Array.isArray(data.webcams)) throw Error('Invalid webcam response');
     const cameras = data.webcams.filter(c=>c.status==='active').flatMap(c=>{
