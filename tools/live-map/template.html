@@ -139,6 +139,17 @@ footer{max-width:1600px;margin:0 auto;padding:6px 18px 26px;color:var(--dim);fon
 .rmsg{font:12px var(--mono);color:var(--mut);margin-top:8px}
 .rchip .x{margin-left:2px;color:var(--dim);font-size:15px;line-height:1;padding:0 2px;border-radius:50%}
 .rchip .x:hover{color:#fff}
+.tv{max-width:1600px;margin:12px auto 0;padding:0 18px}
+.tvbody{padding:14px 16px}
+.tvrow{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.tvc{border:1px solid var(--line);background:var(--panel2);color:var(--ink);padding:8px 14px;border-radius:999px;font:700 13px system-ui,sans-serif;cursor:pointer}
+.tvc:hover{border-color:var(--fc)}
+.tvc.on{background:color-mix(in srgb,var(--fc) 24%,var(--panel2));border-color:var(--fc);color:#fff}
+.tvch .tvc{font-weight:600}
+.tvplayer{position:relative;aspect-ratio:16/9;max-width:960px;background:#000;border-radius:12px;overflow:hidden;border:1px solid var(--line);margin-top:6px}
+.tvplayer video{width:100%;height:100%;display:block;background:#000}
+.tvmsg{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;color:var(--mut);font:14px system-ui,sans-serif;pointer-events:none}
+.tvst{font:12px var(--mono);color:var(--mut);margin-top:8px}
 .rnow{min-width:170px;flex:0 1 220px}
 .rnow b{display:block;font-size:15px;color:#fff}
 .rnow span{font:12px var(--mono);color:var(--mut)}
@@ -186,6 +197,9 @@ ul.feed .new{align-self:auto}
 <div class="rnow"><b id="rname">{{radioPick}}</b><span id="rstat">{{radioIdle}}</span></div><div class="rchips" id="rchips"></div></div>
 <div class="rsearch"><div class="rpick"><select id="rcountry" aria-label="{{radioCountry}}"><option value="">{{radioCountry}}</option></select><select id="rstation" aria-label="{{radioStation}}" disabled><option value="">{{radioStation}}</option></select><button type="button" id="radd" disabled>+ {{radioAdd}}</button></div><form id="rform" role="search"><input type="search" id="rq" placeholder="{{radioSearchPh}}" aria-label="{{radioSearchPh}}" autocomplete="off"><button class="go" type="submit">{{radioSearch}}</button></form><div class="rmsg" id="rmsg"></div><ul class="rres" id="rres"></ul></div>
 <audio id="raudio" preload="none"></audio></div></section>
+<section class="tv" aria-label="{{tvTitle}}"><div class="card" style="--fc:#ff4d6d;border-top:3px solid #ff4d6d"><h2 class="ft"><span class="t"><span class="ic">📺</span>{{tvTitle}}</span> <small>{{tvNote}}</small></h2>
+<div class="tvbody"><div class="tvrow" id="tvc"></div><div class="tvrow tvch" id="tvch"></div>
+<div class="tvplayer"><video id="tvv" controls playsinline preload="none"></video><div class="tvmsg" id="tvmsg">{{tvPick}}</div></div><div class="tvst" id="tvst"></div></div></div></section>
 <main>
   <section class="card">
     <h2>{{mapTitle}} <small id="mapnote">{{mapNote}}</small></h2>
@@ -455,6 +469,58 @@ var p=document.createElement("button");p.type="button";p.className="pl";p.textCo
 var ad=document.createElement("button");ad.type="button";ad.textContent="+ "+T.add;ad.onclick=function(){CU.push([s.name.trim(),s.url_resolved,"",s.countrycode||""]);saveCU();ad.disabled=true;ad.textContent="✓ "+T.added;render()};
 var dup=CU.some(function(c){return c[1]===s.url_resolved});if(dup){ad.disabled=true;ad.textContent="✓ "+T.added}
 li.appendChild(p);li.appendChild(ad);res.appendChild(li)})}).catch(function(){if(my===tok)msg.textContent=T.err})};
+})();
+</script>
+<script>
+(function(){
+var CH=[
+["LU","RTL Télé Lëtzebuerg","https://live-edge.rtl.lu/channel1/smil:channel1/playlist.m3u8"],
+["LU","RTL Zwee","https://live-edge.rtl.lu/channel2/smil:channel2/playlist.m3u8"],
+["BE","HLN Live","https://dpg-eventstreams.akamaized.net/hlnlivesrt-xmr/streamx/hlnlivesrt_720p.m3u8"],
+["BE","BX1","https://dlgt0tdl2hpq3.cloudfront.net/rtbf/clr-rtbf/7ec67c8d/index.m3u8"],
+["FR","France 24","https://live.france24.com/hls/live/2037179/F24_FR_HI_HLS/master_5000.m3u8"],
+["FR","franceinfo","https://r.eu.cdn-redge.media/livehls/oeu/mt/live/france_info/live.livx/playlist.m3u8"],
+["FR","LCI","https://r.eu.cdn-redge.media/livehls/oeu/mt/live/lci/live.livx/playlist.m3u8"],
+["FR","BFM TV","https://live-cdn-stream-euw1.bfmtv.bct.nextradiotv.com/master.m3u8"],
+["FR","CNews","https://n-5-2.eu.cdn-redge.media/livehls/oeu/mt/live/cnews/live.livx/playlist.m3u8"],
+["FR","Euronews FR","https://cdn-euronews.akamaized.net/live/eds/euronews-fr/25026/index.m3u8"],
+["FR","TV5Monde Info","https://ott.tv5monde.com/Content/HLS/Live/channel(info)/variant.m3u8"],
+["DE","DW Deutsch","https://dwamdstream103.akamaized.net/hls/live/2015526/dwstream103/master.m3u8"],
+["DE","Euronews DE","https://cdn-euronews.akamaized.net/live/eds/euronews-de/25027/index.m3u8"],
+["PT","RTP Notícias","https://streaming-live.rtp.pt/livetvhlsDVR/rtpnHDdvr.smil/playlist.m3u8"],
+["PT","SIC Notícias","https://sicnot.live.impresa.pt/sicnot.m3u8"],
+["PT","Euronews PT","https://cdn-euronews.akamaized.net/live/eds/euronews-pt/25040/index.m3u8"],
+["CH","RTS Info","https://rtsinfo-d.akamaized.net/out/v1/2b7ae2e1ba3f43c6aba15bced153baf5/index.m3u8"],
+["INT","France 24 English","https://live.france24.com/hls/live/2037218/F24_EN_HI_HLS/master_5000.m3u8"],
+["INT","DW English","https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/master.m3u8"],
+["INT","Euronews English","https://cdn-euronews.akamaized.net/live/eds/euronews-en/25002/index.m3u8"],
+["INT","Euronews Español","https://cdn-euronews.akamaized.net/live/eds/euronews-es/25053/index.m3u8"]
+];
+var ORDER=["LU","BE","FR","DE","PT","CH","INT"];
+var L=(document.documentElement.lang||"fr").slice(0,2);
+var T={intl:"{{tvIntl}}",pick:"{{tvPick}}",err:"{{tvErr}}",load:"{{radioLoading}}",live:"{{radioLive}}"};
+function $(i){return document.getElementById(i)}
+var v=$("tvv"),msg=$("tvmsg"),st=$("tvst"),cb=$("tvc"),chb=$("tvch");
+var DN=null;try{DN=new Intl.DisplayNames([L],{type:"region"})}catch(e){}
+var cc="LU",cur=null,hls=null,hlsLoading=null;
+function cname(k){if(k==="INT")return T.intl;try{return DN?DN.of(k):k}catch(e){return k}}
+function drawC(){cb.innerHTML="";ORDER.forEach(function(k){var b=document.createElement("button");b.type="button";b.className="tvc"+(k===cc?" on":"");b.textContent=cname(k);b.onclick=function(){cc=k;drawC();drawCh()};cb.appendChild(b)})}
+function drawCh(){chb.innerHTML="";CH.forEach(function(c){if(c[0]!==cc)return;var b=document.createElement("button");b.type="button";b.className="tvc"+(cur===c[2]?" on":"");b.textContent=c[1];b.onclick=function(){play(c)};chb.appendChild(b)})}
+function loadHls(){if(window.Hls)return Promise.resolve();if(hlsLoading)return hlsLoading;hlsLoading=new Promise(function(ok,ko){var s=document.createElement("script");s.src="/assets/js/hls.min.js";s.onload=ok;s.onerror=ko;document.head.appendChild(s)});return hlsLoading}
+function fail(){msg.style.display="grid";msg.textContent=T.err;st.textContent=""}
+function play(c){var a=$("raudio");if(a&&!a.paused)a.pause();cur=c[2];drawCh();msg.style.display="grid";msg.textContent=T.load;st.textContent=c[1];
+if(hls){hls.destroy();hls=null}
+v.pause();
+var native=v.canPlayType("application/vnd.apple.mpegurl");
+if(native&&!(window.MediaSource&&window.Hls)){v.src=c[2];v.play().catch(function(){})}
+else loadHls().then(function(){
+if(window.Hls&&Hls.isSupported()){hls=new Hls({maxBufferLength:20,liveSyncDurationCount:3});hls.on(Hls.Events.ERROR,function(e,d){if(d.fatal){if(d.type===Hls.ErrorTypes.NETWORK_ERROR&&d.details!=="manifestLoadError"&&d.details!=="manifestLoadTimeOut"&&hls&&!hls._r){hls._r=1;hls.startLoad()}else fail()}});hls.loadSource(c[2]);hls.attachMedia(v);v.play().catch(function(){})}
+else if(native){v.src=c[2];v.play().catch(function(){})}else fail()}).catch(fail)}
+v.addEventListener("playing",function(){msg.style.display="none";st.textContent="● "+T.live+" · "+(CH.filter(function(c){return c[2]===cur})[0]||[0,""])[1]});
+v.addEventListener("error",function(){if(cur)fail()});
+v.addEventListener("play",function(){var a=$("raudio");if(a&&!a.paused)a.pause()});
+var ra=$("raudio");if(ra)ra.addEventListener("play",function(){if(!v.paused)v.pause()});
+drawC();drawCh();
 })();
 </script>
 </body>
