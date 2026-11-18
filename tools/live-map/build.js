@@ -185,6 +185,7 @@ const MKJS = safe(fs.readFileSync('markets.js', 'utf8'));
 const TOPOSTR = safe(JSON.stringify(topo));
 const RISKDATE = '2026-11-13';
 fs.mkdirSync('out', { recursive: true });
+fs.cpSync('design','out/assets/live',{recursive:true});
 
 
 const SEO = {
@@ -230,7 +231,9 @@ for (const lang of LANGS) {
   ] };
   const ld = '<script type="application/ld+json">' + JSON.stringify(ldObj).replace(/</g, '\\u003c') + '</script>';
   const seoBlock = '<section class="seo"><div class="card"><h2>' + esc(K.h) + '</h2><div class="pad"><p>' + esc(K.p1) + '</p><p>' + esc(K.p2) + '</p><p class="seol">' + K.links.map(l => '<a href="' + l[1] + '">' + esc(l[0]) + '</a>').join(' · ') + '</p></div></div></section>';
-  const html_tokens = { mk_tabWorld: esc(MKI[lang].tabWorld), mk_tabMkt: esc(MKI[lang].tabMkt), lang, hreflang, langnav, ld, seoBlock, h1: esc(K.h1), lead: esc(K.lead) };
+  const designWords={"fr": ["Météo & vents", "Kitesurf & océan", "Radio & TV", "PAN · archives", "Fermer"], "en": ["Weather & wind", "Kitesurf & ocean", "Radio & TV", "UAP · archives", "Close"], "de": ["Wetter & Wind", "Kitesurf & Ozean", "Radio & TV", "UAP · Archiv", "Schließen"], "es": ["Tiempo y viento", "Kitesurf y océano", "Radio y TV", "FANI · archivo", "Cerrar"], "pt": ["Tempo e vento", "Kitesurf e oceano", "Rádio e TV", "FANI · arquivo", "Fechar"]};
+  const [designWeather,designMarine,designMedia,designUap,designClose]=designWords[lang];
+  const html_tokens = { designWeather,designMarine,designMedia,designUap,designClose, mk_tabWorld: esc(MKI[lang].tabWorld), mk_tabMkt: esc(MKI[lang].tabMkt), lang, hreflang, langnav, ld, seoBlock, h1: esc(K.h1), lead: esc(K.lead) };
   html = html.replace(/\{\{(\w+)\}\}/g, (m, k) => {
     if (k in html_tokens) return html_tokens[k];
     if (!(k in L)) throw new Error(`${lang}: missing key ${k}`);

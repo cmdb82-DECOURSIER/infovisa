@@ -249,6 +249,7 @@ ul.feed .new{align-self:auto}
 </style>
 <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="ab3c5cb8-e765-471e-9a39-bb8651feca3e" data-blockingmode="auto" type="text/javascript"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5985516088824403" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/assets/live/theme.css"><link rel="stylesheet" href="/assets/live/weather.css"><link rel="stylesheet" href="/assets/live/marine.css">
 </head>
 <body>
 <header>
@@ -258,19 +259,10 @@ ul.feed .new{align-self:auto}
   <div class="search"><input id="q" list="clist" placeholder="Search a country…" aria-label="Search a country…" autocomplete="off"><datalist id="clist"></datalist></div>
 </header>
 <div class="status" id="status" aria-live="polite"></div>
-<nav class="vtabs" id="vtabs" aria-label="views"><button type="button" data-v="world" class="on" aria-pressed="true">🌍 World live</button><button type="button" data-v="mkt" aria-pressed="false">📈 Crypto &amp; Stocks</button></nav>
+<nav class="vtabs" id="vtabs" aria-label="views"><button type="button" data-v="world" class="on" aria-pressed="true">🌍 World live</button><button type="button" data-v="mkt" aria-pressed="false">📈 Crypto &amp; Stocks</button><div class="extra-nav"><button data-extra="weather">Weather & wind</button><button data-extra="marine">Kitesurf & ocean</button><button data-extra="media">Radio & TV</button><button data-extra="uap">UAP · archives</button></div></nav>
 <div id="vw">
-<div class="lead"><h1>InfoVisa Live: the world in real time</h1><p>Country travel risk, earthquakes, weather, geopolitical news, live radio and news TV — plus the Schengen visa guide.</p></div>
+<div class="lead"><p class="iv-eyebrow">INFOVISA / LIVE</p><h1>InfoVisa Live: the world in real time</h1><p>Country travel risk, earthquakes, weather, geopolitical news, live radio and news TV — plus the Schengen visa guide.</p></div>
 <div class="digest" id="digest" aria-live="polite"></div>
-<section class="hero" aria-label="Top stories"><div class="card"><h2 class="ft"><span class="t"><span class="ic">⚡</span>Top stories</span> <small>updates automatically</small></h2><div class="herogrid" id="herogrid"><div class="empty">Loading…</div></div></div></section>
-<section class="radio" aria-label="Live radio"><div class="card" style="--fc:#2ee6a6"><h2 class="ft"><span class="t"><span class="ic">📻</span>Live radio</span> <small>listen to the news live</small></h2>
-<div class="rbody"><div class="rctl"><button id="rplay" type="button" aria-label="Play">▶</button><input id="rvol" type="range" min="0" max="1" step="0.05" value="0.8" aria-label="Volume"></div>
-<div class="rnow"><b id="rname">Pick a station</b><span id="rstat">Paused</span></div><div class="rchips" id="rchips"></div></div>
-<div class="rsearch"><div class="rpick"><select id="rcountry" aria-label="Choose a country"><option value="">Choose a country</option></select><select id="rstation" aria-label="Choose a station" disabled><option value="">Choose a station</option></select><button type="button" id="radd" disabled>+ Add</button></div><form id="rform" role="search"><input type="search" id="rq" placeholder="Search any radio (e.g. NPR, jazz, Capital…)" aria-label="Search any radio (e.g. NPR, jazz, Capital…)" autocomplete="off"><button class="go" type="submit">Search</button></form><div class="rmsg" id="rmsg"></div><ul class="rres" id="rres"></ul></div>
-<audio id="raudio" preload="none"></audio></div></section>
-<section class="tv" aria-label="Live news TV"><div class="card" style="--fc:#ff4d6d;border-top:3px solid #ff4d6d"><h2 class="ft"><span class="t"><span class="ic">📺</span>Live news TV</span> <small>free news channels</small></h2>
-<div class="tvbody"><div class="tvrow" id="tvc"></div><div class="tvrow tvch" id="tvch"></div>
-<div class="tvplayer"><video id="tvv" controls playsinline preload="none"></video><div class="tvmsg" id="tvmsg">Pick a channel</div></div><div class="tvst" id="tvst"></div></div></div></section>
 <main>
   <section class="card">
     <h2>World map <small id="mapnote">Click a country</small></h2>
@@ -289,9 +281,19 @@ ul.feed .new{align-self:auto}
     <section class="card" style="--fc:#ff5a4d"><h2 class="ft"><span class="t"><span class="ic">🌋</span>Earthquakes</span> <small>USGS · M4.5+ · 7 days</small></h2><ul class="feed" id="quakes"><li class="empty">Loading…</li></ul></section>
     <section class="card" style="--fc:#b58cff"><h2 class="ft"><span class="t"><span class="ic">🔥</span>Natural events</span> <small>NASA EONET · ongoing</small></h2><ul class="feed" id="events"><li class="empty">Loading…</li></ul></section>
   </div>
-</main>
+</main><section class="hero" aria-label="Top stories"><div class="card"><h2 class="ft"><span class="t"><span class="ic">⚡</span>Top stories</span> <small>updates automatically</small></h2><div class="herogrid" id="herogrid"><div class="empty">Loading…</div></div></div></section>
+<div id="media-anchor"><section class="radio" aria-label="Live radio"><div class="card" style="--fc:#2ee6a6"><h2 class="ft"><span class="t"><span class="ic">📻</span>Live radio</span> <small>listen to the news live</small></h2>
+<div class="rbody"><div class="rctl"><button id="rplay" type="button" aria-label="Play">▶</button><input id="rvol" type="range" min="0" max="1" step="0.05" value="0.8" aria-label="Volume"></div>
+<div class="rnow"><b id="rname">Pick a station</b><span id="rstat">Paused</span></div><div class="rchips" id="rchips"></div></div>
+<div class="rsearch"><div class="rpick"><select id="rcountry" aria-label="Choose a country"><option value="">Choose a country</option></select><select id="rstation" aria-label="Choose a station" disabled><option value="">Choose a station</option></select><button type="button" id="radd" disabled>+ Add</button></div><form id="rform" role="search"><input type="search" id="rq" placeholder="Search any radio (e.g. NPR, jazz, Capital…)" aria-label="Search any radio (e.g. NPR, jazz, Capital…)" autocomplete="off"><button class="go" type="submit">Search</button></form><div class="rmsg" id="rmsg"></div><ul class="rres" id="rres"></ul></div>
+<audio id="raudio" preload="none"></audio></div></section>
+<section class="tv" aria-label="Live news TV"><div class="card" style="--fc:#ff4d6d;border-top:3px solid #ff4d6d"><h2 class="ft"><span class="t"><span class="ic">📺</span>Live news TV</span> <small>free news channels</small></h2>
+<div class="tvbody"><div class="tvrow" id="tvc"></div><div class="tvrow tvch" id="tvch"></div>
+<div class="tvplayer"><video id="tvv" controls playsinline preload="none"></video><div class="tvmsg" id="tvmsg">Pick a channel</div></div><div class="tvst" id="tvst"></div></div></div></section>
+</div>
 </div>
 <div id="vm" class="mk" hidden></div>
+<section id="weather-extra" class="iv-extra page-width" hidden></section><section id="marine-extra" class="iv-extra page-width" hidden></section><dialog id="official-dialog"><button class="official-close" aria-label="Close">×</button><div id="official-content"></div></dialog>
 <section class="seo"><div class="card"><h2>About the InfoVisa Live map</h2><div class="pad"><p>InfoVisa Live is a continuously updated world map: travel risk level for every country (travel advisories), M4.5+ earthquakes from the last 7 days (USGS), ongoing natural events (NASA EONET), local weather and geopolitical headlines from international press. Spot the countries to avoid and the ones to watch at a glance before you travel.</p><p>Listen to live news radio (BBC World Service, NPR, RFI, Deutschlandfunk…) or watch free news channels (France 24, DW, Euronews). Need a visa? Read our independent guides:</p><p class="seol"><a href="/en/visa-types.html">Schengen visa types</a> · <a href="/en/schengen-countries.html">Schengen countries</a> · <a href="/en/etias.html">ETIAS 2026</a> · <a href="/en/fees-and-costs.html">Fees and costs</a> · <a href="/en/faq.html">Visa FAQ</a></p></div></div></section>
 <footer>
   Risk levels: US Department of State travel advisories, snapshot of <span id="riskdate"></span> — written for US citizens; check your own government's official advice before travelling. Live data: USGS, NASA EONET, Open-Meteo, Google News. Independent information site with no official standing.
@@ -548,6 +550,9 @@ const feats=topojson.feature(TOPO,TOPO.objects.countries).features.filter(f=>f.i
 const cOf=f=>byN.get(f.id)||(f.properties&&f.properties.name==="Kosovo"?byA3.get("UNK"):null);
 const gC=root.append("g"),gE=root.append("g"),gQ=root.append("g"),gW=root.append("g");
 let K=1,selected=null;
+const gPAN=root.append('g').attr('class','pan-layer');
+fetch('/assets/live/assets/uap-cases.json').then(r=>r.json()).then(data=>{gPAN.selectAll('circle').data(data.cases.filter(c=>Number.isFinite(c.lat)&&Number.isFinite(c.lon))).join('circle').attr('cx',c=>proj([c.lon,c.lat])[0]).attr('cy',c=>proj([c.lon,c.lat])[1]).attr('r',5).attr('fill','#c3b5f3').attr('stroke','#080d12').attr('tabindex',0).attr('role','button').attr('aria-label',c=>'PAN · '+c.location).on('click',(e,c)=>{e.stopPropagation();document.dispatchEvent(new CustomEvent('infovisa:official-case',{detail:c.id}));}).on('keydown',(e,c)=>{if(e.key==='Enter')document.dispatchEvent(new CustomEvent('infovisa:official-case',{detail:c.id}));}).append('title').text(c=>'PAN · '+c.location+' · '+c.observed);}).catch(()=>{});
+
 const tip=$("#tip");
 function showTip(ev,title,sub){tip.replaceChildren(el("b",{text:title}),document.createTextNode(sub||""));tip.style.display="block";moveTip(ev)}
 function moveTip(ev){const x=Math.min(ev.clientX+14,innerWidth-270),y=Math.min(ev.clientY+14,innerHeight-70);tip.style.left=x+"px";tip.style.top=y+"px"}
@@ -820,5 +825,5 @@ var ra=$("raudio");if(ra)ra.addEventListener("play",function(){if(!v.paused)v.pa
 drawC();drawCh();
 })();
 </script>
-</body>
+<script type="module" src="/assets/live/extras.js"></script></body>
 </html>

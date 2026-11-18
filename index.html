@@ -249,6 +249,7 @@ ul.feed .new{align-self:auto}
 </style>
 <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="ab3c5cb8-e765-471e-9a39-bb8651feca3e" data-blockingmode="auto" type="text/javascript"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5985516088824403" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/assets/live/theme.css"><link rel="stylesheet" href="/assets/live/weather.css"><link rel="stylesheet" href="/assets/live/marine.css">
 </head>
 <body>
 <header>
@@ -258,19 +259,10 @@ ul.feed .new{align-self:auto}
   <div class="search"><input id="q" list="clist" placeholder="Rechercher un pays…" aria-label="Rechercher un pays…" autocomplete="off"><datalist id="clist"></datalist></div>
 </header>
 <div class="status" id="status" aria-live="polite"></div>
-<nav class="vtabs" id="vtabs" aria-label="views"><button type="button" data-v="world" class="on" aria-pressed="true">🌍 Monde en direct</button><button type="button" data-v="mkt" aria-pressed="false">📈 Crypto &amp; Bourse</button></nav>
+<nav class="vtabs" id="vtabs" aria-label="views"><button type="button" data-v="world" class="on" aria-pressed="true">🌍 Monde en direct</button><button type="button" data-v="mkt" aria-pressed="false">📈 Crypto &amp; Bourse</button><div class="extra-nav"><button data-extra="weather">Météo & vents</button><button data-extra="marine">Kitesurf & océan</button><button data-extra="media">Radio & TV</button><button data-extra="uap">PAN · archives</button></div></nav>
 <div id="vw">
-<div class="lead"><h1>InfoVisa Live : le monde en direct</h1><p>Risques par pays, séismes, météo, actualités géopolitiques, radio et TV info — et le guide du visa Schengen.</p></div>
+<div class="lead"><p class="iv-eyebrow">INFOVISA / LIVE</p><h1>InfoVisa Live : le monde en direct</h1><p>Risques par pays, séismes, météo, actualités géopolitiques, radio et TV info — et le guide du visa Schengen.</p></div>
 <div class="digest" id="digest" aria-live="polite"></div>
-<section class="hero" aria-label="À la une"><div class="card"><h2 class="ft"><span class="t"><span class="ic">⚡</span>À la une</span> <small>mis à jour automatiquement</small></h2><div class="herogrid" id="herogrid"><div class="empty">Chargement…</div></div></div></section>
-<section class="radio" aria-label="Radio en direct"><div class="card" style="--fc:#2ee6a6"><h2 class="ft"><span class="t"><span class="ic">📻</span>Radio en direct</span> <small>écoute les infos en live</small></h2>
-<div class="rbody"><div class="rctl"><button id="rplay" type="button" aria-label="Écouter">▶</button><input id="rvol" type="range" min="0" max="1" step="0.05" value="0.8" aria-label="Volume"></div>
-<div class="rnow"><b id="rname">Choisis une radio</b><span id="rstat">En pause</span></div><div class="rchips" id="rchips"></div></div>
-<div class="rsearch"><div class="rpick"><select id="rcountry" aria-label="Choisir un pays"><option value="">Choisir un pays</option></select><select id="rstation" aria-label="Choisir une radio" disabled><option value="">Choisir une radio</option></select><button type="button" id="radd" disabled>+ Ajouter</button></div><form id="rform" role="search"><input type="search" id="rq" placeholder="Rechercher une radio (ex. NRJ, Skyrock, jazz…)" aria-label="Rechercher une radio (ex. NRJ, Skyrock, jazz…)" autocomplete="off"><button class="go" type="submit">Rechercher</button></form><div class="rmsg" id="rmsg"></div><ul class="rres" id="rres"></ul></div>
-<audio id="raudio" preload="none"></audio></div></section>
-<section class="tv" aria-label="TV info en direct"><div class="card" style="--fc:#ff4d6d;border-top:3px solid #ff4d6d"><h2 class="ft"><span class="t"><span class="ic">📺</span>TV info en direct</span> <small>chaînes d'info gratuites</small></h2>
-<div class="tvbody"><div class="tvrow" id="tvc"></div><div class="tvrow tvch" id="tvch"></div>
-<div class="tvplayer"><video id="tvv" controls playsinline preload="none"></video><div class="tvmsg" id="tvmsg">Choisis une chaîne</div></div><div class="tvst" id="tvst"></div></div></div></section>
 <main>
   <section class="card">
     <h2>Carte mondiale <small id="mapnote">Cliquez sur un pays</small></h2>
@@ -289,9 +281,19 @@ ul.feed .new{align-self:auto}
     <section class="card" style="--fc:#ff5a4d"><h2 class="ft"><span class="t"><span class="ic">🌋</span>Séismes</span> <small>USGS · M4.5+ · 7 jours</small></h2><ul class="feed" id="quakes"><li class="empty">Chargement…</li></ul></section>
     <section class="card" style="--fc:#b58cff"><h2 class="ft"><span class="t"><span class="ic">🔥</span>Événements naturels</span> <small>NASA EONET · en cours</small></h2><ul class="feed" id="events"><li class="empty">Chargement…</li></ul></section>
   </div>
-</main>
+</main><section class="hero" aria-label="À la une"><div class="card"><h2 class="ft"><span class="t"><span class="ic">⚡</span>À la une</span> <small>mis à jour automatiquement</small></h2><div class="herogrid" id="herogrid"><div class="empty">Chargement…</div></div></div></section>
+<div id="media-anchor"><section class="radio" aria-label="Radio en direct"><div class="card" style="--fc:#2ee6a6"><h2 class="ft"><span class="t"><span class="ic">📻</span>Radio en direct</span> <small>écoute les infos en live</small></h2>
+<div class="rbody"><div class="rctl"><button id="rplay" type="button" aria-label="Écouter">▶</button><input id="rvol" type="range" min="0" max="1" step="0.05" value="0.8" aria-label="Volume"></div>
+<div class="rnow"><b id="rname">Choisis une radio</b><span id="rstat">En pause</span></div><div class="rchips" id="rchips"></div></div>
+<div class="rsearch"><div class="rpick"><select id="rcountry" aria-label="Choisir un pays"><option value="">Choisir un pays</option></select><select id="rstation" aria-label="Choisir une radio" disabled><option value="">Choisir une radio</option></select><button type="button" id="radd" disabled>+ Ajouter</button></div><form id="rform" role="search"><input type="search" id="rq" placeholder="Rechercher une radio (ex. NRJ, Skyrock, jazz…)" aria-label="Rechercher une radio (ex. NRJ, Skyrock, jazz…)" autocomplete="off"><button class="go" type="submit">Rechercher</button></form><div class="rmsg" id="rmsg"></div><ul class="rres" id="rres"></ul></div>
+<audio id="raudio" preload="none"></audio></div></section>
+<section class="tv" aria-label="TV info en direct"><div class="card" style="--fc:#ff4d6d;border-top:3px solid #ff4d6d"><h2 class="ft"><span class="t"><span class="ic">📺</span>TV info en direct</span> <small>chaînes d'info gratuites</small></h2>
+<div class="tvbody"><div class="tvrow" id="tvc"></div><div class="tvrow tvch" id="tvch"></div>
+<div class="tvplayer"><video id="tvv" controls playsinline preload="none"></video><div class="tvmsg" id="tvmsg">Choisis une chaîne</div></div><div class="tvst" id="tvst"></div></div></div></section>
+</div>
 </div>
 <div id="vm" class="mk" hidden></div>
+<section id="weather-extra" class="iv-extra page-width" hidden></section><section id="marine-extra" class="iv-extra page-width" hidden></section><dialog id="official-dialog"><button class="official-close" aria-label="Fermer">×</button><div id="official-content"></div></dialog>
 <section class="seo"><div class="card"><h2>À propos de la carte InfoVisa Live</h2><div class="pad"><p>InfoVisa Live est une carte du monde mise à jour en continu : niveau de risque de chaque pays (conseils aux voyageurs), séismes M4.5+ des 7 derniers jours (USGS), événements naturels en cours (NASA EONET), météo locale et actualités géopolitiques issues de la presse francophone et internationale. Les pays à éviter et ceux à surveiller sont repérés d'un coup d'œil avant de voyager.</p><p>Écoutez les radios d'information en direct (France Info, RFI, RTL Lëtzebuerg, L'Essentiel Radio…) ou regardez les chaînes d'info gratuites (France 24, Euronews, franceinfo, RTL Télé Lëtzebuerg). Besoin d'un visa ? Consultez nos guides indépendants :</p><p class="seol"><a href="/fr/types-de-visa.html">Types de visa Schengen</a> · <a href="/fr/pays-schengen.html">Pays Schengen</a> · <a href="/fr/etias.html">ETIAS 2026</a> · <a href="/fr/frais-et-couts.html">Frais et coûts</a> · <a href="/fr/faq.html">FAQ visa</a></p></div></div></section>
 <footer>
   Niveaux de risque : avis aux voyageurs du Département d'État américain, instantané du <span id="riskdate"></span> — établis pour des ressortissants américains, à croiser avec les conseils officiels de votre pays avant tout départ. Données live : USGS, NASA EONET, Open-Meteo, Google Actualités. Site d'information indépendant, sans valeur officielle.
@@ -548,6 +550,9 @@ const feats=topojson.feature(TOPO,TOPO.objects.countries).features.filter(f=>f.i
 const cOf=f=>byN.get(f.id)||(f.properties&&f.properties.name==="Kosovo"?byA3.get("UNK"):null);
 const gC=root.append("g"),gE=root.append("g"),gQ=root.append("g"),gW=root.append("g");
 let K=1,selected=null;
+const gPAN=root.append('g').attr('class','pan-layer');
+fetch('/assets/live/assets/uap-cases.json').then(r=>r.json()).then(data=>{gPAN.selectAll('circle').data(data.cases.filter(c=>Number.isFinite(c.lat)&&Number.isFinite(c.lon))).join('circle').attr('cx',c=>proj([c.lon,c.lat])[0]).attr('cy',c=>proj([c.lon,c.lat])[1]).attr('r',5).attr('fill','#c3b5f3').attr('stroke','#080d12').attr('tabindex',0).attr('role','button').attr('aria-label',c=>'PAN · '+c.location).on('click',(e,c)=>{e.stopPropagation();document.dispatchEvent(new CustomEvent('infovisa:official-case',{detail:c.id}));}).on('keydown',(e,c)=>{if(e.key==='Enter')document.dispatchEvent(new CustomEvent('infovisa:official-case',{detail:c.id}));}).append('title').text(c=>'PAN · '+c.location+' · '+c.observed);}).catch(()=>{});
+
 const tip=$("#tip");
 function showTip(ev,title,sub){tip.replaceChildren(el("b",{text:title}),document.createTextNode(sub||""));tip.style.display="block";moveTip(ev)}
 function moveTip(ev){const x=Math.min(ev.clientX+14,innerWidth-270),y=Math.min(ev.clientY+14,innerHeight-70);tip.style.left=x+"px";tip.style.top=y+"px"}
@@ -820,5 +825,5 @@ var ra=$("raudio");if(ra)ra.addEventListener("play",function(){if(!v.paused)v.pa
 drawC();drawCh();
 })();
 </script>
-</body>
+<script type="module" src="/assets/live/extras.js"></script></body>
 </html>
