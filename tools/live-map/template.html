@@ -46,11 +46,11 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:14px;padding:14p
 .card h2{margin:0;padding:10px 14px;font:600 11px var(--mono);letter-spacing:1px;text-transform:uppercase;color:var(--mut);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px}
 .card h2 small{font-weight:400;letter-spacing:0;text-transform:none;color:var(--dim)}
 .feeds .card{border-top:3px solid var(--fc,var(--acc))}
-.feeds .card h2.ft{padding:14px 16px 12px;font:800 19px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:.4px;color:#fff;text-transform:uppercase;align-items:center;flex-wrap:wrap;background:linear-gradient(180deg,color-mix(in srgb,var(--fc) 20%,transparent),transparent)}
-.feeds .card h2.ft .ic{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:9px;font-size:19px;margin-right:10px;background:color-mix(in srgb,var(--fc) 28%,#0a0f16);box-shadow:0 0 0 1px var(--fc)}
-.feeds .card h2.ft .t{display:flex;align-items:center}
-.feeds .card h2.ft small{font:500 12px var(--mono);color:var(--mut);margin-left:auto}
-@media (max-width:1000px){.feeds .card h2.ft{font-size:17px}}
+.card h2.ft{padding:14px 16px 12px;font:800 19px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:.4px;color:#fff;text-transform:uppercase;align-items:center;flex-wrap:wrap;background:linear-gradient(180deg,color-mix(in srgb,var(--fc) 20%,transparent),transparent)}
+.card h2.ft .ic{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:9px;font-size:19px;margin-right:10px;background:color-mix(in srgb,var(--fc) 28%,#0a0f16);box-shadow:0 0 0 1px var(--fc)}
+.card h2.ft .t{display:flex;align-items:center}
+.card h2.ft small{font:500 12px var(--mono);color:var(--mut);margin-left:auto}
+@media (max-width:1000px){.card h2.ft{font-size:17px}}
 #mapwrap{position:relative;background:var(--sea)}
 #map{display:block;width:100%;height:auto;touch-action:none;cursor:grab}
 #map:active{cursor:grabbing}
@@ -110,6 +110,29 @@ footer{max-width:1600px;margin:0 auto;padding:6px 18px 26px;color:var(--dim);fon
 .pill b{color:var(--ink);font:700 13px var(--mono)}
 .pill.since{border-color:#3a5878;color:var(--ink);background:rgba(22,40,60,.95)}
 .pill.red b{color:#ff6b78}
+.hero .card{border-top:3px solid #ffb020}
+.hero .card h2.ft{--fc:#ffb020}
+.radio{max-width:1600px;margin:12px auto 0;padding:0 18px}
+.radio .card{--fc:#2ee6a6;border-top:3px solid var(--fc)}
+.rbody{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;padding:14px 16px}
+.rctl{display:flex;align-items:center;gap:12px;flex:0 0 auto}
+#rplay{width:52px;height:52px;border-radius:50%;border:0;background:var(--fc);color:#04130d;font-size:20px;cursor:pointer;display:grid;place-items:center;box-shadow:0 0 0 4px color-mix(in srgb,var(--fc) 25%,transparent)}
+#rplay:hover{filter:brightness(1.1)}
+#rvol{width:110px;accent-color:var(--fc)}
+.rnow{min-width:170px;flex:0 1 220px}
+.rnow b{display:block;font-size:15px;color:#fff}
+.rnow span{font:12px var(--mono);color:var(--mut)}
+.rchips{display:flex;flex-wrap:wrap;gap:8px;flex:1 1 420px}
+.rchip{border:1px solid var(--line);background:var(--panel2);color:var(--ink);padding:8px 13px;border-radius:999px;font:600 13px system-ui,sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.rchip small{font:10px var(--mono);color:var(--dim);text-transform:uppercase}
+.rchip:hover{border-color:var(--fc)}
+.rchip.on{background:color-mix(in srgb,var(--fc) 22%,var(--panel2));border-color:var(--fc);color:#fff}
+.eq{display:none;gap:2px;align-items:flex-end;height:12px}
+.eq i{width:3px;background:var(--fc);animation:eq 0.9s ease-in-out infinite}
+.eq i:nth-child(2){animation-delay:.2s}.eq i:nth-child(3){animation-delay:.4s}
+.rchip.on.play .eq{display:inline-flex}
+@keyframes eq{0%,100%{height:3px}50%{height:12px}}
+@media (prefers-reduced-motion:reduce){.eq i{animation:none;height:8px}}
 .hero{max-width:1600px;margin:12px auto 0;padding:0 18px}
 .herogrid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:1px;background:var(--line)}
 .hl{background:var(--panel);padding:14px 16px;display:flex;flex-direction:column;gap:7px;min-width:0;justify-content:space-between}
@@ -137,7 +160,11 @@ ul.feed .new{align-self:auto}
 </header>
 <div class="status" id="status" aria-live="polite"></div>
 <div class="digest" id="digest" aria-live="polite"></div>
-<section class="hero" aria-label="{{heroTitle}}"><div class="card"><h2>{{heroTitle}} <small>{{heroNote}}</small></h2><div class="herogrid" id="herogrid"><div class="empty">{{loading}}</div></div></div></section>
+<section class="hero" aria-label="{{heroTitle}}"><div class="card"><h2 class="ft"><span class="t"><span class="ic">⚡</span>{{heroTitle}}</span> <small>{{heroNote}}</small></h2><div class="herogrid" id="herogrid"><div class="empty">{{loading}}</div></div></div></section>
+<section class="radio" aria-label="{{radioTitle}}"><div class="card" style="--fc:#2ee6a6"><h2 class="ft"><span class="t"><span class="ic">📻</span>{{radioTitle}}</span> <small>{{radioNote}}</small></h2>
+<div class="rbody"><div class="rctl"><button id="rplay" type="button" aria-label="{{radioPlay}}">▶</button><input id="rvol" type="range" min="0" max="1" step="0.05" value="0.8" aria-label="{{radioVol}}"></div>
+<div class="rnow"><b id="rname">{{radioPick}}</b><span id="rstat">{{radioIdle}}</span></div><div class="rchips" id="rchips"></div></div>
+<audio id="raudio" preload="none"></audio></div></section>
 <main>
   <section class="card">
     <h2>{{mapTitle}} <small id="mapnote">{{mapNote}}</small></h2>
@@ -339,6 +366,32 @@ $("#riskdate").textContent=fmtDate(RISK_DATE);
 drawStatus();drawLayers();drawLegend();overview();drawDigest();tick();setInterval(tick,1000);
 loadQuakes();loadEvents();loadWeather();loadNews();
 setInterval(loadQuakes,5*6e4);setInterval(loadEvents,30*6e4);setInterval(loadWeather,15*6e4);setInterval(loadNews,5*6e4);
+</script>
+<script>
+(function(){
+var ST=[["France Info","https://icecast.radiofrance.fr/franceinfo-midfi.mp3","fr","FR"],["France Inter","https://icecast.radiofrance.fr/franceinter-midfi.mp3","fr","FR"],["France Culture","https://icecast.radiofrance.fr/franceculture-midfi.mp3","fr","FR"],["RFI Monde","https://rfimonde64k.ice.infomaniak.ch/rfimonde-64.mp3","fr","FR"],["RTL Radio Lëtzebuerg","https://sc.rtl.lu/rtl","fr","LU"],["RTS La 1ère","https://stream.srg-ssr.ch/m/la-1ere/mp3_128","fr","CH"],["BBC World Service","https://stream.live.vc.bbcmedia.co.uk/bbc_world_service","en","UK"],["NPR News","https://npr-ice.streamguys1.com/live.mp3","en","US"],["Deutschlandfunk","https://st01.sslstream.dlf.de/dlf/01/128/mp3/stream.mp3","de","DE"],["BR24","https://dispatcher.rndfnk.com/br/br24/live/mp3/mid","de","DE"]];
+var L=(document.documentElement.lang||"fr").slice(0,2);
+ST.sort(function(a,b){return (b[2]===L)-(a[2]===L)});
+var au=document.getElementById("raudio"),btn=document.getElementById("rplay"),nm=document.getElementById("rname"),stt=document.getElementById("rstat"),box=document.getElementById("rchips"),vol=document.getElementById("rvol");
+var T={live:"{{radioLive}}",load:"{{radioLoading}}",err:"{{radioErr}}",idle:"{{radioIdle}}",pick:"{{radioPick}}"};
+var cur=-1;
+function sv(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function gv(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function ui(){var pl=!au.paused&&!au.ended;btn.textContent=pl?"❚❚":"▶";[].forEach.call(box.children,function(c,i){c.className="rchip"+(i===cur?" on":"")+(i===cur&&pl?" play":"")})}
+ST.forEach(function(s,i){var b=document.createElement("button");b.type="button";b.className="rchip";b.innerHTML='<span class="eq"><i></i><i></i><i></i></span>'+s[0]+" <small>"+s[3]+"</small>";b.onclick=function(){play(i)};box.appendChild(b)});
+function play(i){if(i===cur&&!au.paused){au.pause();return}
+if(i!==cur){cur=i;au.src=ST[i][1];nm.textContent=ST[i][0];sv("iv_radio",ST[i][0])}
+stt.textContent=T.load;var p=au.play();if(p&&p.catch)p.catch(function(){stt.textContent=T.err});ui()}
+btn.onclick=function(){if(cur<0){play(0);return}if(au.paused){stt.textContent=T.load;var p=au.play();if(p&&p.catch)p.catch(function(){stt.textContent=T.err})}else au.pause();ui()};
+au.addEventListener("playing",function(){stt.textContent="● "+T.live;ui()});
+au.addEventListener("pause",function(){stt.textContent=T.idle;ui()});
+au.addEventListener("waiting",function(){stt.textContent=T.load});
+au.addEventListener("error",function(){if(cur>=0)stt.textContent=T.err;ui()});
+vol.oninput=function(){au.volume=+vol.value;sv("iv_vol",vol.value)};
+var v=gv("iv_vol");if(v){vol.value=v}au.volume=+vol.value;
+var last=gv("iv_radio");if(last){for(var i=0;i<ST.length;i++)if(ST[i][0]===last){cur=i;au.src=ST[i][1];nm.textContent=last;break}}
+ui();
+})();
 </script>
 </body>
 </html>
