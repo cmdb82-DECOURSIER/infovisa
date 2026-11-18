@@ -180,6 +180,8 @@ const safe = s => s.split('</script').join('<\\/script');
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const D3 = safe(fs.readFileSync('node_modules/d3/dist/d3.min.js', 'utf8'));
 const TOPOJS = safe(fs.readFileSync('node_modules/topojson-client/dist/topojson-client.min.js', 'utf8'));
+const MKI = require('./markets-i18n.js');
+const MKJS = safe(fs.readFileSync('markets.js', 'utf8'));
 const TOPOSTR = safe(JSON.stringify(topo));
 const RISKDATE = '2026-11-13';
 fs.mkdirSync('out', { recursive: true });
@@ -228,7 +230,7 @@ for (const lang of LANGS) {
   ] };
   const ld = '<script type="application/ld+json">' + JSON.stringify(ldObj).replace(/</g, '\\u003c') + '</script>';
   const seoBlock = '<section class="seo"><div class="card"><h2>' + esc(K.h) + '</h2><div class="pad"><p>' + esc(K.p1) + '</p><p>' + esc(K.p2) + '</p><p class="seol">' + K.links.map(l => '<a href="' + l[1] + '">' + esc(l[0]) + '</a>').join(' · ') + '</p></div></div></section>';
-  const html_tokens = { lang, hreflang, langnav, ld, seoBlock, h1: esc(K.h1), lead: esc(K.lead) };
+  const html_tokens = { mk_tabWorld: esc(MKI[lang].tabWorld), mk_tabMkt: esc(MKI[lang].tabMkt), lang, hreflang, langnav, ld, seoBlock, h1: esc(K.h1), lead: esc(K.lead) };
   html = html.replace(/\{\{(\w+)\}\}/g, (m, k) => {
     if (k in html_tokens) return html_tokens[k];
     if (!(k in L)) throw new Error(`${lang}: missing key ${k}`);
@@ -238,6 +240,7 @@ for (const lang of LANGS) {
   delete S.cities;
   rep('/*__D3__*/', D3);
   rep('/*__TOPOJSON__*/', TOPOJS);
+  rep('/*__MARKETS__*/', MKJS.replace('/*__MK__*/', () => safe(JSON.stringify(MKI[lang]))));
   rep('/*__TOPO__*/', TOPOSTR);
   rep('/*__COUNTRIES__*/', safe(JSON.stringify(countriesFor(lang))));
   rep('/*__RISK__*/', JSON.stringify(risk));
