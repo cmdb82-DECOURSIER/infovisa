@@ -41,7 +41,7 @@ html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 var(--sa
 a{color:var(--acc);text-decoration:none} a:hover{text-decoration:underline}
 button,input{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-header{display:flex;align-items:center;gap:16px;padding:10px 18px;border-bottom:1px solid var(--line);background:#0c121b;position:sticky;top:0;z-index:20;flex-wrap:wrap}
+body>header{display:flex;align-items:center;gap:16px;padding:10px 18px;border-bottom:1px solid var(--line);background:#0c121b;position:sticky;top:0;z-index:20;flex-wrap:wrap}
 .brand{display:flex;align-items:baseline;gap:8px;font-weight:700;font-size:17px;letter-spacing:.2px}
 .brand b{color:var(--acc);font-weight:700}
 .live{display:inline-flex;align-items:center;gap:6px;font:600 11px var(--mono);color:#ff6b78;border:1px solid #5a2630;border-radius:99px;padding:2px 8px;letter-spacing:.8px}
@@ -77,7 +77,7 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:14px;padding:14p
 .quake.fresh{animation:pulse 1.8s infinite}
 @keyframes pulse{50%{fill:rgba(255,255,255,.55)}}
 .event{fill:var(--ev);stroke:#0a0f16;vector-effect:non-scaling-stroke;stroke-width:.8;cursor:pointer}
-.wx{font-family:var(--mono);font-weight:700;fill:#dff3ff;paint-order:stroke;stroke:#06101a;stroke-linejoin:round;pointer-events:none}
+#map .wx{font-family:var(--mono);font-weight:700;fill:#dff3ff;paint-order:stroke;stroke:#06101a;stroke-linejoin:round;pointer-events:none}
 .layers{position:absolute;top:10px;left:10px;display:flex;gap:6px;flex-wrap:wrap;max-width:calc(100% - 70px)}
 .chip{background:rgba(12,18,27,.88);border:1px solid var(--line);border-radius:99px;padding:5px 11px;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--mut)}
 .chip[aria-pressed=true]{color:var(--ink);border-color:#3a5878;background:rgba(22,40,60,.95)}
@@ -249,17 +249,19 @@ ul.feed .new{align-self:auto}
 </style>
 <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="ab3c5cb8-e765-471e-9a39-bb8651feca3e" data-blockingmode="auto" type="text/javascript"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5985516088824403" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="/assets/live/theme.css"><link rel="stylesheet" href="/assets/live/weather.css"><link rel="stylesheet" href="/assets/live/marine.css">
+<link rel="stylesheet" href="/assets/live/theme.css?v=aebda6eeff64"><link rel="stylesheet" href="/assets/live/weather.css"><link rel="stylesheet" href="/assets/live/marine.css?v=aebda6eeff64">
+<link rel="stylesheet" href="/assets/live/portal.css?v=aebda6eeff64">
 </head>
 <body>
 <header>
   <div class="brand"><span>Info<b>Visa</b></span><span class="live"><i></i>LIVE</span></div>
-  <nav class="gnav" aria-label="Idioma"><a href="/" hreflang="fr" lang="fr">FR</a><a href="/en/live/" hreflang="en" lang="en">EN</a><a href="/de/live/" hreflang="de" lang="de">DE</a><a href="/es/live/" hreflang="es" lang="es" class="on" aria-current="page">ES</a><a href="/pt/live/" hreflang="pt" lang="pt">PT</a><a class="guides" href="/es/">Guías de visado →</a></nav>
-  <div class="clock" id="clock"></div>
+  <nav class="gnav" aria-label="Idioma"><a href="/" hreflang="fr" lang="fr">FR</a><a href="/en/live/" hreflang="en" lang="en">EN</a><a href="/de/live/" hreflang="de" lang="de">DE</a><a href="/es/live/" hreflang="es" lang="es" class="on" aria-current="page">ES</a><a href="/pt/live/" hreflang="pt" lang="pt">PT</a></nav>
+  <div class="clock" id="clock" role="timer" aria-live="off" data-i18n-skip><time id="clock-date"></time><div><time id="clock-time"></time><span id="clock-utc"></span></div><small id="clock-zone"></small></div>
   <div class="search"><input id="q" list="clist" placeholder="Buscar un país…" aria-label="Buscar un país…" autocomplete="off"><datalist id="clist"></datalist></div>
 </header>
+<script type="application/json" id="world-news-data">{}</script>
 <div class="status" id="status" aria-live="polite"></div>
-<nav class="vtabs" id="vtabs" aria-label="views"><button type="button" data-v="world" class="on" aria-pressed="true">🌍 Mundo en directo</button><button type="button" data-v="mkt" aria-pressed="false">📈 Cripto y Bolsa</button><div class="extra-nav"><button data-extra="weather">Tiempo y viento</button><button data-extra="marine">Kitesurf y océano</button><button data-extra="media">Radio y TV</button><button data-extra="uap">FANI · archivo</button></div></nav>
+<nav class="vtabs" id="vtabs" aria-label="views"><button type="button" data-v="world" class="on" aria-pressed="true">🌍 Mundo en directo</button><button data-extra="local">Mundo local</button><button type="button" data-v="mkt" data-market-view="crypto" aria-pressed="false">Cripto</button><button type="button" data-v="mkt" data-market-view="stocks" aria-pressed="false">Bolsa</button><div class="extra-nav"><button data-extra="weather">Tiempo y viento</button><button data-extra="marine">Deportes acuáticos y océano</button><button data-extra="media">Radio y TV</button><button data-extra="webcams">Cámaras en directo</button><button data-extra="health">Brotes y virus</button><button data-extra="uap">FANI · archivo</button></div></nav>
 <div id="vw">
 <div class="lead"><p class="iv-eyebrow">INFOVISA / LIVE</p><h1>InfoVisa Live: el mundo en directo</h1><p>Riesgo por país, terremotos, tiempo, noticias geopolíticas, radio y TV de noticias en vivo — y la guía del visado Schengen.</p></div>
 <div class="digest" id="digest" aria-live="polite"></div>
@@ -293,7 +295,7 @@ ul.feed .new{align-self:auto}
 </div>
 </div>
 <div id="vm" class="mk" hidden></div>
-<section id="weather-extra" class="iv-extra page-width" hidden></section><section id="marine-extra" class="iv-extra page-width" hidden></section><dialog id="official-dialog"><button class="official-close" aria-label="Cerrar">×</button><div id="official-content"></div></dialog>
+<section id="weather-extra" class="iv-extra page-width" hidden></section><section id="marine-extra" class="iv-extra page-width" hidden></section><section id="webcams-extra" class="iv-extra page-width" hidden></section><section id="local-extra" class="iv-extra page-width" hidden></section><section id="health-extra" class="iv-extra page-width" hidden></section><dialog id="official-dialog"><button class="official-close" aria-label="Cerrar">×</button><div id="official-content"></div></dialog>
 <section class="seo"><div class="card"><h2>Sobre el mapa InfoVisa Live</h2><div class="pad"><p>InfoVisa Live es un mapa del mundo actualizado de forma continua: nivel de riesgo de cada país (avisos de viaje), terremotos M4,5+ de los últimos 7 días (USGS), eventos naturales en curso (NASA EONET), tiempo local y titulares geopolíticos de la prensa en español e internacional. Identifica de un vistazo los países que conviene evitar antes de viajar.</p><p>Escucha radios de noticias en directo (RNE, BBC World Service, RFI…) o mira canales de noticias gratuitos (Euronews, France 24, DW). ¿Necesitas un visado? Consulta nuestras guías independientes:</p><p class="seol"><a href="/es/tipos-de-visado.html">Tipos de visado Schengen</a> · <a href="/es/paises-schengen.html">Países Schengen</a> · <a href="/es/etias.html">ETIAS 2026</a> · <a href="/es/tasas-y-costes.html">Tasas y costes</a> · <a href="/es/faq.html">FAQ visado</a></p></div></div></section>
 <footer>
   Niveles de riesgo: avisos de viaje del Departamento de Estado de EE. UU., datos del <span id="riskdate"></span> — elaborados para ciudadanos estadounidenses; consulte las recomendaciones oficiales de su país antes de viajar. Datos en directo: USGS, NASA EONET, Open-Meteo, Google Noticias. Sitio informativo independiente, sin carácter oficial.
@@ -308,7 +310,7 @@ ul.feed .new{align-self:auto}
 </script>
 <script>(function(){
 "use strict";
-var MK={"tabWorld":"🌍 Mundo en directo","tabMkt":"📈 Cripto y Bolsa","title":"Cripto y Bolsa en directo","note":"precios, gráficos, divisas y herramientas de trader","cur":"Divisa","movers":"Mayores variaciones (24h)","conv":"Conversor","top":"Principales criptomonedas","search":"Buscar una cripto…","watch":"Favoritos","load":"Cargando…","err":"Datos no disponibles temporalmente, inténtalo de nuevo en un minuto.","none":"Sin resultados","fx":"Divisas (Forex)","port":"Cartera","calc":"Calculadora de ganancia / pérdida","risk":"Gestión del riesgo (tamaño de posición)","pro":"Herramientas pro: acciones, índices, materias primas","wnote":"gráficos y datos de TradingView","disc":"Solo informativo, no es asesoramiento de inversión. Las criptomonedas y los mercados son muy volátiles: puedes perder todo o parte de tu capital.","src":"Datos: CoinGecko, Alternative.me, BCE vía Frankfurter, TradingView. Los precios pueden variar ligeramente según la plataforma.","live":"En directo","gmc":"Capitalización total","gvol":"Volumen 24h","gbtc":"Dominancia BTC","fng":"Miedo y Codicia","fngL":["Miedo extremo","Miedo","Neutral","Codicia","Codicia extrema"],"coin":"Cripto","price":"Precio","mcap":"Capitalización","vol":"Volumen 24h","chart7":"7 días","gain":"Mayores subidas","loss":"Mayores bajadas","d1":"24h","d7":"7d","d30":"30d","d90":"90d","y1":"1 año","line":"Línea","candles":"Velas","high24":"Máx. 24h","low24":"Mín. 24h","ath":"Máximo histórico","supply":"Oferta circulante","pair":"Par","rate":"Tipo","fxn":"Tipos de referencia del BCE (días hábiles). Haz clic en una fila para ver el gráfico.","fiat":"Divisas","amount":"Importe","remove":"Quitar","qty":"Cantidad","buyp":"Precio de compra","add":"Añadir","value":"Valor","pnl":"G/P","total":"Total","empty":"Añade tus criptos: la cartera es privada y se guarda solo en tu navegador.","buy":"Precio de compra","sell":"Precio de venta","fees":"Comisiones (%)","profit":"Resultado","acct":"Capital","riskp":"Riesgo (%)","entry":"Precio de entrada","stop":"Stop-loss","size":"Tamaño de posición","riskamt":"Importe en riesgo","dist":"Distancia al stop","w_chart":"Gráfico avanzado","w_over":"Mercados mundiales","w_heat":"Mapa de calor de acciones","w_hot":"Más activas","w_crypto":"Mapa de calor cripto","w_fx":"Cruces de divisas","w_cal":"Calendario económico","idx":"Índices","comm":"Materias primas","gold":"Oro","silver":"Plata","oil":"Petróleo WTI","gas":"Gas natural"};
+var MK={"tabWorld":"🌍 Mundo en directo","tabMkt":"📈 Cripto y Bolsa","title":"Cripto y Bolsa en directo","note":"precios, gráficos, divisas y herramientas de trader","cur":"Divisa","movers":"Mayores variaciones (24h)","conv":"Conversor","top":"Principales criptomonedas","search":"Buscar una cripto…","watch":"Favoritos","load":"Cargando…","err":"Datos no disponibles temporalmente, inténtalo de nuevo en un minuto.","none":"Sin resultados","fx":"Divisas (Forex)","port":"Cartera","calc":"Calculadora de ganancia / pérdida","risk":"Gestión del riesgo (tamaño de posición)","pro":"Herramientas pro: acciones, índices, materias primas","wnote":"gráficos y datos de TradingView","disc":"Solo informativo, no es asesoramiento de inversión. Las criptomonedas y los mercados son muy volátiles: puedes perder todo o parte de tu capital.","src":"Datos: CoinGecko, Alternative.me, BCE vía Frankfurter, TradingView. Los precios pueden variar ligeramente según la plataforma.","live":"En directo","gmc":"Capitalización total","gvol":"Volumen 24h","gbtc":"Dominancia BTC","fng":"Miedo y Codicia","fngL":["Miedo extremo","Miedo","Neutral","Codicia","Codicia extrema"],"coin":"Cripto","price":"Precio","mcap":"Capitalización","vol":"Volumen 24h","chart7":"7 días","gain":"Mayores subidas","loss":"Mayores bajadas","d1":"24h","d7":"7d","d30":"30d","d90":"90d","y1":"1 año","line":"Línea","candles":"Velas","high24":"Máx. 24h","low24":"Mín. 24h","ath":"Máximo histórico","supply":"Oferta circulante","pair":"Par","rate":"Tipo","fxn":"Tipos de referencia del BCE (días hábiles). Haz clic en una fila para ver el gráfico.","fiat":"Divisas","amount":"Importe","remove":"Quitar","qty":"Cantidad","buyp":"Precio de compra","add":"Añadir","value":"Valor","pnl":"G/P","total":"Total","empty":"Añade tus criptos: la cartera es privada y se guarda solo en tu navegador.","buy":"Precio de compra","sell":"Precio de venta","fees":"Comisiones (%)","profit":"Resultado","acct":"Capital","riskp":"Riesgo (%)","entry":"Precio de entrada","stop":"Stop-loss","size":"Tamaño de posición","riskamt":"Importe en riesgo","dist":"Distancia al stop","w_chart":"Gráfico avanzado","w_over":"Mercados mundiales","w_heat":"Mapa de calor de acciones","w_hot":"Más activas","w_crypto":"Mapa de calor cripto","w_fx":"Cruces de divisas","w_cal":"Calendario económico","idx":"Índices","comm":"Materias primas","gold":"Oro","silver":"Plata","oil":"Petróleo WTI","gas":"Gas natural","cryptoTitle":"Cripto","stocksTitle":"Bolsa","cryptoNote":"Criptomonedas, precios y favoritos","stocksNote":"Índices, acciones y divisas"};
 var LG=(document.documentElement.lang||"fr").slice(0,2);
 var LOC={fr:"fr-FR",en:"en-GB",de:"de-DE",es:"es-ES",pt:"pt-PT"}[LG]||"fr-FR";
 var CUR=["EUR","USD","GBP","CHF","JPY","CAD","AUD","CNY","BRL","INR"];
@@ -320,7 +322,7 @@ function sv(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function $(s,r){return (r||root).querySelector(s)}
 function $$(s,r){return [].slice.call((r||root).querySelectorAll(s))}
-var st={cur:CUR.indexOf(gv("iv_cur"))>=0?gv("iv_cur"):"EUR",coin:gv("iv_coin")||"bitcoin",days:7,mode:"line",coins:[],rEUR:null,sort:"market_cap_rank",dir:1,q:"",favOnly:false,fav:[],pf:[],inited:false,fxSeries:null,fxPair:null,timer:null};
+var st={marketView:"crypto",cur:CUR.indexOf(gv("iv_cur"))>=0?gv("iv_cur"):"EUR",coin:gv("iv_coin")||"bitcoin",days:7,mode:"line",coins:[],rEUR:null,sort:"market_cap_rank",dir:1,q:"",favOnly:false,fav:[],pf:[],inited:false,fxSeries:null,fxPair:null,timer:null};
 try{st.fav=JSON.parse(gv("iv_fav_v1")||"[]")}catch(e){}
 try{st.pf=JSON.parse(gv("iv_pf_v1")||"[]")}catch(e){}
 if(!Array.isArray(st.fav))st.fav=[];if(!Array.isArray(st.pf))st.pf=[];
@@ -350,15 +352,26 @@ root.innerHTML=
 '<div class="mkticker" id="mktick" aria-label="live"></div>'+
 '<div class="mkgrid4" id="mkstats"></div>'+
 '<div class="mkmain"><section class="card mkchart"><div id="mkch"></div></section><aside class="mkside"><section class="card"><h3>'+esc(MK.movers)+'</h3><div id="mkmov" class="pad"></div></section><section class="card"><h3>'+esc(MK.conv)+'</h3><div id="mkconv" class="pad"></div></section></aside></div>'+
-'<section class="card mktable"><div class="mktools"><h3>'+esc(MK.top)+'</h3><input type="search" id="mkq" placeholder="'+esc(MK.search)+'" aria-label="'+esc(MK.search)+'"><button type="button" id="mkfav" class="mkb">★ '+esc(MK.watch)+'</button></div><div class="mkscroll"><table class="mkt2"><thead id="mkth"></thead><tbody id="mktb"><tr><td colspan="10" class="mkerr">'+esc(MK.load)+'</td></tr></tbody></table></div></section>'+
+'<section class="card mktable"><div class="mktools"><h3>'+esc(MK.top)+'</h3><button type="button" id="mkcro" class="mkb">CRO · Crypto.com</button><input type="search" id="mkq" placeholder="'+esc(MK.search)+'" aria-label="'+esc(MK.search)+'"><button type="button" id="mkfav" class="mkb">★ '+esc(MK.watch)+'</button></div><div class="mkscroll"><table class="mkt2"><thead id="mkth"></thead><tbody id="mktb"><tr><td colspan="10" class="mkerr">'+esc(MK.load)+'</td></tr></tbody></table></div></section>'+
 '<div class="mkcols"><section class="card"><h3>'+esc(MK.fx)+'</h3><div id="mkfx" class="pad"></div></section><section class="card"><h3>'+esc(MK.port)+'</h3><div id="mkpf" class="pad"></div></section></div>'+
 '<div class="mkcols"><section class="card"><h3>'+esc(MK.calc)+'</h3><div id="mkcalc" class="pad"></div></section><section class="card"><h3>'+esc(MK.risk)+'</h3><div id="mkrisk" class="pad"></div></section></div>'+
 '<section class="card mkpro"><h3>'+esc(MK.pro)+' <small>'+esc(MK.wnote)+'</small></h3><div class="mkwt" id="mkwt"></div><div class="mkw" id="mkw"></div></section>'+
 '<p class="mkdisc">'+esc(MK.disc)+'</p><p class="mkdisc">'+esc(MK.src)+'</p>';
 $("#mcur").onchange=function(){st.cur=this.value;sv("iv_cur",st.cur);refreshAll(true)};
+$("#mkcro").onclick=function(){st.q="cro";$("#mkq").value="CRO";st.favOnly=false;$("#mkfav").classList.remove("on");renderTable()};
 $("#mkq").oninput=function(){st.q=this.value.toLowerCase();renderTable()};
 $("#mkfav").onclick=function(){st.favOnly=!st.favOnly;this.classList.toggle("on",st.favOnly);renderTable()};
-buildConv();buildCalc();buildRisk();buildWidgetTabs();renderPf();
+buildConv();buildCalc();buildRisk();renderPf();applyMarketView();
+}
+
+/* Separate asset classes while retaining the original engines and saved preferences. */
+function applyMarketView(){
+ var stocks=st.marketView==="stocks";
+ ["#mktick","#mkstats",".mkmain",".mktable"].forEach(function(id){var e=$(id);if(e)e.hidden=stocks});
+ var fx=$("#mkfx"),pf=$("#mkpf");if(fx)fx.closest(".card").hidden=!stocks;if(pf)pf.closest(".card").hidden=stocks;
+ var primary=fx&&fx.closest(".mkcols");if(primary)primary.classList.add("mk-split-primary");
+ var title=$(".mkhead .mkt");if(title)title.innerHTML=esc(stocks?MK.stocksTitle:MK.cryptoTitle)+' <small>'+esc(stocks?MK.stocksNote:MK.cryptoNote)+'</small>';
+ buildWidgetTabs();
 }
 
 /* ---------- global stats + fear & greed ---------- */
@@ -377,15 +390,20 @@ box.innerHTML=h||'<div class="mkerr">'+esc(MK.err)+"</div>"})}
 function spark(a,up){if(!a||!a.length)return "";var w=100,h=30,mn=Math.min.apply(null,a),mx=Math.max.apply(null,a),n=a.length,s=[];for(var i=0;i<n;i+=Math.ceil(n/60)){s.push((i/(n-1)*w).toFixed(1)+","+(h-(a[i]-mn)/(mx-mn||1)*h).toFixed(1))}
 return '<svg viewBox="0 0 100 30" class="sp"><polyline points="'+s.join(" ")+'" fill="none" stroke="'+(up?"#2f8f6b":"#d63b4b")+'" stroke-width="1.6"/></svg>'}
 function loadCoins(){
-return J(CG+"/coins/markets?vs_currency="+st.cur.toLowerCase()+"&order=market_cap_desc&per_page=60&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d",60).then(function(a){
-st.coins=a||[];$("#mkst").textContent=MK.live+" · "+hhmm();renderTable();renderMovers();fillConv();renderPf();if(!st.coins.some(function(c){return c.id===st.coin}))st.coin=st.coins[0]&&st.coins[0].id;drawHead()}).catch(function(){var tb=$("#mktb");if(tb&&!st.coins.length)tb.innerHTML='<tr><td colspan="10" class="mkerr">'+esc(MK.err)+"</td></tr>"})}
+var currency=st.cur;
+return J(CG+"/coins/markets?vs_currency="+currency.toLowerCase()+"&order=market_cap_desc&per_page=60&page=1&sparkline=true&price_change_percentage=1h%2C24h%2C7d",60).then(function(a){
+var coins=Array.isArray(a)?a:[];
+if(coins.some(function(c){return c.id==="crypto-com-chain"}))return coins;
+return J(CG+"/coins/markets?vs_currency="+currency.toLowerCase()+"&ids=crypto-com-chain&sparkline=true&price_change_percentage=1h%2C24h%2C7d",60).then(function(cro){return coins.concat(Array.isArray(cro)?cro:[])}).catch(function(){return coins});
+}).then(function(a){
+if(st.cur!==currency)return;st.coins=a;$("#mkst").textContent=MK.live+" · "+hhmm();renderTable();renderMovers();fillConv();renderPf();if(!st.coins.some(function(c){return c.id===st.coin}))st.coin=st.coins[0]&&st.coins[0].id;drawHead()}).catch(function(){var tb=$("#mktb");if(tb&&!st.coins.length)tb.innerHTML='<tr><td colspan="10" class="mkerr">'+esc(MK.err)+"</td></tr>"})}
 var COLS=[["market_cap_rank","#"],["name",MK.coin],["current_price",MK.price],["price_change_percentage_1h_in_currency","1h"],["price_change_percentage_24h_in_currency","24h"],["price_change_percentage_7d_in_currency","7d"],["market_cap",MK.mcap],["total_volume",MK.vol],["",MK.chart7]];
 function renderTable(){
 var th=$("#mkth");if(!th)return;
 th.innerHTML="<tr><th></th>"+COLS.map(function(c){return '<th data-k="'+c[0]+'"'+(c[0]===st.sort?' class="on"':"")+">"+esc(c[1])+(c[0]===st.sort?(st.dir>0?" ↑":" ↓"):"")+"</th>"}).join("")+"</tr>";
 $$("th[data-k]",th).forEach(function(t){t.onclick=function(){var k=t.getAttribute("data-k");if(!k)return;if(st.sort===k)st.dir*=-1;else{st.sort=k;st.dir=(k==="market_cap_rank"||k==="name")?1:-1}renderTable()}});
 var a=st.coins.slice();
-if(st.q)a=a.filter(function(c){return (c.name+" "+c.symbol).toLowerCase().indexOf(st.q)>=0});
+if(st.q)a=a.filter(function(c){return (c.name+" "+c.symbol+(c.id==="crypto-com-chain"?" crypto.com crypto com":"")).toLowerCase().indexOf(st.q)>=0});
 if(st.favOnly)a=a.filter(function(c){return st.fav.indexOf(c.id)>=0});
 a.sort(function(x,y){var k=st.sort,u=x[k],v=y[k];if(k==="name"){return st.dir*String(u).localeCompare(String(v))}return st.dir*((u==null?-1e18:u)-(v==null?-1e18:v))});
 $("#mktb").innerHTML=a.length?a.map(function(c){var f=st.fav.indexOf(c.id)>=0,up=(c.price_change_percentage_7d_in_currency||0)>=0;
@@ -478,17 +496,23 @@ var TVL={fr:"fr",en:"en",de:"de_DE",es:"es",pt:"br"}[LG]||"en";
 var WT=[["chart","w_chart"],["overview","w_over"],["heat","w_heat"],["hot","w_hot"],["cheat","w_crypto"],["fxr","w_fx"],["cal","w_cal"]];
 function tv(box,type,cfg,h){box.innerHTML="";box.style.height=h+"px";var c=document.createElement("div");c.className="tradingview-widget-container";c.style.cssText="height:100%;width:100%";var w=document.createElement("div");w.className="tradingview-widget-container__widget";w.style.cssText="height:100%;width:100%";c.appendChild(w);var s=document.createElement("script");s.src="https://s3.tradingview.com/external-embedding/embed-widget-"+type+".js";s.async=true;s.text=JSON.stringify(cfg);c.appendChild(s);box.appendChild(c)}
 function widget(k){var box=$("#mkw"),L=TVL,base={colorTheme:"dark",isTransparent:true,locale:L,width:"100%",height:"100%"};
-if(k==="chart")tv(box,"advanced-chart",{autosize:true,symbol:"BITSTAMP:BTCUSD",interval:"D",timezone:"Europe/Luxembourg",theme:"dark",style:"1",locale:L,allow_symbol_change:true,calendar:false,hide_side_toolbar:false,details:true,hotlist:true,support_host:"https://www.tradingview.com"},620);
-if(k==="overview")tv(box,"market-overview",Object.assign({},base,{dateRange:"12M",showChart:true,showSymbolLogo:true,showFloatingTooltip:true,tabs:[{title:MK.idx,symbols:[{s:"FOREXCOM:SPXUSD",d:"S&P 500"},{s:"FOREXCOM:NSXUSD",d:"Nasdaq 100"},{s:"FOREXCOM:DJI",d:"Dow Jones"},{s:"INDEX:NKY",d:"Nikkei 225"},{s:"INDEX:DEU40",d:"DAX 40"},{s:"FOREXCOM:UKXGBP",d:"FTSE 100"}]},{title:MK.comm,symbols:[{s:"OANDA:XAUUSD",d:MK.gold},{s:"OANDA:XAGUSD",d:MK.silver},{s:"TVC:USOIL",d:MK.oil},{s:"TVC:UKOIL",d:"Brent"},{s:"CAPITALCOM:NATURALGAS",d:MK.gas}]},{title:"Forex",symbols:[{s:"FX:EURUSD",d:"EUR/USD"},{s:"FX:GBPUSD",d:"GBP/USD"},{s:"FX:USDJPY",d:"USD/JPY"},{s:"FX:USDCHF",d:"USD/CHF"},{s:"FX:EURCHF",d:"EUR/CHF"}]},{title:"Crypto",symbols:[{s:"BITSTAMP:BTCUSD",d:"Bitcoin"},{s:"BITSTAMP:ETHUSD",d:"Ethereum"},{s:"COINBASE:SOLUSD",d:"Solana"},{s:"BITSTAMP:XRPUSD",d:"XRP"}]}],height:"100%"}),620);
+if(k==="chart")tv(box,"advanced-chart",{autosize:true,symbol:st.marketView==="stocks"?"NASDAQ:AAPL":"BITSTAMP:BTCUSD",interval:"D",timezone:"Europe/Luxembourg",theme:"dark",style:"1",locale:L,allow_symbol_change:true,calendar:false,hide_side_toolbar:false,details:true,hotlist:true,support_host:"https://www.tradingview.com"},620);
+if(k==="overview")tv(box,"market-overview",Object.assign({},base,{dateRange:"12M",showChart:true,showSymbolLogo:true,showFloatingTooltip:true,tabs:[{title:MK.idx,symbols:[{s:"FOREXCOM:SPXUSD",d:"S&P 500"},{s:"FOREXCOM:NSXUSD",d:"Nasdaq 100"},{s:"FOREXCOM:DJI",d:"Dow Jones"},{s:"INDEX:NKY",d:"Nikkei 225"},{s:"INDEX:DEU40",d:"DAX 40"},{s:"FOREXCOM:UKXGBP",d:"FTSE 100"}]},{title:MK.comm,symbols:[{s:"OANDA:XAUUSD",d:MK.gold},{s:"OANDA:XAGUSD",d:MK.silver},{s:"TVC:USOIL",d:MK.oil},{s:"TVC:UKOIL",d:"Brent"},{s:"CAPITALCOM:NATURALGAS",d:MK.gas}]},{title:"Forex",symbols:[{s:"FX:EURUSD",d:"EUR/USD"},{s:"FX:GBPUSD",d:"GBP/USD"},{s:"FX:USDJPY",d:"USD/JPY"},{s:"FX:USDCHF",d:"USD/CHF"},{s:"FX:EURCHF",d:"EUR/CHF"}]}],height:"100%"}),620);
 if(k==="heat")tv(box,"stock-heatmap",Object.assign({},base,{exchanges:[],dataSource:"SPX500",grouping:"sector",blockSize:"market_cap_basic",blockColor:"change",symbolUrl:"",hasTopBar:true,isDataSetEnabled:true,isZoomEnabled:true,hasSymbolTooltip:true,isMonoSize:false}),620);
 if(k==="hot")tv(box,"hotlists",Object.assign({},base,{dateRange:"12M",exchange:"US",showChart:true,largeChartUrl:"",showSymbolLogo:true,showFloatingTooltip:false}),620);
 if(k==="cheat")tv(box,"crypto-coins-heatmap",Object.assign({},base,{dataSource:"Crypto",blockSize:"market_cap_calc",blockColor:"change",symbolUrl:"",hasTopBar:true,isDataSetEnabled:true,isZoomEnabled:true,hasSymbolTooltip:true,isMonoSize:false}),620);
 if(k==="fxr")tv(box,"forex-cross-rates",Object.assign({},base,{currencies:["EUR","USD","JPY","GBP","CHF","AUD","CAD","CNY"]}),460);
 if(k==="cal")tv(box,"events",Object.assign({},base,{importanceFilter:"-1,0,1",countryFilter:"us,eu,gb,fr,de,jp,cn"}),620);
 box.insertAdjacentHTML("beforeend",'<div class="tvc2"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank">TradingView</a></div>')}
-function buildWidgetTabs(){var b=$("#mkwt");b.innerHTML=WT.map(function(w,i){return '<button type="button" data-w="'+w[0]+'"'+(i===0?' class="on"':"")+">"+esc(MK[w[1]])+"</button>"}).join("");$$("button",b).forEach(function(x){x.onclick=function(){$$("button",b).forEach(function(y){y.classList.remove("on")});x.classList.add("on");widget(x.getAttribute("data-w"))}});
-var done=false;function go(){if(done)return;done=true;widget("chart")}
-if("IntersectionObserver" in window){var io=new IntersectionObserver(function(e){if(e[0].isIntersecting){io.disconnect();go()}},{rootMargin:"200px"});io.observe($("#mkw"))}else go()}
+var widgetObserver;
+function buildWidgetTabs(){
+ if(widgetObserver)widgetObserver.disconnect();
+ var list=WT.filter(function(w){return st.marketView==="stocks"?w[0]!=="cheat":["chart","cheat"].indexOf(w[0])>=0}),first=st.marketView==="stocks"?"overview":"chart",b=$("#mkwt");
+ b.innerHTML=list.map(function(w){return '<button type="button" data-w="'+w[0]+'"'+(w[0]===first?' class="on"':"")+">"+esc(MK[w[1]])+"</button>"}).join("");
+ $$("button",b).forEach(function(x){x.onclick=function(){$$("button",b).forEach(function(y){y.classList.remove("on")});x.classList.add("on");widget(x.getAttribute("data-w"))}});
+ var done=false;function go(){if(done)return;done=true;widget(first)}
+ if("IntersectionObserver" in window){widgetObserver=new IntersectionObserver(function(e){if(e[0].isIntersecting){widgetObserver.disconnect();go()}},{rootMargin:"200px"});widgetObserver.observe($("#mkw"))}else go();
+}
 
 /* ---------- live ticker (Binance websocket) ---------- */
 var TK=[["btcusdt","BTC"],["ethusdt","ETH"],["solusdt","SOL"],["bnbusdt","BNB"],["xrpusdt","XRP"],["dogeusdt","DOGE"],["adausdt","ADA"]],ws=null,tkv={},tkTry=0;
@@ -500,16 +524,20 @@ ws.onclose=function(){ws=null;tkTry++;if(root.hidden===false)setTimeout(openWs,4
 function closeWs(){if(ws){var w=ws;ws=null;tkTry=0;try{w.onclose=null;w.close()}catch(e){}}}
 
 /* ---------- orchestration ---------- */
-function refreshAll(full){loadStats();loadCoins().then(function(){drawTicker()});if(full){loadFx();var q=$("#pfp");if(q)q.placeholder=MK.buyp+" ("+st.cur+")"}}
+function refreshAll(full){if(st.marketView==="crypto"){loadStats();loadCoins().then(function(){drawTicker()});}if(full){loadFx();var q=$("#pfp");if(q)q.placeholder=MK.buyp+" ("+st.cur+")"}}
 function init(){if(st.inited)return;st.inited=true;build();refreshAll(true);drawTicker()}
-function show(v,push){
-var m=v==="mkt";vw.hidden=m;root.hidden=!m;$$("button",tabs).forEach(function(b){var on=b.getAttribute("data-v")===v;b.classList.toggle("on",on);b.setAttribute("aria-pressed",on)});
-if(push!==false){try{history.replaceState(null,"",m?"#markets":location.pathname+location.search)}catch(e){}}
-if(m){init();openWs();clearInterval(st.timer);st.timer=setInterval(function(){if(!document.hidden)loadCoins().then(function(){drawTicker()})},60000);var t=$("#mkch");}else{clearInterval(st.timer);closeWs();try{if(typeof rescale==="function")rescale()}catch(e){}}
-window.scrollTo(0,0)}
-$$("button",tabs).forEach(function(b){b.onclick=function(){show(b.getAttribute("data-v"))}});
-window.addEventListener("hashchange",function(){show(location.hash==="#markets"?"mkt":"world",false)});
-if(location.hash==="#markets")setTimeout(function(){show("mkt",false)},60);
+function show(v,push,marketView){
+ var m=v==="mkt",next=marketView==="stocks"?"stocks":"crypto",changed=st.marketView!==next;if(m)st.marketView=next;
+ vw.hidden=m;root.hidden=!m;
+ $$("button[data-v]",tabs).forEach(function(b){var on=b.getAttribute("data-v")===v&&(!m||(b.dataset.marketView||"crypto")===st.marketView);b.classList.toggle("on",on);b.setAttribute("aria-pressed",on)});
+ if(push!==false){try{history.replaceState(null,"",m?(st.marketView==="stocks"?"#stocks":"#markets"):location.pathname+location.search)}catch(e){}}
+ clearInterval(st.timer);
+ if(m){var wasInited=st.inited;init();if(wasInited&&changed){applyMarketView();refreshAll(true)}if(st.marketView==="crypto"){openWs();st.timer=setInterval(function(){if(!document.hidden)loadCoins().then(function(){drawTicker()})},60000)}else closeWs();}
+ else{closeWs();try{if(typeof rescale==="function")rescale()}catch(e){}}
+ window.scrollTo(0,0)}
+$$("button[data-v]",tabs).forEach(function(b){b.onclick=function(){show(b.getAttribute("data-v"),true,b.dataset.marketView)}});
+window.addEventListener("hashchange",function(){show(["#markets","#stocks"].indexOf(location.hash)>=0?"mkt":"world",false,location.hash==="#stocks"?"stocks":"crypto")});
+if(["#markets","#stocks"].indexOf(location.hash)>=0)setTimeout(function(){show("mkt",false,location.hash==="#stocks"?"stocks":"crypto")},60);
 })();
 </script>
 <script>
@@ -550,8 +578,16 @@ const feats=topojson.feature(TOPO,TOPO.objects.countries).features.filter(f=>f.i
 const cOf=f=>byN.get(f.id)||(f.properties&&f.properties.name==="Kosovo"?byA3.get("UNK"):null);
 const gC=root.append("g"),gE=root.append("g"),gQ=root.append("g"),gW=root.append("g");
 let K=1,selected=null;
+const gNews=root.append('g').attr('class','news-markers');
 const gPAN=root.append('g').attr('class','pan-layer');
 fetch('/assets/live/assets/uap-cases.json').then(r=>r.json()).then(data=>{gPAN.selectAll('circle').data(data.cases.filter(c=>Number.isFinite(c.lat)&&Number.isFinite(c.lon))).join('circle').attr('cx',c=>proj([c.lon,c.lat])[0]).attr('cy',c=>proj([c.lon,c.lat])[1]).attr('r',5).attr('fill','#c3b5f3').attr('stroke','#080d12').attr('tabindex',0).attr('role','button').attr('aria-label',c=>'PAN · '+c.location).on('click',(e,c)=>{e.stopPropagation();document.dispatchEvent(new CustomEvent('infovisa:official-case',{detail:c.id}));}).on('keydown',(e,c)=>{if(e.key==='Enter')document.dispatchEvent(new CustomEvent('infovisa:official-case',{detail:c.id}));}).append('title').text(c=>'PAN · '+c.location+' · '+c.observed);}).catch(()=>{});
+
+document.addEventListener('infovisa:news-markers',event=>{
+ const data=event.detail.map(d=>{const c=byA3.get(d.iso);if(!c)return null;const xy=proj([c.ll[1],c.ll[0]]);return {...d,x:xy[0],y:xy[1]};}).filter(Boolean);
+ const pins=gNews.selectAll('g.news-marker').data(data,d=>d.iso).join(enter=>{const g=enter.append('g').attr('class','news-marker').attr('role','button').attr('tabindex',0);g.append('circle').attr('class','news-marker-halo').attr('r',11);g.append('circle').attr('class','news-marker-core').attr('r',4);g.append('title');return g;});
+ pins.attr('data-news-kind',d=>d.kind).attr('data-news-country',d=>d.iso).attr('aria-label',d=>d.label).attr('transform',d=>`translate(${d.x},${d.y})scale(${1/K})`).on('click',(e,d)=>{e.stopPropagation();document.dispatchEvent(new CustomEvent('infovisa:news-open',{detail:d.iso}));}).on('keydown',(e,d)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();document.dispatchEvent(new CustomEvent('infovisa:news-open',{detail:d.iso}));}});
+ pins.select('title').text(d=>d.label);gNews.raise();
+});
 
 const tip=$("#tip");
 function showTip(ev,title,sub){tip.replaceChildren(el("b",{text:title}),document.createTextNode(sub||""));tip.style.display="block";moveTip(ev)}
@@ -564,16 +600,16 @@ const paths=gC.selectAll("path").data(feats).join("path").attr("class","country"
   .on("click",(ev,f)=>{const c=cOf(f);if(c)select(c,f)});
 const zoom=d3.zoom().scaleExtent([1,14]).translateExtent([[0,0],[W,H]]).on("zoom",ev=>{root.attr("transform",ev.transform);K=ev.transform.k;rescale()});
 svg.call(zoom);
-function rescale(){gQ.selectAll("circle").attr("r",d=>d.r/K);gE.selectAll("rect").each(function(d){const s=7/K;d3.select(this).attr("width",s).attr("height",s).attr("x",d.x-s/2).attr("y",d.y-s/2).attr("transform",`rotate(45 ${d.x} ${d.y})`)});gW.selectAll("text").attr("font-size",10/Math.pow(K,.82)).attr("stroke-width",2.5/K)}
+function rescale(){gNews.selectAll("g.news-marker").attr("transform",d=>`translate(${d.x},${d.y})scale(${1/K})`);gQ.selectAll("circle").attr("r",d=>d.r/K);gE.selectAll("rect").each(function(d){const s=7/K;d3.select(this).attr("width",s).attr("height",s).attr("x",d.x-s/2).attr("y",d.y-s/2).attr("transform",`rotate(45 ${d.x} ${d.y})`)});gW.selectAll("text").attr("font-size",10/Math.pow(K,.82)).attr("stroke-width",2.5/K)}
 $("#zin").onclick=()=>svg.transition().duration(250).call(zoom.scaleBy,1.6);
 $("#zout").onclick=()=>svg.transition().duration(250).call(zoom.scaleBy,1/1.6);
 $("#zreset").onclick=()=>svg.transition().duration(400).call(zoom.transform,d3.zoomIdentity);
 function zoomTo(f){const[[x0,y0],[x1,y1]]=path.bounds(f),k=Math.max(1,Math.min(10,.75/Math.max((x1-x0)/W,(y1-y0)/H)));svg.transition().duration(600).call(zoom.transform,d3.zoomIdentity.translate(W/2,H/2).scale(k).translate(-(x0+x1)/2,-(y0+y1)/2))}
 
 /* ---------- couches ---------- */
-const LAY={risk:[S.srcRisk,"var(--l3)",true],quake:[S.quakesTitle,"#fff",true],event:[S.eventsTitle,"var(--ev)",true],wx:[S.srcWx,"var(--acc)",true]};
+const LAY={risk:[S.srcRisk,"var(--l3)",true],quake:[S.quakesTitle,"#fff",true],event:[S.eventsTitle,"var(--ev)",true],wx:[S.srcWx,"var(--acc)",true],news:[S.latestNews,"#8bd2db",true]};
 function drawLayers(){$("#layers").replaceChildren(...Object.entries(LAY).map(([k,[n,c,on]])=>{const b=el("button",{class:"chip","aria-pressed":on},el("i",{style:`background:${c}`}),document.createTextNode(n));b.onclick=()=>{LAY[k][2]=!LAY[k][2];applyLayers();drawLayers()};return b}))}
-function applyLayers(){paths.attr("fill",f=>LAY.risk[2]?LV[level(cOf(f))].c:"var(--l0)");gQ.style("display",LAY.quake[2]?null:"none");gE.style("display",LAY.event[2]?null:"none");gW.style("display",LAY.wx[2]?null:"none")}
+function applyLayers(){paths.attr("fill",f=>LAY.risk[2]?LV[level(cOf(f))].c:"var(--l0)");gQ.style("display",LAY.quake[2]?null:"none");gE.style("display",LAY.event[2]?null:"none");gW.style("display",LAY.wx[2]?null:"none");gNews.style("display",LAY.news[2]?null:"none")}
 function drawLegend(){const n={0:0,1:0,2:0,3:0,4:0};feats.forEach(f=>{const c=cOf(f);if(c)n[level(c)]++});$("#legend").replaceChildren(...[1,2,3,4,0].map(l=>el("span",{},el("i",{class:"sw",style:`background:${LV[l].c}`}),document.createTextNode(LV[l].t+" "),el("b",{text:n[l]}))))}
 
 /* ---------- fiche pays ---------- */
@@ -645,6 +681,8 @@ function drawDigest(){const out=[];
 let newsTimer=0;
 async function loadNews(){try{let a=await news("",S.newsLang);if(a.length<4&&S.newsLang!=="en"){$("#newsnote").textContent=S.newsIntl;a=a.concat(await news("","en"))}
   const u=uniq(a).sort((x,y)=>(y.date||0)-(x.date||0));if(!u.length)throw 0;
+  const newsData={items:u,countries:C.map(c=>({iso:c.a3,name:c.fr,names:[c.en,c.cap]}))};
+  $("#world-news-data").textContent=JSON.stringify(newsData);document.dispatchEvent(new CustomEvent('infovisa:world-news',{detail:newsData}));
   drawHero(pickHero(u));$("#news").replaceChildren(...u.slice(0,14).map(x=>newsLi(x,true)));
   DG.fresh=u.filter(isNew).length;drawDigest();saveSeen(u.map(x=>nkey(x.title)));
   setSrc("gdelt","ok","live "+hhmm())}catch(e){setSrc("gdelt","err",S.retrying);clearTimeout(newsTimer);newsTimer=setTimeout(loadNews,9e4);
@@ -680,7 +718,10 @@ async function loadWeather(){try{const d=await getJSON(`https://api.open-meteo.c
   rescale();setSrc("meteo","ok","live "+hhmm())}catch(e){setSrc("meteo","err",S.unavailable)}}
 
 /* ---------- horloge, recherche, démarrage ---------- */
-function tick(){$("#clock").textContent=new Date().toLocaleString(LOC,{weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit",second:"2-digit"})+" · UTC "+new Date().toISOString().slice(11,16);
+function tick(){const now=new Date(),clockDate=$("#clock-date"),clockTime=$("#clock-time");
+  clockDate.textContent=now.toLocaleDateString(LOC,{weekday:"long",day:"numeric",month:"long",year:"numeric"});clockDate.dateTime=now.toISOString();
+  clockTime.textContent=now.toLocaleTimeString(LOC,{hour:"2-digit",minute:"2-digit",second:"2-digit"});clockTime.dateTime=now.toISOString();
+  $("#clock-utc").textContent="UTC "+now.toISOString().slice(11,16);$("#clock-zone").textContent=S.localTime+" · "+Intl.DateTimeFormat().resolvedOptions().timeZone;
   const t=$("#ctime");if(t&&t.dataset.tz){try{t.textContent=new Date().toLocaleTimeString(LOC,{timeZone:t.dataset.tz,hour:"2-digit",minute:"2-digit"})}catch(e){}}}
 const norm=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim();
 $("#clist").replaceChildren(...C.map(c=>c.fr).sort((a,b)=>a.localeCompare(b,S.lang)).map(n=>el("option",{value:n})));
@@ -825,5 +866,5 @@ var ra=$("raudio");if(ra)ra.addEventListener("play",function(){if(!v.paused)v.pa
 drawC();drawCh();
 })();
 </script>
-<script type="module" src="/assets/live/extras.js"></script></body>
+<script type="module" src="/assets/live/extras.js?v=aebda6eeff64"></script></body>
 </html>

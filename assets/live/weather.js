@@ -1,4 +1,4 @@
-import {createSpatialWeights,projectField,sampleField,advanceTimeline,advectParticle,createParticles,recycleParticle} from './weather-flow.js';
+import {createSpatialWeights,projectField,sampleField,advanceTimeline,advectParticle,createParticles,recycleParticle} from './weather-flow.js?v=aebda6eeff64';
 /* Open-Meteo connected weather. Geographic field: 48 sampled forecast locations,
    inverse-distance interpolation of the four nearest samples. Particle motion
    follows interpolated u/v wind components; animation speed is illustrative. */

@@ -14,3 +14,6 @@ for (const l of Object.keys(T)) {
   out[l] = {}; keys.forEach((k, i) => out[l][k] = T[l][i]);
 }
 module.exports = out;
+
+const sectionLabels={fr:['Crypto','Bourse','Cryptomonnaies, cours et favoris','Indices, actions et devises'],en:['Crypto','Stocks','Cryptocurrencies, prices and favourites','Indices, stocks and currencies'],de:['Krypto','Börse','Kryptowährungen, Kurse und Favoriten','Indizes, Aktien und Währungen'],es:['Cripto','Bolsa','Criptomonedas, precios y favoritos','Índices, acciones y divisas'],pt:['Cripto','Bolsa','Criptomoedas, cotações e favoritos','Índices, ações e divisas']};
+for(const [lang,labels] of Object.entries(sectionLabels)){[out[lang].cryptoTitle,out[lang].stocksTitle,out[lang].cryptoNote,out[lang].stocksNote]=labels;}
