@@ -120,7 +120,12 @@ footer{max-width:1600px;margin:0 auto;padding:6px 18px 26px;color:var(--dim);fon
 #rplay:hover{filter:brightness(1.1)}
 #rvol{width:110px;accent-color:var(--fc)}
 .rsearch{padding:0 16px 14px;border-top:1px solid var(--line);margin-top:2px}
-.rsearch form{display:flex;gap:8px;padding-top:14px;flex-wrap:wrap}
+.rpick{display:flex;flex-wrap:wrap;gap:8px;padding-top:14px}
+.rpick select{flex:1 1 220px;background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:11px 12px;font:15px system-ui,sans-serif;min-width:0}
+.rpick select:focus{outline:0;border-color:var(--fc)}
+.rpick button{border:1px solid var(--fc);background:transparent;color:#fff;border-radius:10px;padding:0 16px;font:700 14px system-ui,sans-serif;cursor:pointer;min-height:42px}
+.rpick button:disabled{opacity:.4;cursor:default}
+.rsearch form{display:flex;gap:8px;padding-top:10px;flex-wrap:wrap}
 .rsearch input[type=search]{flex:1 1 260px;background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:11px 14px;font:15px system-ui,sans-serif}
 .rsearch input[type=search]:focus{outline:0;border-color:var(--fc)}
 .rsearch button.go{background:var(--fc);color:#04130d;border:0;border-radius:10px;padding:0 18px;font:700 14px system-ui,sans-serif;cursor:pointer;min-height:42px}
@@ -179,7 +184,7 @@ ul.feed .new{align-self:auto}
 <section class="radio" aria-label="{{radioTitle}}"><div class="card" style="--fc:#2ee6a6"><h2 class="ft"><span class="t"><span class="ic">📻</span>{{radioTitle}}</span> <small>{{radioNote}}</small></h2>
 <div class="rbody"><div class="rctl"><button id="rplay" type="button" aria-label="{{radioPlay}}">▶</button><input id="rvol" type="range" min="0" max="1" step="0.05" value="0.8" aria-label="{{radioVol}}"></div>
 <div class="rnow"><b id="rname">{{radioPick}}</b><span id="rstat">{{radioIdle}}</span></div><div class="rchips" id="rchips"></div></div>
-<div class="rsearch"><form id="rform" role="search"><input type="search" id="rq" placeholder="{{radioSearchPh}}" aria-label="{{radioSearchPh}}" autocomplete="off"><button class="go" type="submit">{{radioSearch}}</button></form><div class="rmsg" id="rmsg"></div><ul class="rres" id="rres"></ul></div>
+<div class="rsearch"><div class="rpick"><select id="rcountry" aria-label="{{radioCountry}}"><option value="">{{radioCountry}}</option></select><select id="rstation" aria-label="{{radioStation}}" disabled><option value="">{{radioStation}}</option></select><button type="button" id="radd" disabled>+ {{radioAdd}}</button></div><form id="rform" role="search"><input type="search" id="rq" placeholder="{{radioSearchPh}}" aria-label="{{radioSearchPh}}" autocomplete="off"><button class="go" type="submit">{{radioSearch}}</button></form><div class="rmsg" id="rmsg"></div><ul class="rres" id="rres"></ul></div>
 <audio id="raudio" preload="none"></audio></div></section>
 <main>
   <section class="card">
@@ -416,8 +421,25 @@ var v=gv("iv_vol");if(v)vol.value=v;au.volume=+vol.value;
 render();
 var last=gv("iv_radio");if(last){for(var i=0;i<ST.length;i++)if(ST[i][0]===last){cur=i;au.src=ST[i][1];nm.textContent=last;break}ui()}
 var tok=0;
+
+var cs=$("rcountry"),ss=$("rstation"),ra=$("radd"),cl=[];
+function names(){try{return new Intl.DisplayNames([L],{type:"region"})}catch(e){return null}}
+var DN=names();
+fetch("https://de1.api.radio-browser.info/json/countries").then(function(r){return r.json()}).then(function(a){
+a=a.filter(function(c){return c.iso_3166_1&&c.stationcount>0});
+a.forEach(function(c){var n=c.name;try{if(DN)n=DN.of(c.iso_3166_1)||n}catch(e){}c._n=n});
+a.sort(function(x,y){return x._n.localeCompare(y._n,L)});
+a.forEach(function(c){var o=document.createElement("option");o.value=c.iso_3166_1;o.textContent=c._n+" ("+c.stationcount+")";cs.appendChild(o)})}).catch(function(){});
+function uniq(a){var seen={},l=[];a.forEach(function(s){var u=s.url_resolved||"";if(u.indexOf("https://")!==0)return;var k=(s.name||"").toLowerCase().trim();if(!k||seen[k])return;seen[k]=1;l.push(s)});return l}
+cs.onchange=function(){cl=[];ss.innerHTML="";var o=document.createElement("option");o.value="";o.textContent="{{radioStation}}";ss.appendChild(o);ss.disabled=true;ra.disabled=true;res.innerHTML="";if(!cs.value){msg.textContent="";return}
+var my=++tok;msg.textContent=T.srch;
+fetch("https://de1.api.radio-browser.info/json/stations/search?countrycode="+encodeURIComponent(cs.value)+"&limit=300&hidebroken=true&order=clickcount&reverse=true").then(function(r){return r.json()}).then(function(a){if(my!==tok)return;
+cl=uniq(a).slice(0,150);msg.textContent=cl.length?"":T.none;
+cl.forEach(function(s,i){var o=document.createElement("option");o.value=i;o.textContent=s.name.trim()+(s.bitrate?" · "+s.bitrate+" kbps":"");ss.appendChild(o)});ss.disabled=!cl.length}).catch(function(){if(my===tok)msg.textContent=T.err})};
+ss.onchange=function(){var s=cl[+ss.value];ra.disabled=!s;if(!s)return;playTmp(s.name.trim(),s.url_resolved);ra.textContent="+ "+T.add;ra.disabled=CU.some(function(c){return c[1]===s.url_resolved})};
+ra.onclick=function(){var s=cl[+ss.value];if(!s)return;CU.push([s.name.trim(),s.url_resolved,"",s.countrycode||""]);saveCU();ra.disabled=true;ra.textContent="✓ "+T.added;render()};
 $("rform").onsubmit=function(e){e.preventDefault();var q=$("rq").value.trim();if(q.length<2)return;var my=++tok;msg.textContent=T.srch;res.innerHTML="";
-fetch("https://de1.api.radio-browser.info/json/stations/search?name="+encodeURIComponent(q)+"&limit=40&hidebroken=true&order=clickcount&reverse=true").then(function(r){return r.json()}).then(function(a){if(my!==tok)return;
+fetch("https://de1.api.radio-browser.info/json/stations/search?name="+encodeURIComponent(q)+(cs.value?"&countrycode="+encodeURIComponent(cs.value):"")+"&limit=40&hidebroken=true&order=clickcount&reverse=true").then(function(r){return r.json()}).then(function(a){if(my!==tok)return;
 var seen={},list=[];a.forEach(function(s){var u=s.url_resolved||"";if(u.indexOf("https://")!==0)return;var k=(s.name||"").toLowerCase().trim();if(seen[k])return;seen[k]=1;list.push(s)});list=list.slice(0,18);
 msg.textContent=list.length?"":T.none;
 list.forEach(function(s){var li=document.createElement("li");var meta=[s.countrycode,s.codec,s.bitrate?s.bitrate+" kbps":""].filter(Boolean).join(" · ");
