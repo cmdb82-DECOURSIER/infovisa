@@ -19,7 +19,7 @@ export async function initI18n({selector='#language-select'}={}){
  if(singleton)return singleton;
  const select=typeof selector==='string'?document.querySelector(selector):selector;
  if(select){select.disabled=true;select.dataset.i18nReady='false';select.dataset.i18nSkip='';select.innerHTML=EU_LANGUAGES.map(([code,name])=>`<option value="${code}" lang="${code}">${name}</option>`).join('');select.setAttribute('aria-label','Langue de l’interface');}
- const files=['i18n-catalog.json','i18n-locales-extra.json','i18n-locales-west.json','i18n-locales-extra2.json','i18n-additions.json'];
+ const files=['i18n-catalog.json','i18n-locales-extra.json','i18n-locales-west.json','i18n-locales-extra2.json','i18n-additions.json','i18n-live-completion.json'];
  const responses=await Promise.allSettled(files.map(async file=>{const r=await fetch(new URL(file,import.meta.url));if(!r.ok)throw Error(`${file}: ${r.status}`);return r.json();}));
  const base=responses[0].status==='fulfilled'?responses[0].value:null;
  if(!base?.sources?.length){
@@ -27,8 +27,9 @@ export async function initI18n({selector='#language-select'}={}){
   const report={language:'fr',availableLanguages:['fr'],complete:false,error:'Le catalogue de traduction embarqué est indisponible.',untranslated:[]};console.warn('[InfoVisa i18n] Embedded catalogues unavailable; French interface retained.');
   const fallback={language:'fr',setLanguage(code){if(code!=='fr')throw Error('Catalogue de langue indisponible : '+code);return report;},translate:text=>text,t:text=>text,getCoverage:()=>report,refresh(){},destroy(){singleton=null;}};singleton=fallback;document.dispatchEvent(new CustomEvent('infovisa:i18ncoverage',{detail:report}));return fallback;
  }
+ const localMessages={};
  const sources=base.sources,catalogs={...base.locales,fr:sources},lookup=new Map(),exactLookup=new Map(),nodeSources=new WeakMap(),attributeSources=new WeakMap(),missing=new Set();
- for(const result of responses.slice(1))if(result.status==='fulfilled'){if(result.value.messages)Object.assign(ANNEX,result.value.messages);else Object.assign(catalogs,result.value.locales||result.value);}
+ for(const result of responses.slice(1))if(result.status==='fulfilled'){if(result.value.localMessages)Object.assign(localMessages,result.value.localMessages);else if(result.value.messages)Object.assign(ANNEX,result.value.messages);else Object.assign(catalogs,result.value.locales||result.value);}
  sources.forEach((text,i)=>{exactLookup.set(canonical(text),i);if(!lookup.has(normalize(text)))lookup.set(normalize(text),i);});
  const available=EU_LANGUAGES.map(([c])=>c).filter(c=>Array.isArray(catalogs[c])&&catalogs[c].length===sources.length&&catalogs[c].every(t=>typeof t==='string'&&t.length));
  for(const option of select?.options||[])if(!available.includes(option.value)){option.disabled=true;option.title='Catalogue de cette langue indisponible';}
@@ -37,7 +38,14 @@ export async function initI18n({selector='#language-select'}={}){
  const observer=new MutationObserver(records=>{if(disposed||translating)return;for(const record of records){if(record.type==='characterData'){const entry=nodeSources.get(record.target);if(entry&&record.target.data!==entry.written)entry.source=record.target.data;dirtyTexts.add(record.target);}else if(record.type==='attributes'){const entry=attributeSources.get(record.target)?.get(record.attributeName);const value=record.target.getAttribute(record.attributeName);if(entry&&value!==entry.written)entry.source=value;dirtyElements.add(record.target);}else if(record.type==='childList'){for(const node of record.addedNodes){if(node.nodeType===3)dirtyTexts.add(node);else if(node.nodeType===1)dirtyRoots.add(node);}}}if(dirtyTexts.size||dirtyElements.size||dirtyRoots.size)schedule();});
  function observe(){if(!disposed)observer.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:ATTRIBUTES});}
  function casing(source,target){const letters=source.replace(/[^\p{L}]/gu,'');return letters.length>1&&letters===letters.toLocaleUpperCase('fr')?target.toLocaleUpperCase(language):target;}
- function direct(text){const index=exactLookup.get(canonical(text))??lookup.get(normalize(text));if(index!==undefined){known++;return casing(text,catalogs[language][index]);}const annex=Object.keys(ANNEX).find(key=>normalize(key)===normalize(text));if(annex){known++;return casing(text,ANNEX[annex][EU_LANGUAGES.findIndex(([c])=>c===language)]);}return null;}
+ function direct(text){
+  const messages=localMessages[language]||{};
+  for(const [source,target] of Object.entries(messages)){
+   const parts=source.split('{value}');
+   if(parts.length===1){if(normalize(source)===normalize(text)){known++;return casing(text,target);}}
+   else if(text.startsWith(parts[0])&&text.endsWith(parts[1])){known++;return target.replace('{value}',text.slice(parts[0].length,text.length-parts[1].length||undefined));}
+  }
+  const index=exactLookup.get(canonical(text))??lookup.get(normalize(text));if(index!==undefined){known++;return casing(text,catalogs[language][index]);}const annex=Object.keys(ANNEX).find(key=>normalize(key)===normalize(text));if(annex){known++;return casing(text,ANNEX[annex][EU_LANGUAGES.findIndex(([c])=>c===language)]);}return null;}
  function render(text){
   if(language==='fr')return text;
   const leading=text.match(/^\s*/)?.[0]||'',trailing=text.match(/\s*$/)?.[0]||'',body=text.trim();if(!body||PROPER.test(body)||/^https?:\/\//.test(body)||/^[\d\s.,:+−\-/%°€$£¥()]+$/.test(body))return text;
