@@ -14,6 +14,15 @@
 <meta property="og:url" content="https://www.infovisa.lu{{path}}">
 <meta property="og:title" content="{{title}}">
 <meta property="og:description" content="{{desc}}">
+<meta property="og:site_name" content="InfoVisa.lu">
+<meta property="og:image" content="https://www.infovisa.lu/assets/img/og-infovisa.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{title}}">
+<meta name="twitter:description" content="{{desc}}">
+<meta name="twitter:image" content="https://www.infovisa.lu/assets/img/og-infovisa.jpg">
+{{ld}}
 <style>
 :root{
   --bg:#0a0f16; --panel:#111924; --panel2:#162130; --line:#223044; --ink:#e8eef6; --mut:#8b9bb0; --dim:#5d6c80;
@@ -164,6 +173,8 @@ footer{max-width:1600px;margin:0 auto;padding:6px 18px 26px;color:var(--dim);fon
 .rchip.on.play .eq{display:inline-flex}
 @keyframes eq{0%,100%{height:3px}50%{height:12px}}
 @media (prefers-reduced-motion:reduce){.eq i{animation:none;height:8px}}
+.lead{max-width:1600px;margin:10px auto 0;padding:0 18px}.lead h1{margin:0;font:800 20px/1.25 system-ui,sans-serif;color:#fff}.lead p{margin:3px 0 0;color:var(--mut);font-size:13.5px}
+.seo{max-width:1600px;margin:14px auto 0;padding:0 18px}.seo .pad{padding:14px 16px;line-height:1.6;font-size:14px;color:var(--mut)}.seo p{margin:0 0 10px}.seo a{color:var(--acc);text-decoration:underline}.seol{font-weight:600}
 .hero{max-width:1600px;margin:12px auto 0;padding:0 18px}
 .herogrid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:1px;background:var(--line)}
 .hl{background:var(--panel);padding:14px 16px;display:flex;flex-direction:column;gap:7px;min-width:0;justify-content:space-between}
@@ -190,6 +201,7 @@ ul.feed .new{align-self:auto}
   <div class="search"><input id="q" list="clist" placeholder="{{searchPh}}" aria-label="{{searchPh}}" autocomplete="off"><datalist id="clist"></datalist></div>
 </header>
 <div class="status" id="status" aria-live="polite"></div>
+<div class="lead"><h1>{{h1}}</h1><p>{{lead}}</p></div>
 <div class="digest" id="digest" aria-live="polite"></div>
 <section class="hero" aria-label="{{heroTitle}}"><div class="card"><h2 class="ft"><span class="t"><span class="ic">⚡</span>{{heroTitle}}</span> <small>{{heroNote}}</small></h2><div class="herogrid" id="herogrid"><div class="empty">{{loading}}</div></div></div></section>
 <section class="radio" aria-label="{{radioTitle}}"><div class="card" style="--fc:#2ee6a6"><h2 class="ft"><span class="t"><span class="ic">📻</span>{{radioTitle}}</span> <small>{{radioNote}}</small></h2>
@@ -219,6 +231,7 @@ ul.feed .new{align-self:auto}
     <section class="card" style="--fc:#b58cff"><h2 class="ft"><span class="t"><span class="ic">🔥</span>{{eventsTitle}}</span> <small>{{eventsNote}}</small></h2><ul class="feed" id="events"><li class="empty">{{loading}}</li></ul></section>
   </div>
 </main>
+{{seoBlock}}
 <footer>
   {{footerA}} <span id="riskdate"></span> {{footerB}}
 </footer>

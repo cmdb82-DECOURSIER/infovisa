@@ -19,6 +19,15 @@
 <meta property="og:url" content="https://www.infovisa.lu/pt/live/">
 <meta property="og:title" content="InfoVisa Live — O mundo em direto: riscos, meteorologia, geopolítica">
 <meta property="og:description" content="Mapa mundial em direto: nível de risco de cada país e os seus motivos, meteorologia, sismos, catástrofes naturais e atualidade geopolítica. Para viajantes e empresas.">
+<meta property="og:site_name" content="InfoVisa.lu">
+<meta property="og:image" content="https://www.infovisa.lu/assets/img/og-infovisa.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="InfoVisa Live — O mundo em direto: riscos, meteorologia, geopolítica">
+<meta name="twitter:description" content="Mapa mundial em direto: nível de risco de cada país e os seus motivos, meteorologia, sismos, catástrofes naturais e atualidade geopolítica. Para viajantes e empresas.">
+<meta name="twitter:image" content="https://www.infovisa.lu/assets/img/og-infovisa.jpg">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.infovisa.lu/#org","name":"InfoVisa.lu","url":"https://www.infovisa.lu/","logo":"https://www.infovisa.lu/assets/favicon.svg"},{"@type":"WebSite","@id":"https://www.infovisa.lu/#site","url":"https://www.infovisa.lu/","name":"InfoVisa.lu","inLanguage":"pt","publisher":{"@id":"https://www.infovisa.lu/#org"}},{"@type":"WebApplication","name":"InfoVisa Live — O mundo em direto: riscos, meteorologia, geopolítica","url":"https://www.infovisa.lu/pt/live/","description":"Mapa mundial em direto: nível de risco de cada país e os seus motivos, meteorologia, sismos, catástrofes naturais e atualidade geopolítica. Para viajantes e empresas.","inLanguage":"pt","applicationCategory":"TravelApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"publisher":{"@id":"https://www.infovisa.lu/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"InfoVisa.lu","item":"https://www.infovisa.lu/"},{"@type":"ListItem","position":2,"name":"InfoVisa Live — O mundo em direto: riscos, meteorologia, geopolítica","item":"https://www.infovisa.lu/pt/live/"}]}]}</script>
 <style>
 :root{
   --bg:#0a0f16; --panel:#111924; --panel2:#162130; --line:#223044; --ink:#e8eef6; --mut:#8b9bb0; --dim:#5d6c80;
@@ -169,6 +178,8 @@ footer{max-width:1600px;margin:0 auto;padding:6px 18px 26px;color:var(--dim);fon
 .rchip.on.play .eq{display:inline-flex}
 @keyframes eq{0%,100%{height:3px}50%{height:12px}}
 @media (prefers-reduced-motion:reduce){.eq i{animation:none;height:8px}}
+.lead{max-width:1600px;margin:10px auto 0;padding:0 18px}.lead h1{margin:0;font:800 20px/1.25 system-ui,sans-serif;color:#fff}.lead p{margin:3px 0 0;color:var(--mut);font-size:13.5px}
+.seo{max-width:1600px;margin:14px auto 0;padding:0 18px}.seo .pad{padding:14px 16px;line-height:1.6;font-size:14px;color:var(--mut)}.seo p{margin:0 0 10px}.seo a{color:var(--acc);text-decoration:underline}.seol{font-weight:600}
 .hero{max-width:1600px;margin:12px auto 0;padding:0 18px}
 .herogrid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:1px;background:var(--line)}
 .hl{background:var(--panel);padding:14px 16px;display:flex;flex-direction:column;gap:7px;min-width:0;justify-content:space-between}
@@ -195,6 +206,7 @@ ul.feed .new{align-self:auto}
   <div class="search"><input id="q" list="clist" placeholder="Pesquisar um país…" aria-label="Pesquisar um país…" autocomplete="off"><datalist id="clist"></datalist></div>
 </header>
 <div class="status" id="status" aria-live="polite"></div>
+<div class="lead"><h1>InfoVisa Live: o mundo em direto</h1><p>Risco por país, sismos, meteorologia, notícias geopolíticas, rádio e TV de notícias em direto — e o guia do visto Schengen.</p></div>
 <div class="digest" id="digest" aria-live="polite"></div>
 <section class="hero" aria-label="Destaques"><div class="card"><h2 class="ft"><span class="t"><span class="ic">⚡</span>Destaques</span> <small>atualiza automaticamente</small></h2><div class="herogrid" id="herogrid"><div class="empty">A carregar…</div></div></div></section>
 <section class="radio" aria-label="Rádio em direto"><div class="card" style="--fc:#2ee6a6"><h2 class="ft"><span class="t"><span class="ic">📻</span>Rádio em direto</span> <small>ouve as notícias em direto</small></h2>
@@ -224,6 +236,7 @@ ul.feed .new{align-self:auto}
     <section class="card" style="--fc:#b58cff"><h2 class="ft"><span class="t"><span class="ic">🔥</span>Fenómenos naturais</span> <small>NASA EONET · em curso</small></h2><ul class="feed" id="events"><li class="empty">A carregar…</li></ul></section>
   </div>
 </main>
+<section class="seo"><div class="card"><h2>Sobre o mapa InfoVisa Live</h2><div class="pad"><p>O InfoVisa Live é um mapa-mundo atualizado continuamente: nível de risco de cada país (avisos de viagem), sismos M4,5+ dos últimos 7 dias (USGS), eventos naturais em curso (NASA EONET), meteorologia local e manchetes geopolíticas da imprensa em português e internacional. Veja num relance os países a evitar antes de viajar.</p><p>Ouça rádios de notícias em direto (BBC World Service, RFI, Deutschlandfunk…) ou veja canais de notícias gratuitos (Euronews, France 24, DW). Precisa de um visto? Consulte os nossos guias independentes:</p><p class="seol"><a href="/pt/tipos-de-visto.html">Tipos de visto Schengen</a> · <a href="/pt/paises-schengen.html">Países Schengen</a> · <a href="/pt/etias.html">ETIAS 2026</a> · <a href="/pt/taxas-e-custos.html">Taxas e custos</a> · <a href="/pt/faq.html">FAQ visto</a></p></div></div></section>
 <footer>
   Níveis de risco: avisos de viagem do Departamento de Estado dos EUA, dados de <span id="riskdate"></span> — elaborados para cidadãos norte-americanos; consulte as recomendações oficiais do seu país antes de viajar. Dados em direto: USGS, NASA EONET, Open-Meteo, Google Notícias. Site informativo independente, sem valor oficial.
 </footer>
