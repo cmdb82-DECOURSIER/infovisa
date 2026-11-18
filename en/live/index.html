@@ -443,7 +443,9 @@ function uniq(a){var seen={},l=[];a.forEach(function(s){var u=s.url_resolved||""
 cs.onchange=function(){cl=[];ss.innerHTML="";var o=document.createElement("option");o.value="";o.textContent="Choose a station";ss.appendChild(o);ss.disabled=true;ra.disabled=true;res.innerHTML="";if(!cs.value){msg.textContent="";return}
 var my=++tok;msg.textContent=T.srch;
 fetch("https://de1.api.radio-browser.info/json/stations/search?countrycode="+encodeURIComponent(cs.value)+"&limit=300&hidebroken=true&order=clickcount&reverse=true").then(function(r){return r.json()}).then(function(a){if(my!==tok)return;
-cl=uniq(a).slice(0,150);msg.textContent=cl.length?"":T.none;
+var cur0=BASE.filter(function(b){return (b[3]==="UK"?"GB":b[3])===cs.value}).map(function(b){return {name:b[0],url_resolved:b[1],countrycode:cs.value,bitrate:0}});
+var rest=uniq(a).filter(function(s){var k=s.name.toLowerCase().replace(/[^a-z0-9]/g,"");return !cur0.some(function(c){return c.name.toLowerCase().replace(/[^a-z0-9]/g,"")===k||c.url_resolved===s.url_resolved})});
+cl=cur0.concat(rest).slice(0,150);msg.textContent=cl.length?"":T.none;
 cl.forEach(function(s,i){var o=document.createElement("option");o.value=i;o.textContent=s.name.trim()+(s.bitrate?" · "+s.bitrate+" kbps":"");ss.appendChild(o)});ss.disabled=!cl.length}).catch(function(){if(my===tok)msg.textContent=T.err})};
 ss.onchange=function(){var s=cl[+ss.value];ra.disabled=!s;if(!s)return;playTmp(s.name.trim(),s.url_resolved);ra.textContent="+ "+T.add;ra.disabled=CU.some(function(c){return c[1]===s.url_resolved})};
 ra.onclick=function(){var s=cl[+ss.value];if(!s)return;CU.push([s.name.trim(),s.url_resolved,"",s.countrycode||""]);saveCU();ra.disabled=true;ra.textContent="✓ "+T.added;render()};
