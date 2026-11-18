@@ -6,3 +6,4 @@ html,body{font:16px/1.65 var(--sans);background:var(--bg);color:var(--ink)}html{
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
 
 .card h2 .ic{display:none}.card h2.ft{background:none;border-top:0}.lead{padding-top:30px;padding-bottom:18px}.digest{padding-bottom:12px}.hero{padding-top:0}.pan-layer circle{vector-effect:non-scaling-stroke}
+@media(max-width:600px){header{gap:10px}.brand{font-size:22px;gap:5px}.brand:before{font-size:30px}.live{font-size:9px;margin-left:3px;padding-left:9px}.gnav{gap:2px}.gnav a{padding:2px 5px;min-height:30px}.gnav a.guides{display:none}.status{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;font-size:10px}.vtabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 14px}.extra-nav{display:contents}.vtabs button,.extra-nav button{font-size:12px;line-height:1.5;min-height:46px;text-align:left;padding:7px 0}.lead{padding-top:24px}}
