@@ -119,6 +119,21 @@ footer{max-width:1600px;margin:0 auto;padding:6px 18px 26px;color:var(--dim);fon
 #rplay{width:52px;height:52px;border-radius:50%;border:0;background:var(--fc);color:#04130d;font-size:20px;cursor:pointer;display:grid;place-items:center;box-shadow:0 0 0 4px color-mix(in srgb,var(--fc) 25%,transparent)}
 #rplay:hover{filter:brightness(1.1)}
 #rvol{width:110px;accent-color:var(--fc)}
+.rsearch{padding:0 16px 14px;border-top:1px solid var(--line);margin-top:2px}
+.rsearch form{display:flex;gap:8px;padding-top:14px;flex-wrap:wrap}
+.rsearch input[type=search]{flex:1 1 260px;background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:11px 14px;font:15px system-ui,sans-serif}
+.rsearch input[type=search]:focus{outline:0;border-color:var(--fc)}
+.rsearch button.go{background:var(--fc);color:#04130d;border:0;border-radius:10px;padding:0 18px;font:700 14px system-ui,sans-serif;cursor:pointer;min-height:42px}
+.rres{list-style:none;margin:10px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px}
+.rres li{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.rres .n{flex:1;min-width:0}.rres .n b{display:block;font-size:14px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rres .n span{font:11px var(--mono);color:var(--dim)}
+.rres button{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:8px;padding:6px 10px;font:600 12px system-ui,sans-serif;cursor:pointer}
+.rres button.pl{background:var(--fc);color:#04130d;border-color:var(--fc)}
+.rres button:disabled{opacity:.5;cursor:default}
+.rmsg{font:12px var(--mono);color:var(--mut);margin-top:8px}
+.rchip .x{margin-left:2px;color:var(--dim);font-size:15px;line-height:1;padding:0 2px;border-radius:50%}
+.rchip .x:hover{color:#fff}
 .rnow{min-width:170px;flex:0 1 220px}
 .rnow b{display:block;font-size:15px;color:#fff}
 .rnow span{font:12px var(--mono);color:var(--mut)}
@@ -164,6 +179,7 @@ ul.feed .new{align-self:auto}
 <section class="radio" aria-label="{{radioTitle}}"><div class="card" style="--fc:#2ee6a6"><h2 class="ft"><span class="t"><span class="ic">📻</span>{{radioTitle}}</span> <small>{{radioNote}}</small></h2>
 <div class="rbody"><div class="rctl"><button id="rplay" type="button" aria-label="{{radioPlay}}">▶</button><input id="rvol" type="range" min="0" max="1" step="0.05" value="0.8" aria-label="{{radioVol}}"></div>
 <div class="rnow"><b id="rname">{{radioPick}}</b><span id="rstat">{{radioIdle}}</span></div><div class="rchips" id="rchips"></div></div>
+<div class="rsearch"><form id="rform" role="search"><input type="search" id="rq" placeholder="{{radioSearchPh}}" aria-label="{{radioSearchPh}}" autocomplete="off"><button class="go" type="submit">{{radioSearch}}</button></form><div class="rmsg" id="rmsg"></div><ul class="rres" id="rres"></ul></div>
 <audio id="raudio" preload="none"></audio></div></section>
 <main>
   <section class="card">
@@ -369,28 +385,47 @@ setInterval(loadQuakes,5*6e4);setInterval(loadEvents,30*6e4);setInterval(loadWea
 </script>
 <script>
 (function(){
-var ST=[["France Info","https://icecast.radiofrance.fr/franceinfo-midfi.mp3","fr","FR"],["France Inter","https://icecast.radiofrance.fr/franceinter-midfi.mp3","fr","FR"],["France Culture","https://icecast.radiofrance.fr/franceculture-midfi.mp3","fr","FR"],["RFI Monde","https://rfimonde64k.ice.infomaniak.ch/rfimonde-64.mp3","fr","FR"],["RTL Radio Lëtzebuerg","https://sc.rtl.lu/rtl","fr","LU"],["RTS La 1ère","https://stream.srg-ssr.ch/m/la-1ere/mp3_128","fr","CH"],["BBC World Service","https://stream.live.vc.bbcmedia.co.uk/bbc_world_service","en","UK"],["NPR News","https://npr-ice.streamguys1.com/live.mp3","en","US"],["Deutschlandfunk","https://st01.sslstream.dlf.de/dlf/01/128/mp3/stream.mp3","de","DE"],["BR24","https://dispatcher.rndfnk.com/br/br24/live/mp3/mid","de","DE"]];
+var BASE=[["France Info","https://icecast.radiofrance.fr/franceinfo-midfi.mp3","fr","FR"],["France Inter","https://icecast.radiofrance.fr/franceinter-midfi.mp3","fr","FR"],["France Culture","https://icecast.radiofrance.fr/franceculture-midfi.mp3","fr","FR"],["RFI Monde","https://rfimonde64k.ice.infomaniak.ch/rfimonde-64.mp3","fr","FR"],["RTL Radio Lëtzebuerg","https://sc.rtl.lu/rtl","fr","LU"],["RTS La 1ère","https://stream.srg-ssr.ch/m/la-1ere/mp3_128","fr","CH"],["BBC World Service","https://stream.live.vc.bbcmedia.co.uk/bbc_world_service","en","UK"],["NPR News","https://npr-ice.streamguys1.com/live.mp3","en","US"],["Deutschlandfunk","https://st01.sslstream.dlf.de/dlf/01/128/mp3/stream.mp3","de","DE"],["BR24","https://dispatcher.rndfnk.com/br/br24/live/mp3/mid","de","DE"]];
 var L=(document.documentElement.lang||"fr").slice(0,2);
-ST.sort(function(a,b){return (b[2]===L)-(a[2]===L)});
-var au=document.getElementById("raudio"),btn=document.getElementById("rplay"),nm=document.getElementById("rname"),stt=document.getElementById("rstat"),box=document.getElementById("rchips"),vol=document.getElementById("rvol");
-var T={live:"{{radioLive}}",load:"{{radioLoading}}",err:"{{radioErr}}",idle:"{{radioIdle}}",pick:"{{radioPick}}"};
-var cur=-1;
-function sv(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+BASE.sort(function(a,b){return (b[2]===L)-(a[2]===L)});
+var T={live:"{{radioLive}}",load:"{{radioLoading}}",err:"{{radioErr}}",idle:"{{radioIdle}}",none:"{{radioNoRes}}",srch:"{{radioSearching}}",add:"{{radioAdd}}",added:"{{radioAdded}}",pl:"{{radioPlay}}"};
+function $(i){return document.getElementById(i)}
+var au=$("raudio"),btn=$("rplay"),nm=$("rname"),stt=$("rstat"),box=$("rchips"),vol=$("rvol"),res=$("rres"),msg=$("rmsg");
 function gv(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function sv(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+var CU=[];try{CU=JSON.parse(gv("iv_radios_v1")||"[]")}catch(e){CU=[]}
+if(!Array.isArray(CU))CU=[];
+var ST=[],cur=-1,tmp=null;
+function build(){ST=BASE.concat(CU)}
+function saveCU(){sv("iv_radios_v1",JSON.stringify(CU))}
+function esc(t){var d=document.createElement("div");d.textContent=t;return d.innerHTML}
 function ui(){var pl=!au.paused&&!au.ended;btn.textContent=pl?"❚❚":"▶";[].forEach.call(box.children,function(c,i){c.className="rchip"+(i===cur?" on":"")+(i===cur&&pl?" play":"")})}
-ST.forEach(function(s,i){var b=document.createElement("button");b.type="button";b.className="rchip";b.innerHTML='<span class="eq"><i></i><i></i><i></i></span>'+s[0]+" <small>"+s[3]+"</small>";b.onclick=function(){play(i)};box.appendChild(b)});
+function render(){build();box.innerHTML="";ST.forEach(function(s,i){var b=document.createElement("button");b.type="button";b.className="rchip";b.innerHTML='<span class="eq"><i></i><i></i><i></i></span>'+esc(s[0])+" <small>"+esc(s[3]||"")+"</small>";b.onclick=function(){play(i)};if(i>=BASE.length){var x=document.createElement("span");x.className="x";x.textContent="×";x.title="×";x.onclick=function(e){e.stopPropagation();var k=i-BASE.length,was=(cur===i);CU.splice(k,1);saveCU();if(was){au.pause();cur=-1}else if(cur>i)cur--;render()};b.appendChild(x)}box.appendChild(b)});ui()}
+function start(){stt.textContent=T.load;var p=au.play();if(p&&p.catch)p.catch(function(){stt.textContent=T.err});ui()}
 function play(i){if(i===cur&&!au.paused){au.pause();return}
-if(i!==cur){cur=i;au.src=ST[i][1];nm.textContent=ST[i][0];sv("iv_radio",ST[i][0])}
-stt.textContent=T.load;var p=au.play();if(p&&p.catch)p.catch(function(){stt.textContent=T.err});ui()}
-btn.onclick=function(){if(cur<0){play(0);return}if(au.paused){stt.textContent=T.load;var p=au.play();if(p&&p.catch)p.catch(function(){stt.textContent=T.err})}else au.pause();ui()};
+if(i!==cur){cur=i;tmp=null;au.src=ST[i][1];nm.textContent=ST[i][0];sv("iv_radio",ST[i][0])}
+start()}
+function playTmp(name,url){cur=-1;tmp=[name,url];au.src=url;nm.textContent=name;start()}
+btn.onclick=function(){if(cur<0&&!tmp){play(0);return}if(au.paused)start();else au.pause();ui()};
 au.addEventListener("playing",function(){stt.textContent="● "+T.live;ui()});
 au.addEventListener("pause",function(){stt.textContent=T.idle;ui()});
 au.addEventListener("waiting",function(){stt.textContent=T.load});
-au.addEventListener("error",function(){if(cur>=0)stt.textContent=T.err;ui()});
+au.addEventListener("error",function(){if(cur>=0||tmp)stt.textContent=T.err;ui()});
 vol.oninput=function(){au.volume=+vol.value;sv("iv_vol",vol.value)};
-var v=gv("iv_vol");if(v){vol.value=v}au.volume=+vol.value;
-var last=gv("iv_radio");if(last){for(var i=0;i<ST.length;i++)if(ST[i][0]===last){cur=i;au.src=ST[i][1];nm.textContent=last;break}}
-ui();
+var v=gv("iv_vol");if(v)vol.value=v;au.volume=+vol.value;
+render();
+var last=gv("iv_radio");if(last){for(var i=0;i<ST.length;i++)if(ST[i][0]===last){cur=i;au.src=ST[i][1];nm.textContent=last;break}ui()}
+var tok=0;
+$("rform").onsubmit=function(e){e.preventDefault();var q=$("rq").value.trim();if(q.length<2)return;var my=++tok;msg.textContent=T.srch;res.innerHTML="";
+fetch("https://de1.api.radio-browser.info/json/stations/search?name="+encodeURIComponent(q)+"&limit=40&hidebroken=true&order=clickcount&reverse=true").then(function(r){return r.json()}).then(function(a){if(my!==tok)return;
+var seen={},list=[];a.forEach(function(s){var u=s.url_resolved||"";if(u.indexOf("https://")!==0)return;var k=(s.name||"").toLowerCase().trim();if(seen[k])return;seen[k]=1;list.push(s)});list=list.slice(0,18);
+msg.textContent=list.length?"":T.none;
+list.forEach(function(s){var li=document.createElement("li");var meta=[s.countrycode,s.codec,s.bitrate?s.bitrate+" kbps":""].filter(Boolean).join(" · ");
+li.innerHTML='<div class="n"><b>'+esc(s.name.trim())+'</b><span>'+esc(meta)+'</span></div>';
+var p=document.createElement("button");p.type="button";p.className="pl";p.textContent="▶";p.title=T.pl;p.onclick=function(){playTmp(s.name.trim(),s.url_resolved)};
+var ad=document.createElement("button");ad.type="button";ad.textContent="+ "+T.add;ad.onclick=function(){CU.push([s.name.trim(),s.url_resolved,"",s.countrycode||""]);saveCU();ad.disabled=true;ad.textContent="✓ "+T.added;render()};
+var dup=CU.some(function(c){return c[1]===s.url_resolved});if(dup){ad.disabled=true;ad.textContent="✓ "+T.added}
+li.appendChild(p);li.appendChild(ad);res.appendChild(li)})}).catch(function(){if(my===tok)msg.textContent=T.err})};
 })();
 </script>
 </body>
