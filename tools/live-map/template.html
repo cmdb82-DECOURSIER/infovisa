@@ -98,7 +98,25 @@ ul.feed a{color:var(--ink)}
 .mag.hi{background:#7a2530}.mag.mid{background:#7a4a1c}
 .empty{padding:14px;color:var(--mut);font-size:13px}
 footer{max-width:1600px;margin:0 auto;padding:6px 18px 26px;color:var(--dim);font-size:12px}
-@media (max-width:1000px){main{grid-template-columns:1fr}.feeds{grid-template-columns:1fr}.clock{display:none}}
+
+.digest{max-width:1600px;margin:0 auto;padding:12px 18px 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:6px 13px;font-size:12.5px;color:var(--mut)}
+.pill b{color:var(--ink);font:700 13px var(--mono)}
+.pill.since{border-color:#3a5878;color:var(--ink);background:rgba(22,40,60,.95)}
+.pill.red b{color:#ff6b78}
+.hero{max-width:1600px;margin:12px auto 0;padding:0 18px}
+.herogrid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:1px;background:var(--line)}
+.hl{background:var(--panel);padding:14px 16px;display:flex;flex-direction:column;gap:7px;min-width:0;justify-content:space-between}
+.hl a{color:var(--ink);font-weight:600;line-height:1.3;font-size:14.5px}
+.hl a:hover{color:var(--acc);text-decoration:none}
+.hl .m{font:11px var(--mono);color:var(--dim)}
+.hl.big{grid-row:span 2;padding:22px;justify-content:flex-end;background:linear-gradient(160deg,#18304a,#111924 70%)}
+.hl.big a{font-size:23px;line-height:1.25}
+.herogrid>.empty{grid-column:1/-1;background:var(--panel)}
+.new{display:inline-block;align-self:flex-start;font:700 10px var(--mono);letter-spacing:.8px;color:#06101a;background:var(--acc);border-radius:4px;padding:1px 6px;margin-right:6px}
+ul.feed .new{align-self:auto}
+@media (max-width:1000px){main{grid-template-columns:1fr}.feeds{grid-template-columns:1fr}.clock{display:none}.herogrid{grid-template-columns:1fr 1fr}.hl.big{grid-column:1/-1;grid-row:auto}}
+@media (max-width:560px){.herogrid{grid-template-columns:1fr}.hl.big a{font-size:20px}}
 @media (prefers-reduced-motion:reduce){.live i,.quake.fresh{animation:none}}
 </style>
 <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="ab3c5cb8-e765-471e-9a39-bb8651feca3e" data-blockingmode="auto" type="text/javascript"></script>
@@ -112,6 +130,8 @@ footer{max-width:1600px;margin:0 auto;padding:6px 18px 26px;color:var(--dim);fon
   <div class="search"><input id="q" list="clist" placeholder="{{searchPh}}" aria-label="{{searchPh}}" autocomplete="off"><datalist id="clist"></datalist></div>
 </header>
 <div class="status" id="status" aria-live="polite"></div>
+<div class="digest" id="digest" aria-live="polite"></div>
+<section class="hero" aria-label="{{heroTitle}}"><div class="card"><h2>{{heroTitle}} <small>{{heroNote}}</small></h2><div class="herogrid" id="herogrid"><div class="empty">{{loading}}</div></div></div></section>
 <main>
   <section class="card">
     <h2>{{mapTitle}} <small id="mapnote">{{mapNote}}</small></h2>
@@ -242,8 +262,37 @@ async function countryWeather(c,my){const box=$("#cwx");try{
 
 /* ---------- actualités : /api/news (Google Actualités, cache 10 min) ---------- */
 async function news(q,lang){const d=await getJSON("/api/news?lang="+lang+(q?"&q="+encodeURIComponent(q):""),15000);return d.items||[]}
-function newsItems(arts,max){const seen=new Set(),out=[];for(const a of arts){const k=(a.title||"").toLowerCase().slice(0,60);if(!a.title||seen.has(k))continue;seen.add(k);out.push(el("li",{},el("a",{href:safeUrl(a.url),target:"_blank",rel:"noopener noreferrer",text:a.title}),el("span",{class:"m",text:`${a.source||""}${a.date?" · "+ago(a.date):""}`})));if(out.length>=max)break}return out}
-async function loadNews(){try{let a=await news("",S.newsLang);if(a.length<4&&S.newsLang!=="en"){$("#newsnote").textContent=S.newsIntl;a=a.concat(await news("","en"))}const it=newsItems(a,14);if(!it.length)throw 0;$("#news").replaceChildren(...it);setSrc("gdelt","ok","live "+hhmm())}catch(e){setSrc("gdelt","err",S.retrying);setTimeout(loadNews,9e4);if($("#news .empty"))$("#news").replaceChildren(el("li",{class:"empty",text:S.newsFeedUnavail}))}}
+/* ---------- nouveautés depuis la dernière visite ---------- */
+const SEEN_KEY="iv_seen_v1";let seenStart={k:new Set(),t:0},seenNow=new Set();
+const nkey=t=>(t||"").toLowerCase().replace(/[^a-z0-9À-ɏ]+/g," ").trim().slice(0,60);
+try{const d=JSON.parse(localStorage.getItem(SEEN_KEY)||"null");if(d&&Array.isArray(d.k)){seenStart={k:new Set(d.k),t:+d.t||0};seenNow=new Set(d.k)}}catch(e){}
+function saveSeen(keys){try{keys.forEach(k=>seenNow.add(k));localStorage.setItem(SEEN_KEY,JSON.stringify({t:Date.now(),k:[...seenNow].slice(-300)}))}catch(e){}}
+const isNew=a=>seenStart.k.size>0&&!seenStart.k.has(nkey(a.title));
+function uniq(arts){const seen=new Set(),out=[];for(const a of arts){const k=nkey(a.title);if(!a.title||seen.has(k))continue;seen.add(k);out.push(a)}return out}
+const meta=a=>`${a.source||""}${a.date?" · "+ago(a.date):""}`;
+function newsLi(a,badge){return el("li",{},...(badge&&isNew(a)?[el("span",{class:"new",text:S.newBadge})]:[]),el("a",{href:safeUrl(a.url),target:"_blank",rel:"noopener noreferrer",text:a.title}),el("span",{class:"m",text:meta(a)}))}
+function newsItems(arts,max){return uniq(arts).slice(0,max).map(a=>newsLi(a,false))}
+/* À la une : 5 titres récents, 2 maximum par média pour varier les sources */
+function pickHero(list){const n={},out=[];for(const a of list){const s=a.source||"";if((n[s]||0)>=2)continue;n[s]=(n[s]||0)+1;out.push(a);if(out.length>=5)break}return out}
+function drawHero(list){$("#herogrid").replaceChildren(...list.map((a,i)=>el("div",{class:"hl"+(i===0?" big":"")},el("div",{},...(isNew(a)?[el("span",{class:"new",text:S.newBadge})]:[]),el("a",{href:safeUrl(a.url),target:"_blank",rel:"noopener noreferrer",text:a.title})),el("span",{class:"m",text:meta(a)}))))}
+/* ---------- résumé du jour ---------- */
+const DG={};
+function pill(cls,...parts){return el("span",{class:"pill"+(cls?" "+cls:"")},...parts)}
+function drawDigest(){const out=[];
+  if(DG.fresh>0&&seenStart.t)out.push(pill("since",document.createTextNode(fill(S.sinceVisit,DG.fresh)+" · "+ago(seenStart.t))));
+  if(DG.q){const d=DG.q.filter(x=>Date.now()-x.t<864e5&&x.m>=5),mx=d.reduce((m,x)=>Math.max(m,x.m),0);
+    out.push(pill("",el("b",{text:d.length}),document.createTextNode(" "+S.digQuakes+(mx?" · "+S.digMax+" M"+mx.toFixed(1):""))))}
+  if(DG.ev!=null)out.push(pill("",el("b",{text:DG.ev}),document.createTextNode(" "+S.digEvents)));
+  out.push(pill("red",el("b",{text:C.filter(c=>level(c)===4).length}),document.createTextNode(" "+LV[4].t)));
+  $("#digest").replaceChildren(...out)}
+let newsTimer=0;
+async function loadNews(){try{let a=await news("",S.newsLang);if(a.length<4&&S.newsLang!=="en"){$("#newsnote").textContent=S.newsIntl;a=a.concat(await news("","en"))}
+  const u=uniq(a).sort((x,y)=>(y.date||0)-(x.date||0));if(!u.length)throw 0;
+  drawHero(pickHero(u));$("#news").replaceChildren(...u.slice(0,14).map(x=>newsLi(x,true)));
+  DG.fresh=u.filter(isNew).length;drawDigest();saveSeen(u.map(x=>nkey(x.title)));
+  setSrc("gdelt","ok","live "+hhmm())}catch(e){setSrc("gdelt","err",S.retrying);clearTimeout(newsTimer);newsTimer=setTimeout(loadNews,9e4);
+  if($("#news .empty"))$("#news").replaceChildren(el("li",{class:"empty",text:S.newsFeedUnavail}));
+  if($("#herogrid .empty"))$("#herogrid").replaceChildren(el("div",{class:"empty",text:S.newsFeedUnavail}))}}
 async function countryNews(c,my){const box=()=>$("#cnews");try{
   let a=await news(`"${c.fr}"`,S.newsLang);if(my!==reqId)return;
   if(a.length<3&&S.newsLang!=="en"){a=a.concat(await news(`"${c.en}"`,"en"));if(my!==reqId)return}
@@ -256,7 +305,7 @@ async function loadQuakes(){try{const d=await getJSON("https://earthquake.usgs.g
   gQ.selectAll("circle").data(q).join("circle").attr("class",d=>"quake"+(Date.now()-d.t<36e5*3?" fresh":"")).attr("cx",d=>d.x).attr("cy",d=>d.y)
     .on("mousemove",(ev,d)=>showTip(ev,`${S.quake} M${d.m.toFixed(1)}`,`${d.pl} · ${ago(d.t)}`)).on("mouseleave",hideTip);
   $("#quakes").replaceChildren(...q.slice(0,25).map(d=>el("li",{},el("span",{class:"mag"+(d.m>=6?" hi":d.m>=5.5?" mid":""),text:"M"+d.m.toFixed(1)}),el("a",{href:safeUrl(d.u),target:"_blank",rel:"noopener noreferrer",text:d.pl}),el("span",{class:"m",text:ago(d.t)}))));
-  rescale();setSrc("usgs","ok",`live ${hhmm()} · ${q.length}`)}catch(e){setSrc("usgs","err",S.unavailable);if($("#quakes .empty"))$("#quakes .empty").textContent=S.usgsUnavail}}
+  DG.q=q;drawDigest();rescale();setSrc("usgs","ok",`live ${hhmm()} · ${q.length}`)}catch(e){setSrc("usgs","err",S.unavailable);if($("#quakes .empty"))$("#quakes .empty").textContent=S.usgsUnavail}}
 
 /* ---------- événements naturels ---------- */
 const CAT=S.cat;
@@ -265,7 +314,7 @@ async function loadEvents(){try{const d=await getJSON("https://eonet.gsfc.nasa.g
   gE.selectAll("rect").data(ev).join("rect").attr("class","event").on("mousemove",(e,d)=>showTip(e,d.cat,`${d.n} · ${ago(d.t)}`)).on("mouseleave",hideTip);
   const pri=ev.filter(e=>e.cat!==CAT.wildfires).concat(ev.filter(e=>e.cat===CAT.wildfires));
   $("#events").replaceChildren(...(pri.length?pri.slice(0,25).map(d=>el("li",{},el("a",{href:safeUrl(d.u),target:"_blank",rel:"noopener noreferrer",text:d.n}),el("span",{class:"m",text:`${d.cat} · ${ago(d.t)}`}))):[el("li",{class:"empty",text:S.noEvents})]));
-  rescale();setSrc("eonet","ok",`live ${hhmm()} · ${ev.length}`)}catch(e){setSrc("eonet","err",S.unavailable);if($("#events .empty"))$("#events .empty").textContent=S.eonetUnavail}}
+  DG.ev=ev.length;drawDigest();rescale();setSrc("eonet","ok",`live ${hhmm()} · ${ev.length}`)}catch(e){setSrc("eonet","err",S.unavailable);if($("#events .empty"))$("#events .empty").textContent=S.eonetUnavail}}
 
 /* ---------- météo mondiale ---------- */
 async function loadWeather(){try{const d=await getJSON(`https://api.open-meteo.com/v1/forecast?latitude=${CITIES.map(c=>c[1]).join(",")}&longitude=${CITIES.map(c=>c[2]).join(",")}&current=temperature_2m,weather_code`);
@@ -281,9 +330,9 @@ $("#clist").replaceChildren(...C.map(c=>c.fr).sort((a,b)=>a.localeCompare(b,S.la
 function trySearch(){const v=norm($("#q").value);if(!v)return;const c=C.find(c=>norm(c.fr)===v)||C.find(c=>norm(c.en)===v);if(c){select(c);$("#q").blur()}}
 $("#q").addEventListener("change",trySearch);$("#q").addEventListener("keydown",e=>{if(e.key==="Enter"){const v=norm($("#q").value);const c=C.find(c=>norm(c.fr)===v)||C.find(c=>norm(c.fr).startsWith(v));if(c)select(c)}});
 $("#riskdate").textContent=fmtDate(RISK_DATE);
-drawStatus();drawLayers();drawLegend();overview();tick();setInterval(tick,1000);
+drawStatus();drawLayers();drawLegend();overview();drawDigest();tick();setInterval(tick,1000);
 loadQuakes();loadEvents();loadWeather();loadNews();
-setInterval(loadQuakes,5*6e4);setInterval(loadEvents,30*6e4);setInterval(loadWeather,15*6e4);setInterval(loadNews,10*6e4);
+setInterval(loadQuakes,5*6e4);setInterval(loadEvents,30*6e4);setInterval(loadWeather,15*6e4);setInterval(loadNews,5*6e4);
 </script>
 </body>
 </html>
