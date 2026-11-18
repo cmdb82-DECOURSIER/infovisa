@@ -489,7 +489,15 @@ li.appendChild(p);li.appendChild(ad);res.appendChild(li)})}).catch(function(){if
 var CH=[
 ["LU","RTL Télé Lëtzebuerg","https://live-edge.rtl.lu/channel1/smil:channel1/playlist.m3u8"],
 ["LU","RTL Zwee","https://live-edge.rtl.lu/channel2/smil:channel2/playlist.m3u8"],
-["BE","BX1","https://dlgt0tdl2hpq3.cloudfront.net/rtbf/clr-rtbf/7ec67c8d/index.m3u8"],
+["BE","BX1 (Bruxelles)","https://59959724487e3.streamlock.net/stream/live/playlist.m3u8"],
+["BE","Canal Z (éco)","https://d1hz1p2gea2zy4.cloudfront.net/live/rmgtv/RMG-TRENDSZFR-LIVE/index.m3u8"],
+["BE","Kanaal Z (eco)","https://d1hz1p2gea2zy4.cloudfront.net/live/rmgtv/RMG-TRENDSZNL-LIVE/index.m3u8"],
+["BE","Notélé (Hainaut)","https://streaming01.divercom.be/notele_live/direct.stream/playlist.m3u8"],
+["BE","Matélé","https://live.matele.be/hls/live.m3u8"],
+["BE","TVCom (Brabant wallon)","https://tvlocales-live.freecaster.com/tvcom/95d2f656-ba85-4e13-affc-f1936be1a86d/95d2f656-ba85-4e13-affc-f1936be1a86d.isml/master.m3u8"],
+["BE","Vedia (Verviers)","https://tvlocales-live.freecaster.com/vedia/95d2f480-b0b0-4027-9f4a-057183312305/95d2f480-b0b0-4027-9f4a-057183312305.isml/master.m3u8"],
+["BE","Qu4tre (Liège)","https://tvlocales-live.freecaster.com/rtc/95d2f6ec-22f7-4027-b23d-d5372116b2ad/95d2f6ec-22f7-4027-b23d-d5372116b2ad.isml/master.m3u8"],
+["BE","WTV (Flandre-Occidentale)","https://wtvlive.b-cdn.net/playlist.m3u8"],
 ["FR","France 24","https://live.france24.com/hls/live/2037179/F24_FR_HI_HLS/master_5000.m3u8"],
 ["FR","franceinfo","https://r.eu.cdn-redge.media/livehls/oeu/mt/live/france_info/live.livx/playlist.m3u8"],
 ["FR","LCI","https://r.eu.cdn-redge.media/livehls/oeu/mt/live/lci/live.livx/playlist.m3u8"],
@@ -497,8 +505,18 @@ var CH=[
 ["FR","Euronews FR","https://cdn-euronews.akamaized.net/live/eds/euronews-fr/25026/index.m3u8"],
 ["FR","TV5Monde Info","https://ott.tv5monde.com/Content/HLS/Live/channel(info)/variant.m3u8"],
 ["DE","DW Deutsch","https://dwamdstream103.akamaized.net/hls/live/2015526/dwstream103/master.m3u8"],
+["DE","tagesschau24","https://tagesschau.akamaized.net/hls/live/2020115/tagesschau/tagesschau_1/master.m3u8"],
+["DE","Das Erste","https://daserste-live.ard-mcdn.de/daserste/live/hls/de/master.m3u8"],
+["DE","WDR","https://wdr-live.ard-mcdn.de/wdr/live/hls/de/master.m3u8"],
+["DE","NDR","https://mcdn.ndr.de/ndr/hls/ndr_fs/ndr_hh/master.m3u8"],
+["DE","hr-fernsehen","https://hrhls.akamaized.net/hls/live/2024525/hrhls/index.m3u8"],
 ["DE","Euronews DE","https://cdn-euronews.akamaized.net/live/eds/euronews-de/25027/index.m3u8"],
+["PT","RTP Internacional","https://n-5-2.eu.cdn-redge.media/livehls/oeu/mt/live/rtp_internacional/live.livx/playlist.m3u8"],
 ["PT","Euronews PT","https://cdn-euronews.akamaized.net/live/eds/euronews-pt/25040/index.m3u8"],
+["CH","SRF info","https://r.eu.cdn-redge.media/livehls/oeu/mt/live/srf_info/live.livx/playlist.m3u8"],
+["CH","RTS 1","https://r.eu.cdn-redge.media/livehls/oeu/mt/live/rts_un/live.livx/playlist.m3u8"],
+["CH","Canal Alpha (Neuchâtel)","https://canalalpha.vedge.infomaniak.com/livecast/ik:canalalpha/playlist.m3u8"],
+["CH","TeleTicino","https://vstream-cdn.ch/hls/teleticino.m3u8"],
 ["INT","France 24 English","https://live.france24.com/hls/live/2037218/F24_EN_HI_HLS/master_5000.m3u8"],
 ["INT","DW English","https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/master.m3u8"],
 ["INT","Euronews English","https://cdn-euronews.akamaized.net/live/eds/euronews-en/25002/index.m3u8"],
@@ -512,7 +530,7 @@ var v=$("tvv"),msg=$("tvmsg"),st=$("tvst"),cb=$("tvc"),chb=$("tvch");
 var DN=null;try{DN=new Intl.DisplayNames([L],{type:"region"})}catch(e){}
 var cc="LU",cur=null,hls=null,hlsLoading=null;
 function cname(k){if(k==="INT")return T.intl;try{return DN?DN.of(k):k}catch(e){return k}}
-function drawC(){cb.innerHTML="";ORDER.forEach(function(k){var b=document.createElement("button");b.type="button";b.className="tvc"+(k===cc?" on":"");b.textContent=cname(k);b.onclick=function(){cc=k;drawC();drawCh()};cb.appendChild(b)})}
+function drawC(){cb.innerHTML="";ORDER.forEach(function(k){if(!CH.some(function(c){return c[0]===k}))return;var b=document.createElement("button");b.type="button";b.className="tvc"+(k===cc?" on":"");b.textContent=cname(k);b.onclick=function(){cc=k;drawC();drawCh()};cb.appendChild(b)})}
 function drawCh(){chb.innerHTML="";CH.forEach(function(c){if(c[0]!==cc)return;var b=document.createElement("button");b.type="button";b.className="tvc"+(cur===c[2]?" on":"");b.textContent=c[1];b.onclick=function(){play(c)};chb.appendChild(b)})}
 function loadHls(){if(window.Hls)return Promise.resolve();if(hlsLoading)return hlsLoading;hlsLoading=new Promise(function(ok,ko){var s=document.createElement("script");s.src="/assets/js/hls.min.js";s.onload=ok;s.onerror=ko;document.head.appendChild(s)});return hlsLoading}
 function fail(){msg.style.display="grid";msg.textContent=T.err;st.textContent=""}
