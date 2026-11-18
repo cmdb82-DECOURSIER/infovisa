@@ -1,0 +1,1 @@
+const fs=require('fs'),path=require('path');const output=path.join(__dirname,'out'),site=path.resolve(__dirname,'../..');for(const entry of fs.readdirSync(output)){fs.cpSync(path.join(output,entry),path.join(site,entry),{recursive:true});}console.log('Copied generated Live pages and assets to site root.');
