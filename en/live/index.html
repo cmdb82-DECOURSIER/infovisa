@@ -19,6 +19,15 @@
 <meta property="og:url" content="https://www.infovisa.lu/en/live/">
 <meta property="og:title" content="InfoVisa Live — The world live: travel risk, weather, geopolitics">
 <meta property="og:description" content="Live world map: travel risk level for every country and the reasons behind it, weather, earthquakes, natural disasters and geopolitical news. For travellers and businesses.">
+<meta property="og:site_name" content="InfoVisa.lu">
+<meta property="og:image" content="https://www.infovisa.lu/assets/img/og-infovisa.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="InfoVisa Live — The world live: travel risk, weather, geopolitics">
+<meta name="twitter:description" content="Live world map: travel risk level for every country and the reasons behind it, weather, earthquakes, natural disasters and geopolitical news. For travellers and businesses.">
+<meta name="twitter:image" content="https://www.infovisa.lu/assets/img/og-infovisa.jpg">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.infovisa.lu/#org","name":"InfoVisa.lu","url":"https://www.infovisa.lu/","logo":"https://www.infovisa.lu/assets/favicon.svg"},{"@type":"WebSite","@id":"https://www.infovisa.lu/#site","url":"https://www.infovisa.lu/","name":"InfoVisa.lu","inLanguage":"en","publisher":{"@id":"https://www.infovisa.lu/#org"}},{"@type":"WebApplication","name":"InfoVisa Live — The world live: travel risk, weather, geopolitics","url":"https://www.infovisa.lu/en/live/","description":"Live world map: travel risk level for every country and the reasons behind it, weather, earthquakes, natural disasters and geopolitical news. For travellers and businesses.","inLanguage":"en","applicationCategory":"TravelApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"publisher":{"@id":"https://www.infovisa.lu/#org"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"InfoVisa.lu","item":"https://www.infovisa.lu/"},{"@type":"ListItem","position":2,"name":"InfoVisa Live — The world live: travel risk, weather, geopolitics","item":"https://www.infovisa.lu/en/live/"}]}]}</script>
 <style>
 :root{
   --bg:#0a0f16; --panel:#111924; --panel2:#162130; --line:#223044; --ink:#e8eef6; --mut:#8b9bb0; --dim:#5d6c80;
@@ -169,6 +178,8 @@ footer{max-width:1600px;margin:0 auto;padding:6px 18px 26px;color:var(--dim);fon
 .rchip.on.play .eq{display:inline-flex}
 @keyframes eq{0%,100%{height:3px}50%{height:12px}}
 @media (prefers-reduced-motion:reduce){.eq i{animation:none;height:8px}}
+.lead{max-width:1600px;margin:10px auto 0;padding:0 18px}.lead h1{margin:0;font:800 20px/1.25 system-ui,sans-serif;color:#fff}.lead p{margin:3px 0 0;color:var(--mut);font-size:13.5px}
+.seo{max-width:1600px;margin:14px auto 0;padding:0 18px}.seo .pad{padding:14px 16px;line-height:1.6;font-size:14px;color:var(--mut)}.seo p{margin:0 0 10px}.seo a{color:var(--acc);text-decoration:underline}.seol{font-weight:600}
 .hero{max-width:1600px;margin:12px auto 0;padding:0 18px}
 .herogrid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:1px;background:var(--line)}
 .hl{background:var(--panel);padding:14px 16px;display:flex;flex-direction:column;gap:7px;min-width:0;justify-content:space-between}
@@ -195,6 +206,7 @@ ul.feed .new{align-self:auto}
   <div class="search"><input id="q" list="clist" placeholder="Search a country…" aria-label="Search a country…" autocomplete="off"><datalist id="clist"></datalist></div>
 </header>
 <div class="status" id="status" aria-live="polite"></div>
+<div class="lead"><h1>InfoVisa Live: the world in real time</h1><p>Country travel risk, earthquakes, weather, geopolitical news, live radio and news TV — plus the Schengen visa guide.</p></div>
 <div class="digest" id="digest" aria-live="polite"></div>
 <section class="hero" aria-label="Top stories"><div class="card"><h2 class="ft"><span class="t"><span class="ic">⚡</span>Top stories</span> <small>updates automatically</small></h2><div class="herogrid" id="herogrid"><div class="empty">Loading…</div></div></div></section>
 <section class="radio" aria-label="Live radio"><div class="card" style="--fc:#2ee6a6"><h2 class="ft"><span class="t"><span class="ic">📻</span>Live radio</span> <small>listen to the news live</small></h2>
@@ -224,6 +236,7 @@ ul.feed .new{align-self:auto}
     <section class="card" style="--fc:#b58cff"><h2 class="ft"><span class="t"><span class="ic">🔥</span>Natural events</span> <small>NASA EONET · ongoing</small></h2><ul class="feed" id="events"><li class="empty">Loading…</li></ul></section>
   </div>
 </main>
+<section class="seo"><div class="card"><h2>About the InfoVisa Live map</h2><div class="pad"><p>InfoVisa Live is a continuously updated world map: travel risk level for every country (travel advisories), M4.5+ earthquakes from the last 7 days (USGS), ongoing natural events (NASA EONET), local weather and geopolitical headlines from international press. Spot the countries to avoid and the ones to watch at a glance before you travel.</p><p>Listen to live news radio (BBC World Service, NPR, RFI, Deutschlandfunk…) or watch free news channels (France 24, DW, Euronews). Need a visa? Read our independent guides:</p><p class="seol"><a href="/en/visa-types.html">Schengen visa types</a> · <a href="/en/schengen-countries.html">Schengen countries</a> · <a href="/en/etias.html">ETIAS 2026</a> · <a href="/en/fees-and-costs.html">Fees and costs</a> · <a href="/en/faq.html">Visa FAQ</a></p></div></div></section>
 <footer>
   Risk levels: US Department of State travel advisories, snapshot of <span id="riskdate"></span> — written for US citizens; check your own government's official advice before travelling. Live data: USGS, NASA EONET, Open-Meteo, Google News. Independent information site with no official standing.
 </footer>
