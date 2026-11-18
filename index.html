@@ -438,7 +438,12 @@ fetch("https://de1.api.radio-browser.info/json/countries").then(function(r){retu
 a=a.filter(function(c){return c.iso_3166_1&&c.stationcount>0});
 a.forEach(function(c){var n=c.name;try{if(DN)n=DN.of(c.iso_3166_1)||n}catch(e){}c._n=n});
 a.sort(function(x,y){return x._n.localeCompare(y._n,L)});
-a.forEach(function(c){var o=document.createElement("option");o.value=c.iso_3166_1;o.textContent=c._n+" ("+c.stationcount+")";cs.appendChild(o)})}).catch(function(){});
+var PR=["LU","BE","FR","DE","CH"];
+function addC(c,g){var o=document.createElement("option");o.value=c.iso_3166_1;o.textContent=c._n+" ("+c.stationcount+")";g.appendChild(o)}
+var g1=document.createElement("optgroup"),g2=document.createElement("optgroup");g1.label="★";g2.label="A–Z";
+PR.forEach(function(k){a.forEach(function(c){if(c.iso_3166_1===k)addC(c,g1)})});
+a.forEach(function(c){if(PR.indexOf(c.iso_3166_1)<0)addC(c,g2)});
+cs.appendChild(g1);cs.appendChild(g2)}).catch(function(){});
 function uniq(a){var seen={},l=[];a.forEach(function(s){var u=s.url_resolved||"";if(u.indexOf("https://")!==0)return;var k=(s.name||"").toLowerCase().trim();if(!k||seen[k])return;seen[k]=1;l.push(s)});return l}
 cs.onchange=function(){cl=[];ss.innerHTML="";var o=document.createElement("option");o.value="";o.textContent="Choisir une radio";ss.appendChild(o);ss.disabled=true;ra.disabled=true;res.innerHTML="";if(!cs.value){msg.textContent="";return}
 var my=++tok;msg.textContent=T.srch;
