@@ -50,6 +50,12 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:14px;padding:14p
 .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
 .card h2{margin:0;padding:10px 14px;font:600 11px var(--mono);letter-spacing:1px;text-transform:uppercase;color:var(--mut);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px}
 .card h2 small{font-weight:400;letter-spacing:0;text-transform:none;color:var(--dim)}
+.feeds .card{border-top:3px solid var(--fc,var(--acc))}
+.feeds .card h2.ft{padding:14px 16px 12px;font:800 19px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:.4px;color:#fff;text-transform:uppercase;align-items:center;flex-wrap:wrap;background:linear-gradient(180deg,color-mix(in srgb,var(--fc) 20%,transparent),transparent)}
+.feeds .card h2.ft .ic{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:9px;font-size:19px;margin-right:10px;background:color-mix(in srgb,var(--fc) 28%,#0a0f16);box-shadow:0 0 0 1px var(--fc)}
+.feeds .card h2.ft .t{display:flex;align-items:center}
+.feeds .card h2.ft small{font:500 12px var(--mono);color:var(--mut);margin-left:auto}
+@media (max-width:1000px){.feeds .card h2.ft{font-size:17px}}
 #mapwrap{position:relative;background:var(--sea)}
 #map{display:block;width:100%;height:auto;touch-action:none;cursor:grab}
 #map:active{cursor:grabbing}
@@ -151,9 +157,9 @@ ul.feed .new{align-self:auto}
     <section class="card"><h2>Ficha do país</h2><div class="pad" id="panel"></div></section>
   </aside>
   <div class="feeds">
-    <section class="card"><h2>Geopolítica em direto <small id="newsnote">imprensa em português · 48 h</small></h2><ul class="feed" id="news"><li class="empty">A carregar…</li></ul></section>
-    <section class="card"><h2>Sismos <small>USGS · M4,5+ · 7 dias</small></h2><ul class="feed" id="quakes"><li class="empty">A carregar…</li></ul></section>
-    <section class="card"><h2>Fenómenos naturais <small>NASA EONET · em curso</small></h2><ul class="feed" id="events"><li class="empty">A carregar…</li></ul></section>
+    <section class="card" style="--fc:#4cc2ff"><h2 class="ft"><span class="t"><span class="ic">🌍</span>Geopolítica em direto</span> <small id="newsnote">imprensa em português · 48 h</small></h2><ul class="feed" id="news"><li class="empty">A carregar…</li></ul></section>
+    <section class="card" style="--fc:#ff5a4d"><h2 class="ft"><span class="t"><span class="ic">🌋</span>Sismos</span> <small>USGS · M4,5+ · 7 dias</small></h2><ul class="feed" id="quakes"><li class="empty">A carregar…</li></ul></section>
+    <section class="card" style="--fc:#b58cff"><h2 class="ft"><span class="t"><span class="ic">🔥</span>Fenómenos naturais</span> <small>NASA EONET · em curso</small></h2><ul class="feed" id="events"><li class="empty">A carregar…</li></ul></section>
   </div>
 </main>
 <footer>
