@@ -1,4 +1,8 @@
 const fs = require('fs');
+const assetHash = require('crypto').createHash('sha256');
+function hashAssets(dir){for(const name of fs.readdirSync(dir).sort()){const path=dir+'/'+name;if(fs.statSync(path).isDirectory())hashAssets(path);else assetHash.update(path).update(fs.readFileSync(path));}}
+hashAssets('design');
+const assetVersion=assetHash.digest('hex').slice(0,12);
 const wc = require('world-countries');
 const topo = JSON.parse(fs.readFileSync('node_modules/world-atlas/countries-50m.json', 'utf8'));
 
@@ -186,6 +190,14 @@ const TOPOSTR = safe(JSON.stringify(topo));
 const RISKDATE = '2026-11-13';
 fs.mkdirSync('out', { recursive: true });
 fs.cpSync('design','out/assets/live',{recursive:true});
+// Version module dependencies as well as entry points: static assets have a one-day browser cache.
+for(const name of fs.readdirSync('out/assets/live').filter(n=>n.endsWith('.js'))){
+ const path='out/assets/live/'+name;
+ const source=fs.readFileSync(path,'utf8').replace(/((?:from\s*|import\()\s*['"])(\.[^'"?\n]*\.js)(?:\?v=[^'"]*)?(['"])/g,(_,prefix,url,quote)=>prefix+url+'?v='+assetVersion+quote);
+ fs.writeFileSync(path,source);
+}
+
+fs.writeFileSync('out/assets/live/assets/local-countries.json',JSON.stringify(wc.filter(c=>c.cca2).map(c=>({code:c.cca2,name:c.name.common,capital:c.capital?.[0]||c.name.common,lat:(c.capitalInfo?.latlng?.length===2?c.capitalInfo.latlng:c.latlng)[0],lon:(c.capitalInfo?.latlng?.length===2?c.capitalInfo.latlng:c.latlng)[1]}))));
 
 
 const SEO = {
@@ -233,7 +245,8 @@ for (const lang of LANGS) {
   const seoBlock = '<section class="seo"><div class="card"><h2>' + esc(K.h) + '</h2><div class="pad"><p>' + esc(K.p1) + '</p><p>' + esc(K.p2) + '</p><p class="seol">' + K.links.map(l => '<a href="' + l[1] + '">' + esc(l[0]) + '</a>').join(' · ') + '</p></div></div></section>';
   const designWords={"fr": ["Météo & vents", "Kitesurf & océan", "Radio & TV", "PAN · archives", "Fermer"], "en": ["Weather & wind", "Kitesurf & ocean", "Radio & TV", "UAP · archives", "Close"], "de": ["Wetter & Wind", "Kitesurf & Ozean", "Radio & TV", "UAP · Archiv", "Schließen"], "es": ["Tiempo y viento", "Kitesurf y océano", "Radio y TV", "FANI · archivo", "Cerrar"], "pt": ["Tempo e vento", "Kitesurf e oceano", "Rádio e TV", "FANI · arquivo", "Fechar"]};
   const [designWeather,designMarine,designMedia,designUap,designClose]=designWords[lang];
-  const html_tokens = { designWeather,designMarine,designMedia,designUap,designClose, mk_tabWorld: esc(MKI[lang].tabWorld), mk_tabMkt: esc(MKI[lang].tabMkt), lang, hreflang, langnav, ld, seoBlock, h1: esc(K.h1), lead: esc(K.lead) };
+  const [designCrypto,designStocks,designWebcams,designLocal,designHealth]={fr:['Crypto','Bourse','Webcams live','Monde local','Pandémies & virus'],en:['Crypto','Stocks','Live webcams','Local world','Outbreaks & viruses'],de:['Krypto','Börse','Live-Webcams','Lokal','Ausbrüche & Viren'],es:['Cripto','Bolsa','Cámaras en directo','Mundo local','Brotes y virus'],pt:['Cripto','Bolsa','Webcams ao vivo','Mundo local','Surtos e vírus']}[lang];
+  const html_tokens = {assetVersion,designCrypto,designStocks,designWebcams,designLocal,designHealth, designWeather,designMarine,designMedia,designUap,designClose, mk_tabWorld: esc(MKI[lang].tabWorld), mk_tabMkt: esc(MKI[lang].tabMkt), lang, hreflang, langnav, ld, seoBlock, h1: esc(K.h1), lead: esc(K.lead) };
   html = html.replace(/\{\{(\w+)\}\}/g, (m, k) => {
     if (k in html_tokens) return html_tokens[k];
     if (!(k in L)) throw new Error(`${lang}: missing key ${k}`);

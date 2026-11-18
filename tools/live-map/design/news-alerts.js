@@ -31,7 +31,7 @@ export function countriesInHeadline(title,countries){
  let remaining=' '+normalize(title)+' ';
  const available=new Set(countries.map(c=>c.iso)),terms=[];
  for(const c of countries){
-  const names=aliases[c.iso]||[c.name];
+  const names=[c.name,...(c.names||[]),...(aliases[c.iso]||[])].filter(Boolean);
   for(const name of names){const term=normalize(name);if(term.length>=3)terms.push({iso:c.iso,term});}
  }
  terms.sort((a,b)=>b.term.length-a.term.length);
@@ -47,3 +47,7 @@ export function getNewsAlerts(items,countries,options={}){
  return items.flatMap(item=>{const kind=classifyAlert(item,options);if(!kind)return [];const mentions=countriesInHeadline(item.title,countries);const countryIsos=mentions.length?mentions:countries.some(c=>c.iso===item.countryIso)?[item.countryIso]:[];return [{...item,kind,countryIsos,locationBasis:mentions.length?'headline':item.countryIso?'national-feed':null}];});
 }
 
+
+export function getRecentNews(items,countries,{now=Date.now()}={}){
+ return items.flatMap(item=>{const published=Date.parse(item.publishedAt||'');if(!Number.isFinite(published)||published>now+300000||now-published>86400000)return [];const countryIsos=countriesInHeadline(item.title,countries);if(!countryIsos.length)return [];return [{...item,kind:classifyAlert(item,{now})||'recent',countryIsos}];});
+}
