@@ -96,7 +96,12 @@
       "chargée à": "loaded at",
       "interpolation indicative": "indicative interpolation",
       "Point de prévision": "Forecast point",
-      "cliquez la carte pour changer de point": "click the map to change point"
+      "cliquez la carte pour changer de point": "click the map to change point",
+      "Lecture en cours · +{value} h": "Playing · +{value} h",
+      "En pause · +{value} h": "Paused · +{value} h",
+      "Fin des prévisions · +{value} h": "End of forecast · +{value} h",
+      "Prévisions indisponibles": "Forecast unavailable",
+      "Pluie prévue, en mm/h. Les zones les plus colorées indiquent les précipitations les plus fortes.": "Forecast rain in mm/h. More intense colours indicate heavier precipitation."
     },
     "de": {
       "Prévisions Open-Meteo échantillonnées sur 48 positions mondiales. Les couleurs et vecteurs intermédiaires sont une interpolation indicative des quatre points les plus proches. Les trajectoires suivent les composantes du vent prédit, interpolées continûment entre les heures ; leur vitesse d’animation est amplifiée pour rester lisible. La lecture s’arrête à la dernière échéance, et les traits continuent alors sur cette prévision fixe. Les valeurs affichées au survol sont celles du point échantillonné le plus proche. La grille ne permet pas une analyse locale fine. Le vent représente une direction de provenance ; les traits se déplacent dans le sens de transport. Les altitudes sont exprimées au-dessus du sol. La pression de la carte est ramenée au niveau de la mer, celle de la fiche locale est la pression à la surface.": "Open-Meteo-Prognosen an 48 Orten weltweit. Farben und Vektoren zwischen diesen Punkten sind näherungsweise interpoliert. Windspuren bewegen sich fließend zwischen den Vorhersagestunden; ihre Geschwindigkeit ist zur besseren Lesbarkeit verstärkt. Die Wiedergabe endet bei der letzten Vorhersage, die Spuren bewegen sich weiter. Beim Überfahren werden Werte des nächstgelegenen Messpunkts angezeigt; lokale Feinheiten fehlen. Die Windrichtung bezeichnet die Herkunft, die Spuren zeigen die Strömungsrichtung. Höhen gelten über Grund. Der Kartendruck gilt auf Meereshöhe, der lokale Druck an der Oberfläche.",
@@ -194,7 +199,12 @@
       "chargée à": "geladen um",
       "interpolation indicative": "indikative Interpolation",
       "Point de prévision": "Vorhersagepunkt",
-      "cliquez la carte pour changer de point": "zum Ändern auf die Karte klicken"
+      "cliquez la carte pour changer de point": "zum Ändern auf die Karte klicken",
+      "Lecture en cours · +{value} h": "Wiedergabe · +{value} h",
+      "En pause · +{value} h": "Pausiert · +{value} h",
+      "Fin des prévisions · +{value} h": "Ende der Vorhersage · +{value} h",
+      "Prévisions indisponibles": "Vorhersage nicht verfügbar",
+      "Pluie prévue, en mm/h. Les zones les plus colorées indiquent les précipitations les plus fortes.": "Vorhergesagter Regen in mm/h. Kräftigere Farben zeigen stärkeren Niederschlag."
     },
     "es": {
       "Prévisions Open-Meteo échantillonnées sur 48 positions mondiales. Les couleurs et vecteurs intermédiaires sont une interpolation indicative des quatre points les plus proches. Les trajectoires suivent les composantes du vent prédit, interpolées continûment entre les heures ; leur vitesse d’animation est amplifiée pour rester lisible. La lecture s’arrête à la dernière échéance, et les traits continuent alors sur cette prévision fixe. Les valeurs affichées au survol sont celles du point échantillonné le plus proche. La grille ne permet pas une analyse locale fine. Le vent représente une direction de provenance ; les traits se déplacent dans le sens de transport. Les altitudes sont exprimées au-dessus du sol. La pression de la carte est ramenée au niveau de la mer, celle de la fiche locale est la pression à la surface.": "Previsiones de Open-Meteo en 48 ubicaciones mundiales. Los colores y vectores intermedios son interpolaciones orientativas. Las trazas de viento avanzan con fluidez entre las horas previstas, con velocidad amplificada para facilitar la lectura. La reproducción se detiene en la última previsión, pero las trazas siguen moviéndose. Al pasar el cursor se muestra el punto más cercano; la cuadrícula no refleja detalles locales. La dirección del viento indica su procedencia y las trazas su desplazamiento. Las alturas se expresan sobre el suelo. La presión del mapa se refiere al nivel del mar y la local a la superficie.",
@@ -292,7 +302,12 @@
       "chargée à": "cargada a las",
       "interpolation indicative": "interpolación orientativa",
       "Point de prévision": "Punto de previsión",
-      "cliquez la carte pour changer de point": "pulse el mapa para cambiar de punto"
+      "cliquez la carte pour changer de point": "pulse el mapa para cambiar de punto",
+      "Lecture en cours · +{value} h": "Reproduciendo · +{value} h",
+      "En pause · +{value} h": "En pausa · +{value} h",
+      "Fin des prévisions · +{value} h": "Fin de la previsión · +{value} h",
+      "Prévisions indisponibles": "Previsión no disponible",
+      "Pluie prévue, en mm/h. Les zones les plus colorées indiquent les précipitations les plus fortes.": "Lluvia prevista en mm/h. Los colores más intensos indican precipitaciones más fuertes."
     },
     "pt": {
       "Prévisions Open-Meteo échantillonnées sur 48 positions mondiales. Les couleurs et vecteurs intermédiaires sont une interpolation indicative des quatre points les plus proches. Les trajectoires suivent les composantes du vent prédit, interpolées continûment entre les heures ; leur vitesse d’animation est amplifiée pour rester lisible. La lecture s’arrête à la dernière échéance, et les traits continuent alors sur cette prévision fixe. Les valeurs affichées au survol sont celles du point échantillonné le plus proche. La grille ne permet pas une analyse locale fine. Le vent représente une direction de provenance ; les traits se déplacent dans le sens de transport. Les altitudes sont exprimées au-dessus du sol. La pression de la carte est ramenée au niveau de la mer, celle de la fiche locale est la pression à la surface.": "Previsões Open-Meteo em 48 locais mundiais. As cores e os vetores intermédios são interpolações indicativas. Os traços do vento avançam com fluidez entre as horas previstas, com velocidade ampliada para facilitar a leitura. A reprodução termina na última previsão, mas os traços continuam a mover-se. Ao passar o cursor, os valores correspondem ao ponto mais próximo; a grelha não mostra pormenores locais. A direção do vento indica a origem e os traços o deslocamento. As alturas são acima do solo. A pressão do mapa refere-se ao nível do mar e a local à superfície.",
@@ -390,7 +405,12 @@
       "chargée à": "carregada às",
       "interpolation indicative": "interpolação indicativa",
       "Point de prévision": "Ponto de previsão",
-      "cliquez la carte pour changer de point": "clique no mapa para mudar de ponto"
+      "cliquez la carte pour changer de point": "clique no mapa para mudar de ponto",
+      "Lecture en cours · +{value} h": "A reproduzir · +{value} h",
+      "En pause · +{value} h": "Em pausa · +{value} h",
+      "Fin des prévisions · +{value} h": "Fim da previsão · +{value} h",
+      "Prévisions indisponibles": "Previsão indisponível",
+      "Pluie prévue, en mm/h. Les zones les plus colorées indiquent les précipitations les plus fortes.": "Chuva prevista em mm/h. As cores mais intensas indicam precipitação mais forte."
     }
   }
 }
