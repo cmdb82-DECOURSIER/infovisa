@@ -1,20 +1,123 @@
 {
   "redirects": [
-    { "source": "/fr/comment-postuler.html", "destination": "/fr/comment-faire-la-demande.html", "permanent": true },
-    { "source": "/fr/delai-de-traitement.html", "destination": "/fr/delais-de-traitement.html", "permanent": true },
-    { "source": "/fr/politique-confidentialite.html", "destination": "/fr/politique-de-confidentialite.html", "permanent": true },
-    { "source": "/fr/index.html", "destination": "/fr/", "permanent": true },
-    { "source": "/en/index.html", "destination": "/en/", "permanent": true },
-    { "source": "/de/index.html", "destination": "/de/", "permanent": true },
-    { "source": "/es/index.html", "destination": "/es/", "permanent": true },
-    { "source": "/pt/index.html", "destination": "/pt/", "permanent": true },
-    { "source": "/index.html", "destination": "/", "permanent": true }
+    {
+      "source": "/fr/comment-postuler.html",
+      "destination": "/fr/comment-faire-la-demande.html",
+      "permanent": true
+    },
+    {
+      "source": "/fr/delai-de-traitement.html",
+      "destination": "/fr/delais-de-traitement.html",
+      "permanent": true
+    },
+    {
+      "source": "/fr/politique-confidentialite.html",
+      "destination": "/fr/politique-de-confidentialite.html",
+      "permanent": true
+    },
+    {
+      "source": "/fr/index.html",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/index.html",
+      "destination": "/en/live/",
+      "statusCode": 301
+    },
+    {
+      "source": "/de/index.html",
+      "destination": "/de/live/",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/index.html",
+      "destination": "/es/live/",
+      "statusCode": 301
+    },
+    {
+      "source": "/pt/index.html",
+      "destination": "/pt/live/",
+      "statusCode": 301
+    },
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/fr",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/fr/",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en",
+      "destination": "/en/live/",
+      "statusCode": 301
+    },
+    {
+      "source": "/en/",
+      "destination": "/en/live/",
+      "statusCode": 301
+    },
+    {
+      "source": "/de",
+      "destination": "/de/live/",
+      "statusCode": 301
+    },
+    {
+      "source": "/de/",
+      "destination": "/de/live/",
+      "statusCode": 301
+    },
+    {
+      "source": "/es",
+      "destination": "/es/live/",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/",
+      "destination": "/es/live/",
+      "statusCode": 301
+    },
+    {
+      "source": "/pt",
+      "destination": "/pt/live/",
+      "statusCode": 301
+    },
+    {
+      "source": "/pt/",
+      "destination": "/pt/live/",
+      "statusCode": 301
+    }
   ],
   "headers": [
-    { "source": "/assets/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }] },
-    { "source": "/(.*)", "headers": [
-      { "key": "X-Content-Type-Options", "value": "nosniff" },
-      { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
-    ] }
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    }
   ]
 }
