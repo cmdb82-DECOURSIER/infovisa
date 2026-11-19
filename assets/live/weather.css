@@ -8,3 +8,5 @@
 .wx-atlas-labels{position:absolute;inset:0;pointer-events:none;z-index:4}.wx-atlas-labels>span{position:absolute;transform:translate(-50%,-50%);background:#081821c9;border:1px solid #62809166;border-radius:4px;padding:5px 7px;font-size:11px;color:#e4edf0;white-space:nowrap;box-shadow:0 2px 8px #0005}.wx-atlas-labels small{font-size:8px;color:#abc0c9}.wx-atlas-labels em{display:block;font-size:8px;font-style:normal;color:#a5d5df;margin-top:3px}.wx-atlas-labels[hidden]{display:none}
 
 .wx-geography .country{vector-effect:non-scaling-stroke;stroke-width:.7}
+
+.wx-city-pin{position:absolute;transform:translate(-5px,-100%);padding:5px 8px;background:#0a1924e8;border:1px solid #c7ab7999;border-radius:4px;color:#e8ce9c;font-size:11px;font-weight:600;box-shadow:0 2px 8px #0007}
