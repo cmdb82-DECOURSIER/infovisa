@@ -1,15 +1,15 @@
 /* Pure forecast-field and advection math. No DOM and no per-frame nearest-neighbour search. */
 const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
-export function createSpatialWeights(points,{width=1100,height=560,cols=56,rows=29,neighbors=4}={}){
+export function createSpatialWeights(points,{x0=0,y0=0,width=1100,height=560,cols=56,rows=29,neighbors=4}={}){
  const count=Math.min(neighbors,points.length),indices=new Uint16Array(cols*rows*count),weights=new Float32Array(indices.length);
  for(let row=0;row<rows;row++)for(let col=0;col<cols;col++){
-  const x=col/(cols-1)*width,y=row/(rows-1)*height,nearest=[];
+  const x=x0+col/(cols-1)*width,y=y0+row/(rows-1)*height,nearest=[];
   for(let i=0;i<points.length;i++){const dx=points[i].xy[0]-x,dy=points[i].xy[1]-y,d=dx*dx+dy*dy;let at=0;while(at<nearest.length&&nearest[at].d<=d)at++;if(at<count){nearest.splice(at,0,{i,d});if(nearest.length>count)nearest.pop();}}
   const offset=(row*cols+col)*count;let total=0;
   nearest.forEach((p,i)=>{indices[offset+i]=p.i;const w=1/Math.max(100,p.d);weights[offset+i]=w;total+=w;});
   for(let i=0;i<count;i++)weights[offset+i]/=total;
  }
- return {width,height,cols,rows,neighbors:count,indices,weights};
+ return {x0,y0,width,height,cols,rows,neighbors:count,indices,weights};
 }
 export function projectField(spatial,samples){
  const size=spatial.cols*spatial.rows,out={spatial,u:new Float32Array(size),v:new Float32Array(size),value:new Float32Array(size)};
@@ -22,7 +22,7 @@ export function projectField(spatial,samples){
 }
 function blend(a,b,t){if(!Number.isFinite(a))return b;if(!Number.isFinite(b))return a;return a+(b-a)*t;}
 function sampleOne(field,x,y){
- const s=field.spatial,gx=clamp(x/s.width*(s.cols-1),0,s.cols-1),gy=clamp(y/s.height*(s.rows-1),0,s.rows-1),cx=Math.min(s.cols-2,Math.floor(gx)),cy=Math.min(s.rows-2,Math.floor(gy)),ax=gx-cx,ay=gy-cy,i=cy*s.cols+cx;
+ const s=field.spatial,gx=clamp((x-(s.x0||0))/s.width*(s.cols-1),0,s.cols-1),gy=clamp((y-(s.y0||0))/s.height*(s.rows-1),0,s.rows-1),cx=Math.min(s.cols-2,Math.floor(gx)),cy=Math.min(s.rows-2,Math.floor(gy)),ax=gx-cx,ay=gy-cy,i=cy*s.cols+cx;
  const read=arr=>blend(blend(arr[i],arr[i+1],ax),blend(arr[i+s.cols],arr[i+s.cols+1],ax),ay);
  return {u:read(field.u),v:read(field.v),value:read(field.value)};
 }

@@ -20,7 +20,7 @@ export async function initI18n({selector='#language-select'}={}){
  const select=typeof selector==='string'?document.querySelector(selector):selector;
  if(select){select.disabled=true;select.dataset.i18nReady='false';select.dataset.i18nSkip='';select.innerHTML=EU_LANGUAGES.map(([code,name])=>`<option value="${code}" lang="${code}">${name}</option>`).join('');select.setAttribute('aria-label','Langue de l’interface');}
  const files=['i18n-catalog.json','i18n-locales-extra.json','i18n-locales-west.json','i18n-locales-extra2.json','i18n-additions.json','i18n-live-completion.json'];
- const responses=await Promise.allSettled(files.map(async file=>{const r=await fetch(new URL(file,import.meta.url));if(!r.ok)throw Error(`${file}: ${r.status}`);return r.json();}));
+ const responses=await Promise.allSettled(files.map(async file=>{const url=new URL(file,import.meta.url);url.search=new URL(import.meta.url).search;const r=await fetch(url);if(!r.ok)throw Error(`${file}: ${r.status}`);return r.json();}));
  const base=responses[0].status==='fulfilled'?responses[0].value:null;
  if(!base?.sources?.length){
   document.documentElement.lang='fr';if(select){for(const option of select.options)option.disabled=option.value!=='fr';select.value='fr';select.disabled=false;select.dataset.i18nReady='true';}
