@@ -419,11 +419,12 @@ function select(c,f){selected=c;const my=++reqId;paths.classed("sel",d=>cOf(d)==
 async function countryWeather(c,my){const box=$("#cwx");try{
   let lat=c.ll[0],lon=c.ll[1];
   if(c.cap){try{const g=await getJSON(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(c.cap)}&count=1&language=${S.lang}&countryCode=${c.a2}`);if(g.results&&g.results[0]){lat=g.results[0].latitude;lon=g.results[0].longitude}}catch(e){}}
-  const d=await getJSON(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m&daily=weather_code,temperature_2m_max,temperature_2m_min&forecast_days=4&timezone=auto`);
-  if(my!==reqId)return;const cu=d.current,[ico,lab]=WMO(cu.weather_code);
+  const d=await getJSON(`/api/weather?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m&daily=weather_code,temperature_2m_max,temperature_2m_min&forecast_days=4&timezone=auto`);
+  if(my!==reqId)return;const cu=d.current,[ico,lab]=WMO(cu.weather_code),wn=v=>Number.isFinite(v)?Math.round(v):"—";
   box.className="";box.replaceChildren(
-    el("div",{class:"wxnow"},el("span",{class:"ico",text:ico}),el("span",{class:"big",text:Math.round(cu.temperature_2m)+"°"}),el("div",{},el("div",{text:lab}),el("div",{class:"csub",style:"margin:0",text:`${S.feels} ${Math.round(cu.apparent_temperature)}° · ${S.wind} ${Math.round(cu.wind_speed_10m)} km/h · ${S.humidity} ${cu.relative_humidity_2m}%`}))),
-    el("div",{class:"wxdays"},...[1,2,3].map(i=>el("div",{},document.createTextNode(new Date(d.daily.time[i]+"T12:00").toLocaleDateString(LOC,{weekday:"short"})+" "+WMO(d.daily.weather_code[i])[0]),el("b",{text:`${Math.round(d.daily.temperature_2m_min[i])}° / ${Math.round(d.daily.temperature_2m_max[i])}°`})))));
+    el("div",{class:"wxnow"},el("span",{class:"ico",text:ico}),el("span",{class:"big",text:wn(cu.temperature_2m)+"°"}),el("div",{},el("div",{text:lab}),el("div",{class:"csub",style:"margin:0",text:`${S.feels} ${wn(cu.apparent_temperature)}° · ${S.wind} ${wn(cu.wind_speed_10m)} km/h · ${S.humidity} ${cu.relative_humidity_2m}%`}))),
+    el("div",{class:"wxdays"},...[1,2,3].map(i=>el("div",{},document.createTextNode(new Date(d.daily.time[i]+"T12:00").toLocaleDateString(LOC,{weekday:"short"})+" "+WMO(d.daily.weather_code[i])[0]),el("b",{text:`${wn(d.daily.temperature_2m_min[i])}° / ${wn(d.daily.temperature_2m_max[i])}°`})))));
+  box.appendChild(el("a",{href:"https://api.met.no/weatherapi/locationforecast/2.0/documentation",target:"_blank",rel:"noopener",text:"MET Norway · CC BY 4.0"}));
   const t=$("#ctime");if(t&&d.timezone){t.dataset.tz=d.timezone;tick()}
  }catch(e){if(my===reqId){box.className="empty";box.textContent=S.wxUnavail}}}
 
@@ -486,7 +487,7 @@ async function loadEvents(){try{const d=await getJSON("https://eonet.gsfc.nasa.g
   DG.ev=ev.length;drawDigest();rescale();setSrc("eonet","ok",`live ${hhmm()} · ${ev.length}`)}catch(e){setSrc("eonet","err",S.unavailable);if($("#events .empty"))$("#events .empty").textContent=S.eonetUnavail}}
 
 /* ---------- météo mondiale ---------- */
-async function loadWeather(){try{const d=await getJSON(`https://api.open-meteo.com/v1/forecast?latitude=${CITIES.map(c=>c[1]).join(",")}&longitude=${CITIES.map(c=>c[2]).join(",")}&current=temperature_2m,weather_code`);
+async function loadWeather(){try{const d=await getJSON(`/api/weather?latitude=${CITIES.map(c=>c[1]).join(",")}&longitude=${CITIES.map(c=>c[2]).join(",")}&current=temperature_2m,weather_code`);
   const w=(Array.isArray(d)?d:[d]).map((r,i)=>{const p=proj([CITIES[i][2],CITIES[i][1]]);return{x:p[0],y:p[1],n:CITIES[i][0],t:Number.isFinite(r.current?.temperature_2m)?Math.round(r.current.temperature_2m):null,c:r.current?.weather_code}});
   gW.selectAll("text").data(w.filter(v=>v.t!==null)).join("text").attr("class","wx").attr("x",d=>d.x).attr("y",d=>d.y).attr("text-anchor","middle").text(d=>d.t+"°").append("title").text(d=>`${d.n}: ${d.t}° · ${WMO(d.c)[1]}`);
   rescale();applyLayers();setSrc("meteo","ok","live "+hhmm())}catch(e){setSrc("meteo","err",S.unavailable)}}
