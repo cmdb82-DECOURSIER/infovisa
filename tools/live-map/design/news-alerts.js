@@ -51,3 +51,15 @@ export function getNewsAlerts(items,countries,options={}){
 export function getRecentNews(items,countries,{now=Date.now()}={}){
  return items.flatMap(item=>{const published=Date.parse(item.publishedAt||'');if(!Number.isFinite(published)||published>now+300000||now-published>86400000)return [];const countryIsos=countriesInHeadline(item.title,countries);if(!countryIsos.length)return [];return [{...item,kind:classifyAlert(item,{now})||'recent',countryIsos}];});
 }
+
+// Publisher provenance comes from the dedicated server endpoint, not a headline.
+export function getMapAlerts(payload,countries,{now=Date.now()}={}){
+ const checked=Date.parse(payload?.checkedAt||'');
+ if(!Number.isFinite(checked)||checked>now+120000||now-checked>300000)return [];
+ return (Array.isArray(payload.items)?payload.items:[]).filter(item=>item&&typeof item==='object').flatMap(item=>{
+  const published=Date.parse(item.publishedAt||''),verified=Date.parse(item.verifiedAt||'');
+  if(item.verification!=='publisher-feed'||!item.sourceId||!item.source||!Number.isFinite(published)||published>now||now-published>3600000||!Number.isFinite(verified)||verified>now+120000||now-verified>300000)return [];
+  try{for(const value of [item.url,item.sourceUrl]){const url=new URL(value);if(url.protocol!=='https:'||url.username||url.password)return [];}}catch{return [];}
+  return [{...item,kind:classifyAlert(item,{now})||'recent',countryIsos:countriesInHeadline(item.title,countries)}];
+ });
+}
