@@ -1,5 +1,5 @@
-import {mountPublicCameras} from './public-cameras.js?v=c7de54a3db56';
-import {isLuxembourgPlace} from './lux-live.js?v=c7de54a3db56';
+import {mountPublicCameras} from './public-cameras.js?v=d057b97890b9';
+import {isLuxembourgPlace} from './lux-live.js?v=d057b97890b9';
 /* Nearby webcams: licensed Windy players plus geographically matched source links. */
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const rows={

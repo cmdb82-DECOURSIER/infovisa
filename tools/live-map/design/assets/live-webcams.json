@@ -1,0 +1,150 @@
+{
+  "checkedAt": "2026-11-19",
+  "rights": "Official public YouTube players. Streams belong to their operators; no video is copied or rehosted. Availability may change.",
+  "cameras": [
+    {
+      "id": "lisboa-tejo-vts",
+      "city": "Lisboa",
+      "country": "Portugal",
+      "name": "Tejo · Algés / VTS",
+      "provider": "Porto de Lisboa",
+      "videoId": "FE-JfjvXFEU",
+      "channelId": "UCglkHkayC5dDQpyfAFRw6kg",
+      "lat": 38.7027,
+      "lon": -9.2594,
+      "sourceUrl": "https://www.portodelisboa.pt/tejo-live"
+    },
+    {
+      "id": "lisboa-panorama",
+      "city": "Lisboa",
+      "country": "Portugal",
+      "name": "Panorama · Lisbonne et le Tage",
+      "provider": "I love Lx",
+      "videoId": "tKIgNtEgLN0",
+      "channelId": "UCjvtkjWwpnhgGv2nutFFr-A",
+      "lat": 38.72,
+      "lon": -9.14,
+      "sourceUrl": "https://www.youtube.com/watch?v=tKIgNtEgLN0"
+    },
+    {
+      "id": "tokyo-shibuya-ann",
+      "city": "Tokyo",
+      "country": "Japan",
+      "name": "Shibuya · Scramble Crossing",
+      "provider": "ANN / TV Asahi",
+      "videoId": "5B4LmH4JbnY",
+      "channelId": "UCGCZAYq5Xxojl_tSXcVJhiQ",
+      "lat": 35.6595,
+      "lon": 139.7005,
+      "sourceUrl": "https://www.youtube.com/watch?v=5B4LmH4JbnY"
+    },
+    {
+      "id": "tokyo-shibuya-itscom",
+      "city": "Tokyo",
+      "country": "Japan",
+      "name": "Shibuya · iTSCOM",
+      "provider": "iTSCOM",
+      "videoId": "f50R4vDlCmA",
+      "channelId": "UCPPFGmTUyM4iDIgp2_zJi5g",
+      "lat": 35.6595,
+      "lon": 139.7005,
+      "sourceUrl": "https://www.youtube.com/watch?v=f50R4vDlCmA"
+    },
+    {
+      "id": "tokyo-futako",
+      "city": "Tokyo",
+      "country": "Japan",
+      "name": "Futako-Tamagawa · rivière Tama",
+      "provider": "iTSCOM",
+      "videoId": "fndY3LREfdE",
+      "channelId": "UCPPFGmTUyM4iDIgp2_zJi5g",
+      "lat": 35.611,
+      "lon": 139.626,
+      "sourceUrl": "https://www.youtube.com/watch?v=fndY3LREfdE"
+    },
+    {
+      "id": "newyork-times-square",
+      "city": "New York",
+      "country": "United States",
+      "name": "Times Square · North 4K",
+      "provider": "EarthCam",
+      "videoId": "ZxCeWQ3Lcig",
+      "channelId": "UC6qrG3W8SMK0jior2olka3g",
+      "lat": 40.758,
+      "lon": -73.9855,
+      "sourceUrl": "https://www.earthcam.com/usa/newyork/timessquare/"
+    },
+    {
+      "id": "newyork-crossroads",
+      "city": "New York",
+      "country": "United States",
+      "name": "Times Square · Crossroads",
+      "provider": "EarthCam",
+      "videoId": "KHy_n-EMWY8",
+      "channelId": "UC6qrG3W8SMK0jior2olka3g",
+      "lat": 40.758,
+      "lon": -73.9855,
+      "sourceUrl": "https://www.youtube.com/watch?v=KHy_n-EMWY8"
+    },
+    {
+      "id": "newyork-liberty",
+      "city": "New York",
+      "country": "United States",
+      "name": "Statue of Liberty",
+      "provider": "EarthCam",
+      "videoId": "o5Ie_LpZ9uk",
+      "channelId": "UC6qrG3W8SMK0jior2olka3g",
+      "lat": 40.6892,
+      "lon": -74.0445,
+      "sourceUrl": "https://www.youtube.com/watch?v=o5Ie_LpZ9uk"
+    },
+    {
+      "id": "capetown-table-mountain",
+      "city": "Cape Town",
+      "country": "South Africa",
+      "name": "Table Mountain · vue de la ville",
+      "provider": "Vanilla",
+      "videoId": "zmi8d3UKOuY",
+      "channelId": "UC9Ljd016Si9rv3KS-5CbpGg",
+      "lat": -33.93,
+      "lon": 18.41,
+      "sourceUrl": "https://www.youtube.com/watch?v=zmi8d3UKOuY"
+    },
+    {
+      "id": "capetown-sea-point",
+      "city": "Cape Town",
+      "country": "South Africa",
+      "name": "Sea Point · Lions Head",
+      "provider": "Vanilla",
+      "videoId": "4Zu64CmAjMo",
+      "channelId": "UC9Ljd016Si9rv3KS-5CbpGg",
+      "lat": -33.907,
+      "lon": 18.397,
+      "sourceUrl": "https://www.youtube.com/watch?v=4Zu64CmAjMo"
+    },
+    {
+      "id": "capetown-panorama",
+      "city": "Cape Town",
+      "country": "South Africa",
+      "name": "Panorama · Table Mountain et port",
+      "provider": "FLOORING.CO.ZA",
+      "videoId": "CnQEcM8aOnQ",
+      "channelId": "UCMyCO_-D2eLocsvoiGob7iw",
+      "lat": -33.93,
+      "lon": 18.42,
+      "sourceUrl": "https://www.youtube.com/watch?v=CnQEcM8aOnQ"
+    },
+    {
+      "id": "sydney-harbour",
+      "city": "Sydney",
+      "country": "Australia",
+      "name": "Sydney Harbour · Opera House et Harbour Bridge",
+      "provider": "WebcamSydney",
+      "videoId": "5uZa3-RMFos",
+      "channelId": "UCLav_kTu9PmAEChvGyrPbhQ",
+      "lat": -33.843,
+      "lon": 151.229,
+      "sourceUrl": "https://webcamsydney.com/"
+    }
+  ]
+}
