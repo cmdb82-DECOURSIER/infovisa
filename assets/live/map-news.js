@@ -1,5 +1,5 @@
-import {getMapAlerts} from './news-alerts.js?v=d006114a940c';
-import {esc,labels,date} from './portal-utils.js?v=d006114a940c';
+import {getMapAlerts} from './news-alerts.js?v=c6e1fd2a1ced';
+import {esc,labels,date} from './portal-utils.js?v=c6e1fd2a1ced';
 const rows={
  title:['Alertes info','News alerts','Nachrichtenmeldungen','Alertas de noticias','Alertas de notícias'],
  recent:['Publié dans la dernière heure','Published in the last hour','In der letzten Stunde veröffentlicht','Publicado en la última hora','Publicado na última hora'],
@@ -11,6 +11,7 @@ const rows={
  empty:['Aucune alerte récente localisable pour le moment.','No recent alert can currently be located.','Derzeit keine aktuelle Meldung lokalisierbar.','No hay alertas recientes localizables por ahora.','Sem alertas recentes localizáveis neste momento.'],
  unavailable:['Alertes indisponibles · nouvelle tentative automatique','Alerts unavailable · automatic retry','Meldungen nicht verfügbar · automatischer Neuversuch','Alertas no disponibles · reintento automático','Alertas indisponíveis · nova tentativa automática'],
  checked:['Contrôle des sources','Source check','Quellenprüfung','Control de fuentes','Verificação das fontes'],
+ country:['pays signalé','country marked','Land markiert','país señalado','país assinalado'],
  countries:['pays signalés','countries marked','Länder markiert','países señalados','países assinalados'],
  window:['dernière heure · actualisation chaque minute','last hour · refreshed every minute','letzte Stunde · Aktualisierung jede Minute','última hora · actualización cada minuto','última hora · atualização a cada minuto'],
  all:['Voir les alertes et les sources','View alerts and sources','Meldungen und Quellen ansehen','Ver alertas y fuentes','Ver alertas e fontes'],
@@ -25,7 +26,7 @@ export function mountMapNews(open){
  let payload=null,items=[],groups=new Map(),busy=false,failed=false,controller,alive=true,countries=[];
  try{countries=JSON.parse(document.querySelector('#world-news-data')?.textContent||'{}').countries||[];}catch{}
  const onCountries=e=>{countries=e.detail.countries||countries;update();};
- function renderStatus(){if(!status)return;const checked=payload?.checkedAt&&Number.isFinite(Date.parse(payload.checkedAt))?date(payload.checkedAt,lang):'',hidden=document.querySelector('[data-map-layer="news"]')?.getAttribute('aria-pressed')==='false';status.innerHTML=`<p>${failed?t('unavailable'):!payload?t('loading'):groups.size?`<b>${groups.size}</b> ${t('countries')} · ${t('window')}`:t('empty')}${hidden?' · '+t('hidden'):''}${checked?`<small>${t('checked')} · ${esc(checked)}</small>`:''}</p><button type="button" data-alerts-open>${t('all')} ↗</button>`;}
+ function renderStatus(){if(!status)return;const checked=payload?.checkedAt&&Number.isFinite(Date.parse(payload.checkedAt))?date(payload.checkedAt,lang):'',hidden=document.querySelector('[data-map-layer="news"]')?.getAttribute('aria-pressed')==='false';status.innerHTML=`<p>${failed?t('unavailable'):!payload?t('loading'):groups.size?`<b>${groups.size}</b> ${t(groups.size===1?'country':'countries')} · ${t('window')}`:t('empty')}${hidden?' · '+t('hidden'):''}${checked?`<small>${t('checked')} · ${esc(checked)}</small>`:''}</p><button type="button" data-alerts-open>${t('all')} ↗</button>`;}
  function update(){
   items=getMapAlerts(payload,countries);groups=new Map();
   for(const item of items)for(const iso of item.countryIsos){if(!groups.has(iso))groups.set(iso,[]);groups.get(iso).push(item);}
