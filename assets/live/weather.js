@@ -1,5 +1,5 @@
-import {createSpatialWeights,projectField,sampleField,advanceTimeline,advectParticle,createParticles,recycleParticle} from './weather-flow.js?v=c7de54a3db56';
-import {project,worldPoints,viewportPoints,zoomAt,constrainView} from './atlas-geo.js?v=c7de54a3db56';
+import {createSpatialWeights,projectField,sampleField,advanceTimeline,advectParticle,createParticles,recycleParticle} from './weather-flow.js?v=c4982c9082c6';
+import {project,worldPoints,viewportPoints,zoomAt,constrainView} from './atlas-geo.js?v=c4982c9082c6';
 /* MET Norway connected weather via the shared gateway. Geographic field: world or viewport samples,
    inverse-distance interpolation of the four nearest samples. Particle motion
    follows interpolated u/v wind components; animation speed is illustrative. */
