@@ -1,5 +1,5 @@
-import {getMapAlerts} from './news-alerts.js?v=7d5ff0f0c9cf';
-import {esc,labels,date} from './portal-utils.js?v=7d5ff0f0c9cf';
+import {getMapAlerts} from './news-alerts.js?v=bbc4550a385f';
+import {esc,labels,date} from './portal-utils.js?v=bbc4550a385f';
 const rows={
  title:['Alertes info','News alerts','Nachrichtenmeldungen','Alertas de noticias','Alertas de notícias'],
  recent:['Publié dans la dernière heure','Published in the last hour','In der letzten Stunde veröffentlicht','Publicado en la última hora','Publicado na última hora'],
