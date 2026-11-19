@@ -1,12 +1,12 @@
 /* Pure forecast-field and advection math. No DOM and no per-frame nearest-neighbour search. */
 const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
-export function createSpatialWeights(points,{x0=0,y0=0,width=1100,height=560,cols=56,rows=29,neighbors=4}={}){
+export function createSpatialWeights(points,{x0=0,y0=0,width=1100,height=560,cols=56,rows=29,neighbors=4,minDistanceSquared=100}={}){
  const count=Math.min(neighbors,points.length),indices=new Uint16Array(cols*rows*count),weights=new Float32Array(indices.length);
  for(let row=0;row<rows;row++)for(let col=0;col<cols;col++){
   const x=x0+col/(cols-1)*width,y=y0+row/(rows-1)*height,nearest=[];
   for(let i=0;i<points.length;i++){const dx=points[i].xy[0]-x,dy=points[i].xy[1]-y,d=dx*dx+dy*dy;let at=0;while(at<nearest.length&&nearest[at].d<=d)at++;if(at<count){nearest.splice(at,0,{i,d});if(nearest.length>count)nearest.pop();}}
   const offset=(row*cols+col)*count;let total=0;
-  nearest.forEach((p,i)=>{indices[offset+i]=p.i;const w=1/Math.max(100,p.d);weights[offset+i]=w;total+=w;});
+  nearest.forEach((p,i)=>{indices[offset+i]=p.i;const w=1/Math.max(minDistanceSquared,p.d);weights[offset+i]=w;total+=w;});
   for(let i=0;i<count;i++)weights[offset+i]/=total;
  }
  return {x0,y0,width,height,cols,rows,neighbors:count,indices,weights};
