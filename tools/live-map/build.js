@@ -247,7 +247,8 @@ for (const lang of LANGS) {
   const [designWeather,designMarine,designMedia,designUap,designClose]=designWords[lang];
   const [designCrypto,designStocks,designWebcams,designLocal,designHealth]={fr:['Crypto','Bourse','Webcams live','Monde local','Pandémies & virus'],en:['Crypto','Stocks','Live webcams','Local world','Outbreaks & viruses'],de:['Krypto','Börse','Live-Webcams','Lokal','Ausbrüche & Viren'],es:['Cripto','Bolsa','Cámaras en directo','Mundo local','Brotes y virus'],pt:['Cripto','Bolsa','Webcams ao vivo','Mundo local','Surtos e vírus']}[lang];
   const designTraffic={fr:"TRAFIC mondial",en:"World traffic",de:"Verkehr weltweit",es:"Tráfico mundial",pt:"Trânsito mundial"}[lang];
-  const html_tokens = {designTraffic,assetVersion,designCrypto,designStocks,designWebcams,designLocal,designHealth, designWeather,designMarine,designMedia,designUap,designClose, mk_tabWorld: esc(MKI[lang].tabWorld), mk_tabMkt: esc(MKI[lang].tabMkt), lang, hreflang, langnav, ld, seoBlock, h1: esc(K.h1), lead: esc(K.lead) };
+  const [designLight,designDarkMode]={fr:["Clair","Mode sombre"],en:["Light","Dark mode"],de:["Hell","Dunkler Modus"],es:["Claro","Modo oscuro"],pt:["Claro","Modo escuro"]}[lang];
+  const html_tokens = {designLight,designDarkMode,designTraffic,assetVersion,designCrypto,designStocks,designWebcams,designLocal,designHealth, designWeather,designMarine,designMedia,designUap,designClose, mk_tabWorld: esc(MKI[lang].tabWorld), mk_tabMkt: esc(MKI[lang].tabMkt), lang, hreflang, langnav, ld, seoBlock, h1: esc(K.h1), lead: esc(K.lead) };
   html = html.replace(/\{\{(\w+)\}\}/g, (m, k) => {
     if (k in html_tokens) return html_tokens[k];
     if (!(k in L)) throw new Error(`${lang}: missing key ${k}`);
@@ -255,6 +256,7 @@ for (const lang of LANGS) {
   });
   const S = Object.assign({}, L, { lang });
   delete S.cities;
+  rep('/*__APPEARANCE__*/',fs.readFileSync('design/appearance.js','utf8'));
   rep('/*__D3__*/', D3);
   rep('/*__TOPOJSON__*/', TOPOJS);
   rep('/*__MARKETS__*/', MKJS.replace('/*__MK__*/', () => safe(JSON.stringify(MKI[lang]))));

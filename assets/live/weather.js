@@ -1,5 +1,5 @@
-import {createSpatialWeights,projectField,sampleField,advanceTimeline,advectParticle,createParticles,recycleParticle} from './weather-flow.js?v=b6cf44b6a8c7';
-import {project,worldPoints,viewportPoints,zoomAt,constrainView} from './atlas-geo.js?v=b6cf44b6a8c7';
+import {createSpatialWeights,projectField,sampleField,advanceTimeline,advectParticle,createParticles,recycleParticle} from './weather-flow.js?v=a550766a1626';
+import {project,worldPoints,viewportPoints,zoomAt,constrainView} from './atlas-geo.js?v=a550766a1626';
 /* Open-Meteo connected weather. Geographic field: world or viewport samples,
    inverse-distance interpolation of the four nearest samples. Particle motion
    follows interpolated u/v wind components; animation speed is illustrative. */
