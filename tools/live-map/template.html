@@ -343,6 +343,7 @@ const gC=root.append("g"),gE=root.append("g"),gQ=root.append("g"),gW=root.append
 let K=1,selected=null,newsPixelRatio=1;
 const gNews=root.append('g').attr('class','news-markers');
 const gPAN=root.append('g').attr('class','pan-layer');
+const gNearby=root.append('g').attr('class','nearby-marker');document.addEventListener('infovisa:nearby-place',e=>{const p=e.detail;if(!Number.isFinite(p?.lat)||!Number.isFinite(p?.lon))return;gNearby.selectAll('*').remove();const [x,y]=proj([p.lon,p.lat]);gNearby.append('circle').attr('role','button').attr('tabindex',0).attr('aria-label',p.name).on('click',()=>document.dispatchEvent(new Event('infovisa:nearby-open-news'))).on('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();document.dispatchEvent(new Event('infovisa:nearby-open-news'));}}).attr('cx',x).attr('cy',y).attr('r',7/K).attr('fill','#8bd2db').attr('stroke','#fff').attr('stroke-width',2).attr('vector-effect','non-scaling-stroke').append('title').text(p.name);});
 fetch('/assets/live/assets/uap-cases.json').then(r=>r.json()).then(data=>{gPAN.selectAll('circle').data(data.cases.filter(c=>Number.isFinite(c.lat)&&Number.isFinite(c.lon))).join('circle').attr('cx',c=>proj([c.lon,c.lat])[0]).attr('cy',c=>proj([c.lon,c.lat])[1]).attr('r',5).attr('fill','#c3b5f3').attr('stroke','#080d12').attr('tabindex',0).attr('role','button').attr('aria-label',c=>'PAN · '+c.location).on('click',(e,c)=>{e.stopPropagation();document.dispatchEvent(new CustomEvent('infovisa:official-case',{detail:c.id}));}).on('keydown',(e,c)=>{if(e.key==='Enter')document.dispatchEvent(new CustomEvent('infovisa:official-case',{detail:c.id}));}).append('title').text(c=>'PAN · '+c.location+' · '+c.observed);}).catch(()=>{});
 
 document.addEventListener('infovisa:news-markers',event=>{
@@ -366,7 +367,7 @@ svg.call(zoom);
 function newsPinTransform(d){return `translate(${d.x},${d.y})scale(${newsPixelRatio/K})`;}
 function rescaleNewsPins(){gNews.selectAll("g.news-marker").attr("transform",newsPinTransform);}
 function measureNewsPins(){const box=svg.node().getBoundingClientRect(),scale=Math.min(box.width/W,box.height/H);newsPixelRatio=scale>0?1/scale:1;rescaleNewsPins();}
-function rescale(){rescaleNewsPins();gQ.selectAll("circle").attr("r",d=>d.r/K);gE.selectAll("rect").each(function(d){const s=7/K;d3.select(this).attr("width",s).attr("height",s).attr("x",d.x-s/2).attr("y",d.y-s/2).attr("transform",`rotate(45 ${d.x} ${d.y})`)});gW.selectAll("text").attr("font-size",10/Math.pow(K,.82)).attr("stroke-width",2.5/K)}
+function rescale(){gNearby.selectAll('circle').attr('r',7/K);rescaleNewsPins();gQ.selectAll("circle").attr("r",d=>d.r/K);gE.selectAll("rect").each(function(d){const s=7/K;d3.select(this).attr("width",s).attr("height",s).attr("x",d.x-s/2).attr("y",d.y-s/2).attr("transform",`rotate(45 ${d.x} ${d.y})`)});gW.selectAll("text").attr("font-size",10/Math.pow(K,.82)).attr("stroke-width",2.5/K)}
 $("#zin").onclick=()=>svg.transition().duration(250).call(zoom.scaleBy,1.6);
 $("#zout").onclick=()=>svg.transition().duration(250).call(zoom.scaleBy,1/1.6);
 $("#zreset").onclick=()=>svg.transition().duration(400).call(zoom.transform,d3.zoomIdentity);
