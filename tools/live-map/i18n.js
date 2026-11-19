@@ -159,3 +159,6 @@ module.exports = {
 
 const mapLayerLabels={fr:['Pays','Vent','PAN / OVNI','Autres couches','provenance'],en:['Countries','Wind','UAP / UFO','More layers','from'],de:['Länder','Wind','UAP / UFO','Weitere Ebenen','aus'],es:['Países','Viento','FANI / OVNI','Más capas','procedencia'],pt:['Países','Vento','FANI / OVNI','Mais camadas','origem']};
 for(const [lang,values] of Object.entries(mapLayerLabels)){const S=module.exports[lang];[S.mapCountries,S.mapWind,S.mapPAN,S.mapMoreLayers,S.mapWindFrom]=values;}
+
+const infoAlertLabels={fr:'Alertes info',en:'News alerts',de:'Nachrichtenmeldungen',es:'Alertas de noticias',pt:'Alertas de notícias'};
+for(const [lang,label] of Object.entries(infoAlertLabels))module.exports[lang].mapInfoAlerts=label;
