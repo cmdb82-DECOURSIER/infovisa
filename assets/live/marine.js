@@ -1,4 +1,4 @@
-import {mountWebcams} from './webcams.js?v=d057b97890b9';
+import {mountWebcams} from './webcams.js?v=c4982c9082c6';
 /* Connected marine forecasts. No tide table is inferred from sea_level_height_msl.
    Optional NOAA astronomical tide predictions use their published MLLW datum. */
 const KM_MARINE='https://marine-api.open-meteo.com/v1/marine',KM_WEATHER='/api/weather',KM_GEO='https://geocoding-api.open-meteo.com/v1/search';
