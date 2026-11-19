@@ -1,4 +1,4 @@
-import {mountPublicCameras} from './public-cameras.js?v=b6cf44b6a8c7';
+import {mountPublicCameras} from './public-cameras.js?v=a3353046529a';
 /* Nearby webcams: licensed Windy players plus geographically matched source links. */
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const rows={

@@ -8,6 +8,7 @@
 <link rel="canonical" href="https://www.infovisa.lu{{path}}">
 {{hreflang}}
 <meta name="theme-color" content="#0a0f16">
+<script>/*__APPEARANCE__*/</script>
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="{{og}}">
@@ -246,11 +247,13 @@ ul.feed .new{align-self:auto}
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5985516088824403" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="/assets/live/theme.css?v={{assetVersion}}"><link rel="stylesheet" href="/assets/live/weather.css?v={{assetVersion}}"><link rel="stylesheet" href="/assets/live/marine.css?v={{assetVersion}}">
 <link rel="stylesheet" href="/assets/live/portal.css?v={{assetVersion}}">
+<link rel="stylesheet" href="/assets/live/appearance.css?v={{assetVersion}}">
 </head>
 <body>
 <header>
   <div class="brand"><span>Info<b>Visa</b></span><span class="live"><i></i>LIVE</span></div>
   <nav class="gnav" aria-label="{{langLabel}}">{{langnav}}</nav>
+  <button type="button" class="appearance-toggle" role="switch" aria-checked="false" aria-label="{{designDarkMode}}" data-theme-toggle data-i18n-skip><span data-theme-icon aria-hidden="true">☀</span><span data-theme-label>{{designLight}}</span></button>
   <div class="clock" id="clock" role="timer" aria-live="off" data-i18n-skip><time id="clock-date"></time><div><time id="clock-time"></time><span id="clock-utc"></span></div><small id="clock-zone"></small></div>
   <div class="search"><input id="q" list="clist" placeholder="{{searchPh}}" aria-label="{{searchPh}}" autocomplete="off"><datalist id="clist"></datalist></div>
 </header>

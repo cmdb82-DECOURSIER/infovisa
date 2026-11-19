@@ -13,6 +13,22 @@
 <link rel="alternate" hreflang="pt" href="https://www.infovisa.lu/pt/live/">
 <link rel="alternate" hreflang="x-default" href="https://www.infovisa.lu/">
 <meta name="theme-color" content="#0a0f16">
+<script>/* Apply appearance before first paint; only this explicit preference is stored. */
+(function(){
+ var root=document.documentElement,key='infovisa-theme',stored=null,explicit=false;
+ try{stored=localStorage.getItem(key);}catch(e){}
+ explicit=stored==='light'||stored==='dark';
+ var media=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
+ var theme=explicit?stored:media&&media.matches?'dark':'light';
+ var words={fr:['Clair','Sombre','Mode sombre','Passer au mode clair','Passer au mode sombre'],en:['Light','Dark','Dark mode','Switch to light mode','Switch to dark mode'],de:['Hell','Dunkel','Dunkler Modus','Zum hellen Modus wechseln','Zum dunklen Modus wechseln'],es:['Claro','Oscuro','Modo oscuro','Cambiar a modo claro','Cambiar a modo oscuro'],pt:['Claro','Escuro','Modo escuro','Mudar para o modo claro','Mudar para o modo escuro']};
+ function apply(next,save){theme=next;root.dataset.theme=theme;if(save){explicit=true;try{localStorage.setItem(key,theme);}catch(e){}}var meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=theme==='light'?'#ffffff':'#080d12';var b=document.querySelector('[data-theme-toggle]'),w=words[root.lang]||words.fr;if(b){b.setAttribute('aria-checked',String(theme==='dark'));b.setAttribute('aria-label',w[2]);b.title=w[theme==='dark'?3:4];b.querySelector('[data-theme-label]').textContent=w[theme==='light'?0:1];b.querySelector('[data-theme-icon]').textContent=theme==='light'?'☀':'☾';}document.dispatchEvent(new CustomEvent('infovisa:theme-change',{detail:{theme:theme}}));}
+ apply(theme,false);
+ function bind(){apply(theme,false);var b=document.querySelector('[data-theme-toggle]');if(b)b.addEventListener('click',function(){apply(theme==='dark'?'light':'dark',true);});}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
+ if(media&&media.addEventListener)media.addEventListener('change',function(e){if(!explicit)apply(e.matches?'dark':'light',false);});
+ window.addEventListener('storage',function(e){if(e.key!==key)return;if(e.newValue==='light'||e.newValue==='dark'){explicit=true;apply(e.newValue,false);}else if(e.newValue===null){explicit=false;apply(media&&media.matches?'dark':'light',false);}});
+})();
+</script>
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="de_DE">
@@ -249,13 +265,15 @@ ul.feed .new{align-self:auto}
 </style>
 <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="ab3c5cb8-e765-471e-9a39-bb8651feca3e" data-blockingmode="auto" type="text/javascript"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5985516088824403" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="/assets/live/theme.css?v=b6cf44b6a8c7"><link rel="stylesheet" href="/assets/live/weather.css?v=b6cf44b6a8c7"><link rel="stylesheet" href="/assets/live/marine.css?v=b6cf44b6a8c7">
-<link rel="stylesheet" href="/assets/live/portal.css?v=b6cf44b6a8c7">
+<link rel="stylesheet" href="/assets/live/theme.css?v=a3353046529a"><link rel="stylesheet" href="/assets/live/weather.css?v=a3353046529a"><link rel="stylesheet" href="/assets/live/marine.css?v=a3353046529a">
+<link rel="stylesheet" href="/assets/live/portal.css?v=a3353046529a">
+<link rel="stylesheet" href="/assets/live/appearance.css?v=a3353046529a">
 </head>
 <body>
 <header>
   <div class="brand"><span>Info<b>Visa</b></span><span class="live"><i></i>LIVE</span></div>
   <nav class="gnav" aria-label="Sprache"><a href="/" hreflang="fr" lang="fr">FR</a><a href="/en/live/" hreflang="en" lang="en">EN</a><a href="/de/live/" hreflang="de" lang="de" class="on" aria-current="page">DE</a><a href="/es/live/" hreflang="es" lang="es">ES</a><a href="/pt/live/" hreflang="pt" lang="pt">PT</a></nav>
+  <button type="button" class="appearance-toggle" role="switch" aria-checked="false" aria-label="Dunkler Modus" data-theme-toggle data-i18n-skip><span data-theme-icon aria-hidden="true">☀</span><span data-theme-label>Hell</span></button>
   <div class="clock" id="clock" role="timer" aria-live="off" data-i18n-skip><time id="clock-date"></time><div><time id="clock-time"></time><span id="clock-utc"></span></div><small id="clock-zone"></small></div>
   <div class="search"><input id="q" list="clist" placeholder="Land suchen…" aria-label="Land suchen…" autocomplete="off"><datalist id="clist"></datalist></div>
 </header>
@@ -495,8 +513,8 @@ function riskc(){var a=+$("#ra").value,p=+$("#rp").value/100,e=+$("#re").value,s
 var TVL={fr:"fr",en:"en",de:"de_DE",es:"es",pt:"br"}[LG]||"en";
 var WT=[["chart","w_chart"],["overview","w_over"],["heat","w_heat"],["hot","w_hot"],["cheat","w_crypto"],["fxr","w_fx"],["cal","w_cal"]];
 function tv(box,type,cfg,h){box.innerHTML="";box.style.height=h+"px";var c=document.createElement("div");c.className="tradingview-widget-container";c.style.cssText="height:100%;width:100%";var w=document.createElement("div");w.className="tradingview-widget-container__widget";w.style.cssText="height:100%;width:100%";c.appendChild(w);var s=document.createElement("script");s.src="https://s3.tradingview.com/external-embedding/embed-widget-"+type+".js";s.async=true;s.text=JSON.stringify(cfg);c.appendChild(s);box.appendChild(c)}
-function widget(k){var box=$("#mkw"),L=TVL,base={colorTheme:"dark",isTransparent:true,locale:L,width:"100%",height:"100%"};
-if(k==="chart")tv(box,"advanced-chart",{autosize:true,symbol:st.marketView==="stocks"?"NASDAQ:AAPL":"BITSTAMP:BTCUSD",interval:"D",timezone:"Europe/Luxembourg",theme:"dark",style:"1",locale:L,allow_symbol_change:true,calendar:false,hide_side_toolbar:false,details:true,hotlist:true,support_host:"https://www.tradingview.com"},620);
+function widget(k){var box=$("#mkw"),L=TVL,theme=document.documentElement.dataset.theme==="light"?"light":"dark",base={colorTheme:theme,isTransparent:true,locale:L,width:"100%",height:"100%"};
+if(k==="chart")tv(box,"advanced-chart",{autosize:true,symbol:st.marketView==="stocks"?"NASDAQ:AAPL":"BITSTAMP:BTCUSD",interval:"D",timezone:"Europe/Luxembourg",theme:theme,style:"1",locale:L,allow_symbol_change:true,calendar:false,hide_side_toolbar:false,details:true,hotlist:true,support_host:"https://www.tradingview.com"},620);
 if(k==="overview")tv(box,"market-overview",Object.assign({},base,{dateRange:"12M",showChart:true,showSymbolLogo:true,showFloatingTooltip:true,tabs:[{title:MK.idx,symbols:[{s:"FOREXCOM:SPXUSD",d:"S&P 500"},{s:"FOREXCOM:NSXUSD",d:"Nasdaq 100"},{s:"FOREXCOM:DJI",d:"Dow Jones"},{s:"INDEX:NKY",d:"Nikkei 225"},{s:"INDEX:DEU40",d:"DAX 40"},{s:"FOREXCOM:UKXGBP",d:"FTSE 100"}]},{title:MK.comm,symbols:[{s:"OANDA:XAUUSD",d:MK.gold},{s:"OANDA:XAGUSD",d:MK.silver},{s:"TVC:USOIL",d:MK.oil},{s:"TVC:UKOIL",d:"Brent"},{s:"CAPITALCOM:NATURALGAS",d:MK.gas}]},{title:"Forex",symbols:[{s:"FX:EURUSD",d:"EUR/USD"},{s:"FX:GBPUSD",d:"GBP/USD"},{s:"FX:USDJPY",d:"USD/JPY"},{s:"FX:USDCHF",d:"USD/CHF"},{s:"FX:EURCHF",d:"EUR/CHF"}]}],height:"100%"}),620);
 if(k==="heat")tv(box,"stock-heatmap",Object.assign({},base,{exchanges:[],dataSource:"SPX500",grouping:"sector",blockSize:"market_cap_basic",blockColor:"change",symbolUrl:"",hasTopBar:true,isDataSetEnabled:true,isZoomEnabled:true,hasSymbolTooltip:true,isMonoSize:false}),620);
 if(k==="hot")tv(box,"hotlists",Object.assign({},base,{dateRange:"12M",exchange:"US",showChart:true,largeChartUrl:"",showSymbolLogo:true,showFloatingTooltip:false}),620);
@@ -513,6 +531,8 @@ function buildWidgetTabs(){
  var done=false;function go(){if(done)return;done=true;widget(first)}
  if("IntersectionObserver" in window){widgetObserver=new IntersectionObserver(function(e){if(e[0].isIntersecting){widgetObserver.disconnect();go()}},{rootMargin:"200px"});widgetObserver.observe($("#mkw"))}else go();
 }
+
+document.addEventListener("infovisa:theme-change",function(){var box=$("#mkw"),active=$("#mkwt button.on");if(box&&active&&box.querySelector(".tradingview-widget-container"))widget(active.getAttribute("data-w"));});
 
 /* ---------- live ticker (Binance websocket) ---------- */
 var TK=[["btcusdt","BTC"],["ethusdt","ETH"],["solusdt","SOL"],["bnbusdt","BNB"],["xrpusdt","XRP"],["dogeusdt","DOGE"],["adausdt","ADA"]],ws=null,tkv={},tkTry=0;
@@ -879,5 +899,5 @@ var ra=$("raudio");if(ra)ra.addEventListener("play",function(){if(!v.paused)v.pa
 drawC();drawCh();
 })();
 </script>
-<script type="module" src="/assets/live/extras.js?v=b6cf44b6a8c7"></script></body>
+<script type="module" src="/assets/live/extras.js?v=a3353046529a"></script></body>
 </html>

@@ -185,8 +185,8 @@ function riskc(){var a=+$("#ra").value,p=+$("#rp").value/100,e=+$("#re").value,s
 var TVL={fr:"fr",en:"en",de:"de_DE",es:"es",pt:"br"}[LG]||"en";
 var WT=[["chart","w_chart"],["overview","w_over"],["heat","w_heat"],["hot","w_hot"],["cheat","w_crypto"],["fxr","w_fx"],["cal","w_cal"]];
 function tv(box,type,cfg,h){box.innerHTML="";box.style.height=h+"px";var c=document.createElement("div");c.className="tradingview-widget-container";c.style.cssText="height:100%;width:100%";var w=document.createElement("div");w.className="tradingview-widget-container__widget";w.style.cssText="height:100%;width:100%";c.appendChild(w);var s=document.createElement("script");s.src="https://s3.tradingview.com/external-embedding/embed-widget-"+type+".js";s.async=true;s.text=JSON.stringify(cfg);c.appendChild(s);box.appendChild(c)}
-function widget(k){var box=$("#mkw"),L=TVL,base={colorTheme:"dark",isTransparent:true,locale:L,width:"100%",height:"100%"};
-if(k==="chart")tv(box,"advanced-chart",{autosize:true,symbol:st.marketView==="stocks"?"NASDAQ:AAPL":"BITSTAMP:BTCUSD",interval:"D",timezone:"Europe/Luxembourg",theme:"dark",style:"1",locale:L,allow_symbol_change:true,calendar:false,hide_side_toolbar:false,details:true,hotlist:true,support_host:"https://www.tradingview.com"},620);
+function widget(k){var box=$("#mkw"),L=TVL,theme=document.documentElement.dataset.theme==="light"?"light":"dark",base={colorTheme:theme,isTransparent:true,locale:L,width:"100%",height:"100%"};
+if(k==="chart")tv(box,"advanced-chart",{autosize:true,symbol:st.marketView==="stocks"?"NASDAQ:AAPL":"BITSTAMP:BTCUSD",interval:"D",timezone:"Europe/Luxembourg",theme:theme,style:"1",locale:L,allow_symbol_change:true,calendar:false,hide_side_toolbar:false,details:true,hotlist:true,support_host:"https://www.tradingview.com"},620);
 if(k==="overview")tv(box,"market-overview",Object.assign({},base,{dateRange:"12M",showChart:true,showSymbolLogo:true,showFloatingTooltip:true,tabs:[{title:MK.idx,symbols:[{s:"FOREXCOM:SPXUSD",d:"S&P 500"},{s:"FOREXCOM:NSXUSD",d:"Nasdaq 100"},{s:"FOREXCOM:DJI",d:"Dow Jones"},{s:"INDEX:NKY",d:"Nikkei 225"},{s:"INDEX:DEU40",d:"DAX 40"},{s:"FOREXCOM:UKXGBP",d:"FTSE 100"}]},{title:MK.comm,symbols:[{s:"OANDA:XAUUSD",d:MK.gold},{s:"OANDA:XAGUSD",d:MK.silver},{s:"TVC:USOIL",d:MK.oil},{s:"TVC:UKOIL",d:"Brent"},{s:"CAPITALCOM:NATURALGAS",d:MK.gas}]},{title:"Forex",symbols:[{s:"FX:EURUSD",d:"EUR/USD"},{s:"FX:GBPUSD",d:"GBP/USD"},{s:"FX:USDJPY",d:"USD/JPY"},{s:"FX:USDCHF",d:"USD/CHF"},{s:"FX:EURCHF",d:"EUR/CHF"}]}],height:"100%"}),620);
 if(k==="heat")tv(box,"stock-heatmap",Object.assign({},base,{exchanges:[],dataSource:"SPX500",grouping:"sector",blockSize:"market_cap_basic",blockColor:"change",symbolUrl:"",hasTopBar:true,isDataSetEnabled:true,isZoomEnabled:true,hasSymbolTooltip:true,isMonoSize:false}),620);
 if(k==="hot")tv(box,"hotlists",Object.assign({},base,{dateRange:"12M",exchange:"US",showChart:true,largeChartUrl:"",showSymbolLogo:true,showFloatingTooltip:false}),620);
@@ -203,6 +203,8 @@ function buildWidgetTabs(){
  var done=false;function go(){if(done)return;done=true;widget(first)}
  if("IntersectionObserver" in window){widgetObserver=new IntersectionObserver(function(e){if(e[0].isIntersecting){widgetObserver.disconnect();go()}},{rootMargin:"200px"});widgetObserver.observe($("#mkw"))}else go();
 }
+
+document.addEventListener("infovisa:theme-change",function(){var box=$("#mkw"),active=$("#mkwt button.on");if(box&&active&&box.querySelector(".tradingview-widget-container"))widget(active.getAttribute("data-w"));});
 
 /* ---------- live ticker (Binance websocket) ---------- */
 var TK=[["btcusdt","BTC"],["ethusdt","ETH"],["solusdt","SOL"],["bnbusdt","BNB"],["xrpusdt","XRP"],["dogeusdt","DOGE"],["adausdt","ADA"]],ws=null,tkv={},tkTry=0;
