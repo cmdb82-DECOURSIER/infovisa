@@ -119,5 +119,10 @@
         }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "api/weather.js": {
+      "maxDuration": 30
+    }
+  }
 }

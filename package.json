@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@vercel/functions": "3.11.3",
+    "tz-lookup": "6.1.25"
+  },
+  "private": true
+}
