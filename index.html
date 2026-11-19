@@ -249,8 +249,8 @@ ul.feed .new{align-self:auto}
 </style>
 <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="ab3c5cb8-e765-471e-9a39-bb8651feca3e" data-blockingmode="auto" type="text/javascript"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5985516088824403" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="/assets/live/theme.css?v=c6e1fd2a1ced"><link rel="stylesheet" href="/assets/live/weather.css?v=c6e1fd2a1ced"><link rel="stylesheet" href="/assets/live/marine.css?v=c6e1fd2a1ced">
-<link rel="stylesheet" href="/assets/live/portal.css?v=c6e1fd2a1ced">
+<link rel="stylesheet" href="/assets/live/theme.css?v=7d5ff0f0c9cf"><link rel="stylesheet" href="/assets/live/weather.css?v=7d5ff0f0c9cf"><link rel="stylesheet" href="/assets/live/marine.css?v=7d5ff0f0c9cf">
+<link rel="stylesheet" href="/assets/live/portal.css?v=7d5ff0f0c9cf">
 </head>
 <body>
 <header>
@@ -577,7 +577,7 @@ root.append("path").attr("class","grat").attr("d",path(d3.geoGraticule10()));
 const feats=topojson.feature(TOPO,TOPO.objects.countries).features.filter(f=>f.id!=="010");
 const cOf=f=>byN.get(f.id)||(f.properties&&f.properties.name==="Kosovo"?byA3.get("UNK"):null);
 const gC=root.append("g"),gE=root.append("g"),gQ=root.append("g"),gW=root.append("g");
-let K=1,selected=null;
+let K=1,selected=null,newsPixelRatio=1;
 const gNews=root.append('g').attr('class','news-markers');
 const gPAN=root.append('g').attr('class','pan-layer');
 fetch('/assets/live/assets/uap-cases.json').then(r=>r.json()).then(data=>{gPAN.selectAll('circle').data(data.cases.filter(c=>Number.isFinite(c.lat)&&Number.isFinite(c.lon))).join('circle').attr('cx',c=>proj([c.lon,c.lat])[0]).attr('cy',c=>proj([c.lon,c.lat])[1]).attr('r',5).attr('fill','#c3b5f3').attr('stroke','#080d12').attr('tabindex',0).attr('role','button').attr('aria-label',c=>'PAN · '+c.location).on('click',(e,c)=>{e.stopPropagation();document.dispatchEvent(new CustomEvent('infovisa:official-case',{detail:c.id}));}).on('keydown',(e,c)=>{if(e.key==='Enter')document.dispatchEvent(new CustomEvent('infovisa:official-case',{detail:c.id}));}).append('title').text(c=>'PAN · '+c.location+' · '+c.observed);}).catch(()=>{});
@@ -585,7 +585,7 @@ fetch('/assets/live/assets/uap-cases.json').then(r=>r.json()).then(data=>{gPAN.s
 document.addEventListener('infovisa:news-markers',event=>{
  const data=event.detail.map(d=>{const c=byA3.get(d.iso);if(!c)return null;const xy=proj([c.ll[1],c.ll[0]]);return {...d,x:xy[0],y:xy[1]};}).filter(Boolean);
  const pins=gNews.selectAll('g.news-marker').data(data,d=>d.iso).join(enter=>{const g=enter.append('g').attr('class','news-marker').attr('role','button').attr('tabindex',0);g.append('circle').attr('class','news-marker-hit').attr('r',22);g.append('circle').attr('class','news-marker-halo').attr('r',11);g.append('circle').attr('class','news-marker-core').attr('r',4);g.append('title');return g;});
- pins.attr('data-news-kind',d=>d.kind).attr('data-news-country',d=>d.iso).attr('aria-label',d=>d.label).attr('transform',d=>`translate(${d.x},${d.y})scale(${1/K})`).on('click',(e,d)=>{e.stopPropagation();document.dispatchEvent(new CustomEvent('infovisa:news-open',{detail:d.iso}));}).on('keydown',(e,d)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();document.dispatchEvent(new CustomEvent('infovisa:news-open',{detail:d.iso}));}});
+ pins.attr('data-news-kind',d=>d.kind).attr('data-news-country',d=>d.iso).attr('aria-label',d=>d.label).attr('transform',newsPinTransform).on('click',(e,d)=>{e.stopPropagation();document.dispatchEvent(new CustomEvent('infovisa:news-open',{detail:d.iso}));}).on('keydown',(e,d)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();document.dispatchEvent(new CustomEvent('infovisa:news-open',{detail:d.iso}));}});
  pins.select('title').text(d=>d.label);gNews.raise();
 });
 
@@ -600,7 +600,10 @@ const paths=gC.selectAll("path").data(feats).join("path").attr("class","country"
   .on("click",(ev,f)=>{const c=cOf(f);if(c)select(c,f)});
 const zoom=d3.zoom().scaleExtent([1,14]).translateExtent([[0,0],[W,H]]).on("zoom",ev=>{root.attr("transform",ev.transform);K=ev.transform.k;rescale()});
 svg.call(zoom);
-function rescale(){gNews.selectAll("g.news-marker").attr("transform",d=>`translate(${d.x},${d.y})scale(${1/K})`);gQ.selectAll("circle").attr("r",d=>d.r/K);gE.selectAll("rect").each(function(d){const s=7/K;d3.select(this).attr("width",s).attr("height",s).attr("x",d.x-s/2).attr("y",d.y-s/2).attr("transform",`rotate(45 ${d.x} ${d.y})`)});gW.selectAll("text").attr("font-size",10/Math.pow(K,.82)).attr("stroke-width",2.5/K)}
+function newsPinTransform(d){return `translate(${d.x},${d.y})scale(${newsPixelRatio/K})`;}
+function rescaleNewsPins(){gNews.selectAll("g.news-marker").attr("transform",newsPinTransform);}
+function measureNewsPins(){const box=svg.node().getBoundingClientRect(),scale=Math.min(box.width/W,box.height/H);newsPixelRatio=scale>0?1/scale:1;rescaleNewsPins();}
+function rescale(){rescaleNewsPins();gQ.selectAll("circle").attr("r",d=>d.r/K);gE.selectAll("rect").each(function(d){const s=7/K;d3.select(this).attr("width",s).attr("height",s).attr("x",d.x-s/2).attr("y",d.y-s/2).attr("transform",`rotate(45 ${d.x} ${d.y})`)});gW.selectAll("text").attr("font-size",10/Math.pow(K,.82)).attr("stroke-width",2.5/K)}
 $("#zin").onclick=()=>svg.transition().duration(250).call(zoom.scaleBy,1.6);
 $("#zout").onclick=()=>svg.transition().duration(250).call(zoom.scaleBy,1/1.6);
 $("#zreset").onclick=()=>svg.transition().duration(400).call(zoom.transform,d3.zoomIdentity);
@@ -737,6 +740,7 @@ function trySearch(){const v=norm($("#q").value);if(!v)return;const c=C.find(c=>
 $("#q").addEventListener("change",trySearch);$("#q").addEventListener("keydown",e=>{if(e.key==="Enter"){const v=norm($("#q").value);const c=C.find(c=>norm(c.fr)===v)||C.find(c=>norm(c.fr).startsWith(v));if(c)select(c)}});
 $("#riskdate").textContent=fmtDate(RISK_DATE);
 $("#world-news-data").textContent=JSON.stringify({items:[],countries:C.map(c=>({iso:c.a3,name:c.fr,names:[c.en,c.cap]}))});
+measureNewsPins();new ResizeObserver(measureNewsPins).observe(svg.node());
 drawStatus();drawLayers();drawLegend();overview();drawDigest();tick();setInterval(tick,1000);
 loadQuakes();loadEvents();loadWeather();loadNews();
 setInterval(loadQuakes,5*6e4);setInterval(loadEvents,30*6e4);setInterval(loadWeather,15*6e4);setInterval(loadNews,5*6e4);
@@ -875,5 +879,5 @@ var ra=$("raudio");if(ra)ra.addEventListener("play",function(){if(!v.paused)v.pa
 drawC();drawCh();
 })();
 </script>
-<script type="module" src="/assets/live/extras.js?v=c6e1fd2a1ced"></script></body>
+<script type="module" src="/assets/live/extras.js?v=7d5ff0f0c9cf"></script></body>
 </html>
