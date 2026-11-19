@@ -263,9 +263,9 @@ ul.feed .new{align-self:auto}
 <main>
   <section class="card">
     <h2>{{mapTitle}} <small id="mapnote">{{mapNote}}</small></h2>
+    <div class="layers" id="layers"></div>
     <div id="mapwrap">
       <svg id="map" viewBox="0 0 960 500" role="img" aria-label="{{mapAria}}"></svg>
-      <div class="layers" id="layers"></div>
       <div class="zoom"><button id="zin" aria-label="{{zin}}">+</button><button id="zout" aria-label="{{zout}}">−</button><button id="zreset" aria-label="{{zreset}}">⌂</button></div>
     </div>
     <div class="legend" id="legend"></div>
@@ -336,7 +336,7 @@ root.append("path").attr("class","sphere").attr("d",path({type:"Sphere"}));
 root.append("path").attr("class","grat").attr("d",path(d3.geoGraticule10()));
 const feats=topojson.feature(TOPO,TOPO.objects.countries).features.filter(f=>f.id!=="010");
 const cOf=f=>byN.get(f.id)||(f.properties&&f.properties.name==="Kosovo"?byA3.get("UNK"):null);
-const gC=root.append("g"),gE=root.append("g"),gQ=root.append("g"),gW=root.append("g");
+const gC=root.append("g"),gE=root.append("g"),gQ=root.append("g"),gW=root.append("g"),gWind=root.append("g").attr("class","world-wind-layer");
 let K=1,selected=null;
 const gNews=root.append('g').attr('class','news-markers');
 const gPAN=root.append('g').attr('class','pan-layer');
@@ -360,16 +360,24 @@ const paths=gC.selectAll("path").data(feats).join("path").attr("class","country"
   .on("click",(ev,f)=>{const c=cOf(f);if(c)select(c,f)});
 const zoom=d3.zoom().scaleExtent([1,14]).translateExtent([[0,0],[W,H]]).on("zoom",ev=>{root.attr("transform",ev.transform);K=ev.transform.k;rescale()});
 svg.call(zoom);
-function rescale(){gNews.selectAll("g.news-marker").attr("transform",d=>`translate(${d.x},${d.y})scale(${1/K})`);gQ.selectAll("circle").attr("r",d=>d.r/K);gE.selectAll("rect").each(function(d){const s=7/K;d3.select(this).attr("width",s).attr("height",s).attr("x",d.x-s/2).attr("y",d.y-s/2).attr("transform",`rotate(45 ${d.x} ${d.y})`)});gW.selectAll("text").attr("font-size",10/Math.pow(K,.82)).attr("stroke-width",2.5/K)}
+function rescale(){gWind.selectAll("g.world-wind-point").attr("transform",d=>`translate(${d.x},${d.y})scale(${1/K})`);gNews.selectAll("g.news-marker").attr("transform",d=>`translate(${d.x},${d.y})scale(${1/K})`);gQ.selectAll("circle").attr("r",d=>d.r/K);gE.selectAll("rect").each(function(d){const s=7/K;d3.select(this).attr("width",s).attr("height",s).attr("x",d.x-s/2).attr("y",d.y-s/2).attr("transform",`rotate(45 ${d.x} ${d.y})`)});gW.selectAll("text").attr("font-size",10/Math.pow(K,.82)).attr("stroke-width",2.5/K)}
 $("#zin").onclick=()=>svg.transition().duration(250).call(zoom.scaleBy,1.6);
 $("#zout").onclick=()=>svg.transition().duration(250).call(zoom.scaleBy,1/1.6);
 $("#zreset").onclick=()=>svg.transition().duration(400).call(zoom.transform,d3.zoomIdentity);
 function zoomTo(f){const[[x0,y0],[x1,y1]]=path.bounds(f),k=Math.max(1,Math.min(10,.75/Math.max((x1-x0)/W,(y1-y0)/H)));svg.transition().duration(600).call(zoom.transform,d3.zoomIdentity.translate(W/2,H/2).scale(k).translate(-(x0+x1)/2,-(y0+y1)/2))}
 
 /* ---------- couches ---------- */
-const LAY={risk:[S.srcRisk,"var(--l3)",true],quake:[S.quakesTitle,"#fff",true],event:[S.eventsTitle,"var(--ev)",true],wx:[S.srcWx,"var(--acc)",true],news:[S.latestNews,"#8bd2db",true]};
-function drawLayers(){$("#layers").replaceChildren(...Object.entries(LAY).map(([k,[n,c,on]])=>{const b=el("button",{class:"chip","aria-pressed":on},el("i",{style:`background:${c}`}),document.createTextNode(n));b.onclick=()=>{LAY[k][2]=!LAY[k][2];applyLayers();drawLayers()};return b}))}
-function applyLayers(){paths.attr("fill",f=>LAY.risk[2]?LV[level(cOf(f))].c:"var(--l0)");gQ.style("display",LAY.quake[2]?null:"none");gE.style("display",LAY.event[2]?null:"none");gW.style("display",LAY.wx[2]?null:"none");gNews.style("display",LAY.news[2]?null:"none")}
+const LAY={risk:[S.mapCountries,"var(--l3)",true],wind:[S.mapWind,"#8bd2db",true],quake:[S.quakesTitle,"#fff",true],pan:[S.mapPAN,"#c3b5f3",true],event:[S.eventsTitle,"var(--ev)",true],wx:[S.srcWx,"var(--acc)",false],news:[S.latestNews,"#8bd2db",true]};
+const PRIMARY_LAYERS=["risk","wind","quake","pan"];
+function drawLayers(){
+ const moreOpen=$("#layers details")?.open;
+ function button(k){const [name,color,on]=LAY[k],b=el("button",{type:"button",class:"chip","data-map-layer":k,"aria-pressed":on},el("i",{style:`background:${color}`}),document.createTextNode(name));
+  b.onclick=()=>{LAY[k][2]=!LAY[k][2];if(LAY[k][2]&&k==="wind")LAY.wx[2]=false;if(LAY[k][2]&&k==="wx")LAY.wind[2]=false;applyLayers();drawLayers()};return b;
+ }
+ const more=el("details",{class:"map-more-layers"},el("summary",{text:S.mapMoreLayers}),el("div",{class:"map-layer-options"},...Object.keys(LAY).filter(k=>!PRIMARY_LAYERS.includes(k)).map(button)));more.open=!!moreOpen;
+ $("#layers").replaceChildren(...PRIMARY_LAYERS.map(button),more);
+}
+function applyLayers(){$("#mapnote").textContent=LAY.wind[2]?S.mapWind+" · 10 m · km/h":S.mapNote;paths.attr("fill",f=>LAY.risk[2]?LV[level(cOf(f))].c:"var(--l0)");gWind.style("display",LAY.wind[2]?null:"none");gQ.style("display",LAY.quake[2]?null:"none");gPAN.style("display",LAY.pan[2]?null:"none");gE.style("display",LAY.event[2]?null:"none");gW.style("display",LAY.wx[2]?null:"none");gNews.style("display",LAY.news[2]?null:"none")}
 function drawLegend(){const n={0:0,1:0,2:0,3:0,4:0};feats.forEach(f=>{const c=cOf(f);if(c)n[level(c)]++});$("#legend").replaceChildren(...[1,2,3,4,0].map(l=>el("span",{},el("i",{class:"sw",style:`background:${LV[l].c}`}),document.createTextNode(LV[l].t+" "),el("b",{text:n[l]}))))}
 
 /* ---------- fiche pays ---------- */
@@ -472,10 +480,12 @@ async function loadEvents(){try{const d=await getJSON("https://eonet.gsfc.nasa.g
   DG.ev=ev.length;drawDigest();rescale();setSrc("eonet","ok",`live ${hhmm()} · ${ev.length}`)}catch(e){setSrc("eonet","err",S.unavailable);if($("#events .empty"))$("#events .empty").textContent=S.eonetUnavail}}
 
 /* ---------- météo mondiale ---------- */
-async function loadWeather(){try{const d=await getJSON(`https://api.open-meteo.com/v1/forecast?latitude=${CITIES.map(c=>c[1]).join(",")}&longitude=${CITIES.map(c=>c[2]).join(",")}&current=temperature_2m,weather_code`);
-  const w=(Array.isArray(d)?d:[d]).map((r,i)=>{const p=proj([CITIES[i][2],CITIES[i][1]]);return{x:p[0],y:p[1],n:CITIES[i][0],t:Math.round(r.current.temperature_2m),c:r.current.weather_code}});
-  gW.selectAll("text").data(w).join("text").attr("class","wx").attr("x",d=>d.x).attr("y",d=>d.y).attr("text-anchor","middle").text(d=>d.t+"°").append("title").text(d=>`${d.n}: ${d.t}° · ${WMO(d.c)[1]}`);
-  rescale();setSrc("meteo","ok","live "+hhmm())}catch(e){setSrc("meteo","err",S.unavailable)}}
+async function loadWeather(){try{const d=await getJSON(`https://api.open-meteo.com/v1/forecast?latitude=${CITIES.map(c=>c[1]).join(",")}&longitude=${CITIES.map(c=>c[2]).join(",")}&current=temperature_2m,weather_code,wind_speed_10m,wind_direction_10m`);
+  const w=(Array.isArray(d)?d:[d]).map((r,i)=>{const p=proj([CITIES[i][2],CITIES[i][1]]);return{x:p[0],y:p[1],n:CITIES[i][0],t:Number.isFinite(r.current?.temperature_2m)?Math.round(r.current.temperature_2m):null,c:r.current?.weather_code,speed:r.current?.wind_speed_10m,direction:r.current?.wind_direction_10m}});
+  gW.selectAll("text").data(w.filter(v=>v.t!==null)).join("text").attr("class","wx").attr("x",d=>d.x).attr("y",d=>d.y).attr("text-anchor","middle").text(d=>d.t+"°").append("title").text(d=>`${d.n}: ${d.t}° · ${WMO(d.c)[1]}`);
+  const points=gWind.selectAll("g.world-wind-point").data(w.filter(v=>Number.isFinite(v.speed)&&Number.isFinite(v.direction))).join(enter=>{const g=enter.append("g").attr("class","world-wind-point");g.append("path").attr("d","M0,8 L0,-8 M-4,-3 L0,-8 L4,-3");g.append("text").attr("x",9).attr("y",4);g.append("title");return g;});
+  points.select("path").attr("transform",d=>`rotate(${(d.direction+180)%360})`);points.select("text").text(d=>Math.round(d.speed));points.select("title").text(d=>`${d.n} · ${S.mapWind} ${Math.round(d.speed)} km/h · ${S.mapWindFrom} ${Math.round(d.direction)}°`);
+  rescale();applyLayers();setSrc("meteo","ok","live "+hhmm())}catch(e){setSrc("meteo","err",S.unavailable)}}
 
 /* ---------- horloge, recherche, démarrage ---------- */
 function tick(){const now=new Date(),clockDate=$("#clock-date"),clockTime=$("#clock-time");
