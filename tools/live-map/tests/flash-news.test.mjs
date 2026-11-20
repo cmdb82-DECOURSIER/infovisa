@@ -32,3 +32,8 @@ test('world layout places latest news directly beneath a full-width map and coun
   const fn=source.slice(source.indexOf('function newsPinAppearance('),source.indexOf('function newsPinTransform(')),appearance=new Function(fn+';return newsPinAppearance;')();assert.ok(appearance('breaking').core>appearance('live').core);assert.ok(appearance('live').core>appearance('recent').core);assert.ok(appearance('breaking').halo<=22,'Urgent halo fits within the 44 px hit target');assert.equal(appearance('breaking').symbol,'!');assert.equal(appearance('recent').symbol,'');
  }finally{dom.window.close();}
 });
+
+test('Enter in country search does not activate the newly focused dialog close button',async()=>{
+ const source=await fs.readFile(new URL('../template.html',import.meta.url),'utf8'),start=source.indexOf('$("#q").addEventListener("keydown"'),end=source.indexOf('$("#riskdate")',start),dom=new JSDOM('<input id="q" value="France">');let selected=0;
+ try{new Function('$','norm','C','select',source.slice(start,end))(s=>dom.window.document.querySelector(s),s=>s.toLowerCase(),[{fr:'France',en:'France'}],()=>selected++);const e=new dom.window.KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true});dom.window.document.querySelector('input').dispatchEvent(e);assert.equal(selected,1);assert.equal(e.defaultPrevented,true,'Prevent implicit Enter activation after focus moves into the country dialog');}finally{dom.window.close();}
+});

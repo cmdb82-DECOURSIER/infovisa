@@ -502,7 +502,7 @@ function tick(){const now=new Date(),clockDate=$("#clock-date"),clockTime=$("#cl
 const norm=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim();
 $("#clist").replaceChildren(...C.map(c=>c.fr).sort((a,b)=>a.localeCompare(b,S.lang)).map(n=>el("option",{value:n})));
 function trySearch(){const v=norm($("#q").value);if(!v)return;const c=C.find(c=>norm(c.fr)===v)||C.find(c=>norm(c.en)===v);if(c){select(c);$("#q").blur()}}
-$("#q").addEventListener("change",trySearch);$("#q").addEventListener("keydown",e=>{if(e.key==="Enter"){const v=norm($("#q").value);const c=C.find(c=>norm(c.fr)===v)||C.find(c=>norm(c.fr).startsWith(v));if(c)select(c)}});
+$("#q").addEventListener("change",trySearch);$("#q").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();const v=norm($("#q").value);const c=C.find(c=>norm(c.fr)===v)||C.find(c=>norm(c.fr).startsWith(v));if(c)select(c)}});
 $("#riskdate").textContent=fmtDate(RISK_DATE);
 $("#world-news-data").textContent=JSON.stringify({items:[],countries:C.map(c=>({iso:c.a3,name:c.fr,names:[c.en,c.cap]}))});
 measureNewsPins();new ResizeObserver(measureNewsPins).observe(svg.node());
