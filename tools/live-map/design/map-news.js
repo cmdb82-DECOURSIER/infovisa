@@ -1,3 +1,4 @@
+import {mountFlashNews} from './flash-news.js';
 import {getMapAlerts} from './news-alerts.js';
 import {esc,labels,date} from './portal-utils.js';
 const rows={
@@ -23,6 +24,7 @@ const rows={
 };
 export function mountMapNews(open){
  const {lang,t}=labels(rows),status=document.querySelector('#map-alert-status'),layerControls=document.querySelector('#layers');
+ const carousel=mountFlashNews(document.querySelector('#map-news-carousel'));
  let payload=null,items=[],groups=new Map(),busy=false,failed=false,controller,alive=true,countries=[],openView=null,dialogSignature="";
  try{countries=JSON.parse(document.querySelector('#world-news-data')?.textContent||'{}').countries||[];}catch{}
  const onCountries=e=>{countries=e.detail.countries||countries;update();};
@@ -37,7 +39,7 @@ export function mountMapNews(open){
   for(const item of items)for(const iso of item.countryIsos){if(!groups.has(iso))groups.set(iso,[]);groups.get(iso).push(item);}
   const rank={breaking:0,live:1,recent:2};
   const markers=[...groups].map(([iso,list])=>{list.sort((a,b)=>rank[a.kind]-rank[b.kind]||Date.parse(b.publishedAt)-Date.parse(a.publishedAt));const c=countries.find(c=>c.iso===iso),top=list[0];return {iso,kind:top.kind,label:(c?.name||iso)+' · '+t(top.kind)+' · '+top.source+' · '+date(top.publishedAt,lang)+' · '+top.title};});
-  document.dispatchEvent(new CustomEvent('infovisa:news-markers',{detail:markers}));renderStatus();syncDialog();
+  document.dispatchEvent(new CustomEvent('infovisa:news-markers',{detail:markers}));carousel.update({items,countries,checkedAt:payload?.checkedAt,failed,loaded:!!payload});renderStatus();syncDialog();
  }
  function selectedItems(iso){return iso?groups.get(iso)||[]:items;}
  function itemsSignature(list){return JSON.stringify({unavailable:!list.length&&failed,articles:list.slice(0,30).map(a=>[a.url,a.title,a.publishedAt,a.source,a.sourceUrl,a.kind,a.countryIsos.length])});}
@@ -68,6 +70,6 @@ export function mountMapNews(open){
  async function refresh(){if(busy||!alive)return;busy=true;controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),12000);try{const r=await fetch('/api/alerts?lang='+lang,{signal:controller.signal});if(!r.ok)throw Error('alerts_unavailable');const data=await r.json();if(!Array.isArray(data.items)||!Array.isArray(data.sourceStatus))throw Error('invalid_alerts');if(!alive)return;payload=data;failed=false;}catch{if(!alive)return;failed=true;}finally{clearTimeout(timeout);busy=false;if(alive)update();}}
  const onOpen=e=>show(e.detail),onAll=e=>{if(e.target.closest('[data-alerts-open]'))show();},onToggle=()=>queueMicrotask(renderStatus),onVisible=()=>{if(!document.hidden){update();refresh();}};
  document.addEventListener('infovisa:world-news',onCountries);document.addEventListener('infovisa:news-open',onOpen);document.addEventListener('visibilitychange',onVisible);status?.addEventListener('click',onAll);layerControls?.addEventListener('click',onToggle);
- renderStatus();refresh();const timer=setInterval(()=>{update();if(!document.hidden)refresh();},60000);
- return {refresh,destroy(){alive=false;controller?.abort();clearInterval(timer);document.removeEventListener('infovisa:world-news',onCountries);document.removeEventListener('infovisa:news-open',onOpen);document.removeEventListener('visibilitychange',onVisible);status?.removeEventListener('click',onAll);layerControls?.removeEventListener('click',onToggle);}};
+ update();refresh();const timer=setInterval(()=>{update();if(!document.hidden)refresh();},60000);
+ return {refresh,destroy(){carousel.destroy();alive=false;controller?.abort();clearInterval(timer);document.removeEventListener('infovisa:world-news',onCountries);document.removeEventListener('infovisa:news-open',onOpen);document.removeEventListener('visibilitychange',onVisible);status?.removeEventListener('click',onAll);layerControls?.removeEventListener('click',onToggle);}};
 }
