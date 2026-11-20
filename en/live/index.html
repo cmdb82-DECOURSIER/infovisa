@@ -265,9 +265,10 @@ ul.feed .new{align-self:auto}
 </style>
 <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="ab3c5cb8-e765-471e-9a39-bb8651feca3e" data-blockingmode="auto" type="text/javascript"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5985516088824403" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="/assets/live/theme.css?v=1b4b0716e359"><link rel="stylesheet" href="/assets/live/weather.css?v=1b4b0716e359"><link rel="stylesheet" href="/assets/live/marine.css?v=1b4b0716e359">
-<link rel="stylesheet" href="/assets/live/portal.css?v=1b4b0716e359">
-<link rel="stylesheet" href="/assets/live/appearance.css?v=1b4b0716e359">
+<link rel="stylesheet" href="/assets/live/theme.css?v=8e4d89cc5926"><link rel="stylesheet" href="/assets/live/weather.css?v=8e4d89cc5926"><link rel="stylesheet" href="/assets/live/marine.css?v=8e4d89cc5926">
+<link rel="stylesheet" href="/assets/live/portal.css?v=8e4d89cc5926">
+<link rel="stylesheet" href="/assets/live/appearance.css?v=8e4d89cc5926">
+<link rel="stylesheet" href="/assets/live/flash-news.css?v=8e4d89cc5926">
 </head>
 <body>
 <header>
@@ -283,8 +284,8 @@ ul.feed .new{align-self:auto}
 <div id="vw">
 <div class="lead"><p class="iv-eyebrow">INFOVISA / LIVE</p><h1>InfoVisa Live: the world in real time</h1><p>Country travel risk, earthquakes, weather, geopolitical news, live radio and news TV — plus the Schengen visa guide.</p></div>
 <div class="digest" id="digest" aria-live="polite"></div>
-<main>
-  <section class="card">
+<main class="world-main">
+  <section class="card world-map-card">
     <h2>World map <small id="mapnote">Click a country</small></h2>
     <div class="layers" id="layers"></div><div class="map-alert-bar" id="map-alert-status" role="status" data-i18n-skip></div>
     <div id="mapwrap">
@@ -293,9 +294,7 @@ ul.feed .new{align-self:auto}
     </div>
     <div class="legend" id="legend"></div>
   </section>
-  <aside>
-    <section class="card"><h2>Country profile</h2><div class="pad" id="panel"></div></section>
-  </aside>
+  <section id="map-news-carousel" aria-labelledby="flash-title" data-i18n-skip></section>
   <div class="feeds">
     <section class="card" style="--fc:#4cc2ff"><h2 class="ft"><span class="t"><span class="ic">🌍</span>Live geopolitics</span> <small id="newsnote">international press · 48 h</small></h2><ul class="feed" id="news"><li class="empty">Loading…</li></ul></section>
     <section class="card" style="--fc:#ff5a4d"><h2 class="ft"><span class="t"><span class="ic">🌋</span>Earthquakes</span> <small>USGS · M4.5+ · 7 days</small></h2><ul class="feed" id="quakes"><li class="empty">Loading…</li></ul></section>
@@ -313,7 +312,7 @@ ul.feed .new{align-self:auto}
 </div>
 </div>
 <div id="vm" class="mk" hidden></div>
-<section id="weather-extra" class="iv-extra page-width" hidden></section><section id="marine-extra" class="iv-extra page-width" hidden></section><section id="webcams-extra" class="iv-extra page-width" hidden></section><section id="traffic-extra" class="iv-extra page-width" hidden></section><section id="local-extra" class="iv-extra page-width" hidden></section><section id="health-extra" class="iv-extra page-width" hidden></section><dialog id="official-dialog"><button class="official-close" aria-label="Close">×</button><div id="official-content"></div></dialog>
+<section id="weather-extra" class="iv-extra page-width" hidden></section><section id="marine-extra" class="iv-extra page-width" hidden></section><section id="webcams-extra" class="iv-extra page-width" hidden></section><section id="traffic-extra" class="iv-extra page-width" hidden></section><section id="local-extra" class="iv-extra page-width" hidden></section><section id="health-extra" class="iv-extra page-width" hidden></section><dialog id="country-dialog" class="iv-country-dialog" aria-labelledby="country-dialog-title"><button type="button" class="country-close" aria-label="Close">×</button><h2 id="country-dialog-title">Country profile</h2><div id="panel" class="pad"></div></dialog><dialog id="official-dialog"><button class="official-close" aria-label="Close">×</button><div id="official-content"></div></dialog>
 <section class="seo"><div class="card"><h2>About the InfoVisa Live map</h2><div class="pad"><p>InfoVisa Live is a continuously updated world map: travel risk level for every country (travel advisories), M4.5+ earthquakes from the last 7 days (USGS), ongoing natural events (NASA EONET), local weather and geopolitical headlines from international press. Spot the countries to avoid and the ones to watch at a glance before you travel.</p><p>Listen to live news radio (BBC World Service, NPR, RFI, Deutschlandfunk…) or watch free news channels (France 24, DW, Euronews). Need a visa? Read our independent guides:</p><p class="seol"><a href="/en/visa-types.html">Schengen visa types</a> · <a href="/en/schengen-countries.html">Schengen countries</a> · <a href="/en/etias.html">ETIAS 2026</a> · <a href="/en/fees-and-costs.html">Fees and costs</a> · <a href="/en/faq.html">Visa FAQ</a></p></div></div></section>
 <footer>
   Risk levels: US Department of State travel advisories, snapshot of <span id="riskdate"></span> — written for US citizens; check your own government's official advice before travelling. Live data: USGS, NASA EONET, MET Norway, Google News. Independent information site with no official standing.
@@ -605,9 +604,10 @@ fetch('/assets/live/assets/uap-cases.json').then(r=>r.json()).then(data=>{gPAN.s
 
 document.addEventListener('infovisa:news-markers',event=>{
  const data=event.detail.map(d=>{const c=byA3.get(d.iso);if(!c)return null;const xy=proj([c.ll[1],c.ll[0]]);return {...d,x:xy[0],y:xy[1]};}).filter(Boolean);
- const pins=gNews.selectAll('g.news-marker').data(data,d=>d.iso).join(enter=>{const g=enter.append('g').attr('class','news-marker').attr('role','button').attr('tabindex',0);g.append('circle').attr('class','news-marker-hit').attr('r',22);g.append('circle').attr('class','news-marker-halo').attr('r',11);g.append('circle').attr('class','news-marker-core').attr('r',4);g.append('title');return g;});
+ const pins=gNews.selectAll('g.news-marker').data(data,d=>d.iso).join(enter=>{const g=enter.append('g').attr('class','news-marker').attr('role','button').attr('tabindex',0);g.append('circle').attr('class','news-marker-hit').attr('r',22);g.append('circle').attr('class','news-marker-halo').attr('r',11);g.append('circle').attr('class','news-marker-core');g.append('text').attr('class','news-marker-symbol').attr('text-anchor','middle').attr('dy','.35em').attr('aria-hidden','true');g.append('title');return g;});
  pins.attr('data-news-kind',d=>d.kind).attr('data-news-country',d=>d.iso).attr('aria-label',d=>d.label).attr('transform',newsPinTransform).on('click',(e,d)=>{e.stopPropagation();document.dispatchEvent(new CustomEvent('infovisa:news-open',{detail:d.iso}));}).on('keydown',(e,d)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();document.dispatchEvent(new CustomEvent('infovisa:news-open',{detail:d.iso}));}});
- pins.select('title').text(d=>d.label);gNews.raise();
+ pins.select('.news-marker-core').attr('r',d=>newsPinAppearance(d.kind).core);pins.select('.news-marker-halo').attr('r',d=>newsPinAppearance(d.kind).halo);pins.select('.news-marker-symbol').text(d=>newsPinAppearance(d.kind).symbol);
+ pins.sort((a,b)=>({recent:0,live:1,breaking:2}[a.kind]||0)-({recent:0,live:1,breaking:2}[b.kind]||0));pins.select('title').text(d=>d.label);gNews.raise();
 });
 
 const tip=$("#tip");
@@ -621,6 +621,7 @@ const paths=gC.selectAll("path").data(feats).join("path").attr("class","country"
   .on("click",(ev,f)=>{const c=cOf(f);if(c)select(c,f)});
 const zoom=d3.zoom().scaleExtent([1,14]).translateExtent([[0,0],[W,H]]).on("zoom",ev=>{root.attr("transform",ev.transform);K=ev.transform.k;rescale()});
 svg.call(zoom);
+function newsPinAppearance(kind){return kind==='breaking'?{core:8,halo:19,symbol:'!'}:kind==='live'?{core:6,halo:14,symbol:''}:{core:4,halo:11,symbol:''};}
 function newsPinTransform(d){return `translate(${d.x},${d.y})scale(${newsPixelRatio/K})`;}
 function rescaleNewsPins(){gNews.selectAll("g.news-marker").attr("transform",newsPinTransform);}
 function measureNewsPins(){const box=svg.node().getBoundingClientRect(),scale=Math.min(box.width/W,box.height/H);newsPixelRatio=scale>0?1/scale:1;rescaleNewsPins();}
@@ -652,9 +653,7 @@ function whyBlock(c,l){const box=el("div",{class:"why"});if(!l)return box;
   if(codes.length){box.append(el("ul",{class:"whyl"},...codes.map(k=>el("li",{},el("b",{text:RZ[k][0]}),document.createTextNode(" — "+RZ[k][1])))));
     box.append(el("p",{class:"whyn",text:S.whyNote}))}
   return box}
-function overview(){const p=$("#panel");const n={1:0,2:0,3:0,4:0};C.forEach(c=>{const l=level(c);if(l)n[l]++});
-  p.replaceChildren(el("p",{class:"cname",text:S.overviewTitle}),el("div",{class:"csub",text:S.overviewText}),
-    ...[4,3].map(l=>{const b=el("div",{class:"badge",style:`border-left-color:${LV[l].c}`},el("span",{class:"n",text:n[l]}),el("div",{},el("div",{class:"t",text:LV[l].t}),el("div",{class:"s",text:C.filter(c=>level(c)===l).map(c=>c.fr).sort((a,b)=>a.localeCompare(b,S.lang)).join(", ")})));return b}))}
+const countryDialog=$("#country-dialog");$(".country-close").onclick=()=>countryDialog.close();
 function select(c,f){selected=c;const my=++reqId;paths.classed("sel",d=>cOf(d)===c);f=f||feats.find(d=>cOf(d)===c);if(f){zoomTo(f);gC.selectAll("path.sel").raise()}
   const l=level(c),p=$("#panel");
   const wx=el("div",{id:"cwx",class:"empty",text:S.wxLoading}),nw=el("ul",{class:"feed",id:"cnews"},el("li",{class:"empty",text:S.newsLoading}));
@@ -672,6 +671,7 @@ function select(c,f){selected=c;const my=++reqId;paths.classed("sel",d=>cOf(d)==
       ...S.links.map(([u,t])=>el("a",{href:u,target:"_blank",rel:"noopener",text:t+" ↗"})),
       el("a",{href:"https://news.google.com/search?q="+enc(c.fr)+"&hl="+S.newsLang,target:"_blank",rel:"noopener",text:fill(S.allNews,c.fr)+" ↗"})));
   $("#mapnote").textContent=c.fr;
+  if(!countryDialog.open)countryDialog.showModal();
   countryWeather(c,my);countryNews(c,my);
 }
 async function countryWeather(c,my){const box=$("#cwx");try{
@@ -763,7 +763,7 @@ $("#q").addEventListener("change",trySearch);$("#q").addEventListener("keydown",
 $("#riskdate").textContent=fmtDate(RISK_DATE);
 $("#world-news-data").textContent=JSON.stringify({items:[],countries:C.map(c=>({iso:c.a3,name:c.fr,names:[c.en,c.cap]}))});
 measureNewsPins();new ResizeObserver(measureNewsPins).observe(svg.node());
-drawStatus();drawLayers();drawLegend();overview();drawDigest();tick();setInterval(tick,1000);
+drawStatus();drawLayers();drawLegend();drawDigest();tick();setInterval(tick,1000);
 loadQuakes();loadEvents();loadWeather();loadNews();
 setInterval(loadQuakes,5*6e4);setInterval(loadEvents,30*6e4);setInterval(loadWeather,15*6e4);setInterval(loadNews,5*6e4);
 </script>
@@ -901,5 +901,5 @@ var ra=$("raudio");if(ra)ra.addEventListener("play",function(){if(!v.paused)v.pa
 drawC();drawCh();
 })();
 </script>
-<script type="module" src="/assets/live/extras.js?v=1b4b0716e359"></script></body>
+<script type="module" src="/assets/live/extras.js?v=8e4d89cc5926"></script></body>
 </html>
