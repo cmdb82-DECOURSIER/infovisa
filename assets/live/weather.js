@@ -1,10 +1,10 @@
-import {createSpatialWeights,projectField,sampleField,advanceTimeline,advectParticle,createParticles,recycleParticle} from './weather-flow.js?v=737084a93dd4';
-import {project,worldPoints,viewportPoints,zoomAt,constrainView} from './atlas-geo.js?v=737084a93dd4';
+import {createSpatialWeights,projectField,sampleField,advanceTimeline,advectParticle,createParticles,recycleParticle} from './weather-flow.js?v=8ef1a578a38c';
+import {project,worldPoints,viewportPoints,zoomAt,constrainView} from './atlas-geo.js?v=8ef1a578a38c';
 /* MET Norway connected weather via the shared gateway. Geographic field: world or viewport samples,
    inverse-distance interpolation of the four nearest samples. Particle motion
    follows interpolated u/v wind components; animation speed is illustrative. */
 const WX_API='/api/weather';
-import {mountSatellite,satelliteLabels} from './satellite.js?v=737084a93dd4';
+import {mountSatellite,satelliteLabels} from './satellite.js?v=8ef1a578a38c';
 const WX_GEO='https://geocoding-api.open-meteo.com/v1/search';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=(v,d=0)=>Number.isFinite(v)?v.toLocaleString((document.documentElement.lang||'fr'),{maximumFractionDigits:d}):'—';

@@ -162,3 +162,6 @@ for(const [lang,values] of Object.entries(mapLayerLabels)){const S=module.export
 
 const infoAlertLabels={fr:'Alertes info',en:'News alerts',de:'Nachrichtenmeldungen',es:'Alertas de noticias',pt:'Alertas de notícias'};
 for(const [lang,label] of Object.entries(infoAlertLabels))module.exports[lang].mapInfoAlerts=label;
+
+const windNotes={fr:'Vent à 10 m · prévisions MET Norway · points disponibles',en:'10 m wind · MET Norway forecasts · available points',de:'Wind in 10 m · MET Norway Prognose · verfügbare Punkte',es:'Viento a 10 m · previsiones MET Norway · puntos disponibles',pt:'Vento a 10 m · previsões MET Norway · pontos disponíveis'};
+for(const [lang,label] of Object.entries(windNotes))module.exports[lang].mapWindNote=label;

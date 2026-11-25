@@ -23,3 +23,10 @@ Hiérarchie : cyan pour un titre récent, or pour un direct, rouge pour une urge
 Boutons Vue unique / Grille dans Webcams live. Mosaïque de vignettes moyennes, filtre par ville et catalogue complet des vidéos intégrées. Trois colonnes sur grand écran, une sur téléphone ; lecteurs d’au moins 200 px de haut. Toutes les vidéos démarrent muettes. Un clic sur la vignette ou son bouton sélectionne une seule source audio, signalée par une bordure dorée ; Tout couper remet toutes les sources en silence. Les sources sans piste audio restent silencieuses.
 
 Les lecteurs officiels nécessitent le consentement médias. Seules les vignettes visibles sont lues, six au maximum. Arrêt en quittant la grille ou l’onglet ; pause globale et liens vers les diffuseurs. Les images fixes restent dans la vue unique et ne sont pas présentées comme des vidéos.
+
+## Vues de la carte mondiale
+Ordre principal : Pays, Séismes, Vent. Sélection exclusive et stable : cliquer à nouveau Pays ne désactive pas cette vue. Les POI d’actualité font partie de Pays et ne nécessitent aucun bouton séparé. Les autres couches PAN, événements naturels et températures restent dans Autres couches.
+
+Les points Pays reprennent les articles disponibles dans les flux éditeurs sur les dernières 24 heures, avec source et date, pour éviter de disparaître dès qu’un titre dépasse une heure. Le carrousel conserve les titres de la dernière heure. Urgent / En direct uniquement selon le média, avec expiration de la mise en avant ; aucune urgence déduite du sujet. Les points sont au centre des pays mentionnés, sans prétendre à une localisation exacte. La légende distingue les trois états.
+
+Vent : flèches et vitesses à 10 m sur les points mondiaux disponibles, prévisions MET Norway horodatées en UTC. Pas d’interpolation ni d’animation ajoutée à cette vue ; le module Météo conserve l’atlas complet. Les flèches sont orientées vers la direction du déplacement de l’air, calculée depuis la provenance météorologique. Les valeurs absentes ne créent pas de flèche.

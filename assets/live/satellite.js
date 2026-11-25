@@ -1,4 +1,4 @@
-import {labels} from './portal-utils.js?v=737084a93dd4';
+import {labels} from './portal-utils.js?v=8ef1a578a38c';
 // Public official players published for embedding by EUMETSAT Earth View.
 export const SATELLITE_STREAMS=[
  {key:'europe',video:'nigtvuOspmM',product:'Meteosat-12 · GeoColour',timing:'ten'},
