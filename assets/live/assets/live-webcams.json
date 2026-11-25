@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-19",
+  "checkedAt": "2026-11-25",
   "rights": "Official public YouTube players. Streams belong to their operators; no video is copied or rehosted. Availability may change.",
   "cameras": [
     {
@@ -121,18 +121,6 @@
       "lat": -33.907,
       "lon": 18.397,
       "sourceUrl": "https://www.youtube.com/watch?v=4Zu64CmAjMo"
-    },
-    {
-      "id": "capetown-panorama",
-      "city": "Cape Town",
-      "country": "South Africa",
-      "name": "Panorama · Table Mountain et port",
-      "provider": "FLOORING.CO.ZA",
-      "videoId": "CnQEcM8aOnQ",
-      "channelId": "UCMyCO_-D2eLocsvoiGob7iw",
-      "lat": -33.93,
-      "lon": 18.42,
-      "sourceUrl": "https://www.youtube.com/watch?v=CnQEcM8aOnQ"
     },
     {
       "id": "sydney-harbour",

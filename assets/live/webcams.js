@@ -1,5 +1,5 @@
-import {mountPublicCameras} from './public-cameras.js?v=8e4d89cc5926';
-import {isLuxembourgPlace} from './lux-live.js?v=8e4d89cc5926';
+import {mountPublicCameras} from './public-cameras.js?v=045848ab8651';
+import {isLuxembourgPlace} from './lux-live.js?v=045848ab8651';
 /* Nearby webcams: licensed Windy players plus geographically matched source links. */
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const rows={
@@ -81,5 +81,5 @@ export function mountWebcams(root){
  window.addEventListener('visibilitychange',refreshIfStale,{signal:events.signal});
  const visibilityRoot=root.closest('.iv-extra')||root;
  const visibilityObserver=new MutationObserver(()=>{if(visibilityRoot.hidden)closePlayer();else refreshIfStale();});visibilityObserver.observe(visibilityRoot,{attributes:true,attributeFilter:['hidden']});
- return {select(next){place={...next};const lux=isLuxembourgPlace(next);const optional=$('.iv-windy-optional');optional.hidden=lux;if(lux){sequence++;controller?.abort();closePlayer();optional.open=false;$('.km-nearby-cameras').replaceChildren();$('[data-camera-local]').replaceChildren();selected=[];}renderLocal();publicPanel.select(next);load();},destroy(){publicPanel.destroy();alive=false;clearInterval(refreshTimer);visibilityObserver.disconnect();controller?.abort();events.abort();closePlayer();},ready:catalogPromise};
+ return {pause(){publicPanel.pause();closePlayer();},select(next){place={...next};const lux=isLuxembourgPlace(next);const optional=$('.iv-windy-optional');optional.hidden=lux;if(lux){sequence++;controller?.abort();closePlayer();optional.open=false;$('.km-nearby-cameras').replaceChildren();$('[data-camera-local]').replaceChildren();selected=[];}renderLocal();publicPanel.select(next);load();},destroy(){publicPanel.destroy();alive=false;clearInterval(refreshTimer);visibilityObserver.disconnect();controller?.abort();events.abort();closePlayer();},ready:catalogPromise};
 }
