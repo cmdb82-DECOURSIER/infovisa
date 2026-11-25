@@ -42,3 +42,24 @@ Tests : `npm test` dans tools/live-map (API, interactions météo, recherche des
 - Crypto et Bourse ont des boutons et contenus séparés ; CRO est ajouté par identifiant CoinGecko `crypto-com-chain` si absent des 60 premières lignes. Les favoris existants sont conservés.
 - Repères d’actualité : titres de moins de 24 h associés aux pays/villes mentionnés ; seuls les titres explicitement « urgent » ou « en direct » pulsent. Un clic ouvre les articles et leurs sources. Les repères suivent le zoom de la carte.
 - Les imports JS et entrées CSS/JS générés portent une empreinte des assets pour éviter qu’un navigateur conserve la version précédente pendant le cache de 24 h.
+
+### Référencement et liens directs
+
+`seo.js` contient les titres, descriptions et textes visibles des 11 rubriques
+pour FR/EN/DE/ES/PT. Ils sont rendus dans le HTML par `build.js`, même sans
+JavaScript. Les liens `#world`, `#local`, `#weather`, `#marine`, `#markets`,
+`#stocks`, `#webcams`, `#traffic`, `#media`, `#health`, `#uap` ouvrent les modules
+via `design/portal-links.js`. Ce sont des vues d'une même page canonique,
+pas des pages supplémentaires à ajouter au sitemap.
+
+Après génération, `node seo-audit.cjs` contrôle toutes les pages du sitemap,
+leurs liens internes, canonical, hreflang, JSON-LD, Cookiebot et AdSense.
+Ne mettre à jour `lastmod` que pour les pages réellement modifiées.
+
+### Caméras CITA fixes
+
+`/api/lux-streams?road=a1` (également a3/a4/a6/a7/a13) lit le catalogue
+individuel publié par CITA. `design/cita-fixed.js` affiche les vignettes sous
+le lecteur autoroutier et actualise seulement la caméra choisie chaque minute.
+Ce sont des **images actualisées**, distinctes des vidéos HLS tournantes RTL.
+Le bouton « Vidéo live » revient au flux vidéo. Pas de nouvelle clé API.

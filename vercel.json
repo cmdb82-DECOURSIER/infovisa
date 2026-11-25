@@ -94,6 +94,11 @@
       "source": "/pt/",
       "destination": "/pt/live/",
       "statusCode": 301
+    },
+    {
+      "source": "/es/visado-corta-duracion-c.html",
+      "destination": "/es/visado-corta-estancia-c.html",
+      "statusCode": 301
     }
   ],
   "headers": [

@@ -1,0 +1,2 @@
+const {test}=require('node:test'),assert=require('node:assert/strict'),{audit}=require('../seo-audit.cjs');
+test('all sitemap pages preserve canonical URLs, language discovery, SEO, consent and monetisation; live topics exist without JS',()=>{const r=audit();assert.equal(r.pageCount,85);assert.deepEqual(r.issues,[]);assert.equal(r.pages.filter(p=>p.live&&p.topics===11).length,5);for(const p of r.pages.filter(p=>p.live)){assert.ok(p.title.length<=65);assert.ok(p.description.length<=160);}});
