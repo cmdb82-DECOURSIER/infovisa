@@ -1,0 +1,33 @@
+# InfoVisa
+
+> Independent information portal: world and local news, weather, markets, live media, webcams and traffic. The interface has French, English, German, Spanish and Portuguese pages.
+
+## Live pages
+- [Français](https://www.infovisa.lu/)
+- [English](https://www.infovisa.lu/en/live/)
+- [Deutsch](https://www.infovisa.lu/de/live/)
+- [Español](https://www.infovisa.lu/es/live/)
+- [Português](https://www.infovisa.lu/pt/live/)
+
+## Sections
+- [World news](https://www.infovisa.lu/#world): recent publisher headlines on a country map, earthquake and natural-event layers. Country points do not identify the exact location of an incident.
+- [Local news](https://www.infovisa.lu/#local): country and city searches; optional location permission for nearby news.
+- [Weather](https://www.infovisa.lu/#weather): atmospheric maps and successive satellite images; timestamps and coverage depend on providers.
+- [Water sports and ocean](https://www.infovisa.lu/#marine): wind, waves, swell and available coastal webcams.
+- [Cryptocurrency](https://www.infovisa.lu/#markets): coin search, favourites, EUR/USD prices and market sentiment.
+- [Stocks](https://www.infovisa.lu/#stocks): indices, charts and currency exchange rates; some quotes are delayed.
+- [Webcams](https://www.infovisa.lu/#webcams): available live videos and updated still images, labelled by source; video grid with audio from a selected tile.
+- [Traffic](https://www.infovisa.lu/#traffic): city traffic maps and available cameras, including Luxembourg motorway and Kirchberg feeds from ACL/CITA/RTL.
+- [Radio and TV](https://www.infovisa.lu/#media): available live stations and news channels.
+- [Public health](https://www.infovisa.lu/#health): public health publications and reported outbreaks, with sources and dates.
+- [UAP archives](https://www.infovisa.lu/#uap): selected public reports and linked documents, not evidence of extraterrestrial origin.
+
+## Scope and sources
+Interactive maps and players require JavaScript. Media may require consent and may be unavailable in some regions. Individual webcams and countries are not guaranteed to have coverage. Weather forecasts, market quotes and headlines are third-party data with source-specific delays. InfoVisa is not an official alert service and does not provide investment advice or medical diagnoses.
+
+## Existing reference guides
+- [French Schengen visa types](https://www.infovisa.lu/fr/types-de-visa.html)
+- [English Schengen visa types](https://www.infovisa.lu/en/visa-types.html)
+
+## Sitemap
+- [All indexed page candidates and language alternatives](https://www.infovisa.lu/sitemap.xml)

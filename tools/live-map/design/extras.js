@@ -2,6 +2,7 @@ import {initNearby} from './nearby.js';
 import {initI18n} from './i18n.js';
 import {mountUAP} from './uap.js';
 import {mountMapNews} from './map-news.js';
+import {initPortalLinks} from './portal-links.js';
 const q=s=>document.querySelector(s);let weather,marine,official,webcams,local,localReady,pendingNearby,health,traffic;
 const dialog=q('#official-dialog');function show(html){q('#official-content').innerHTML=html;dialog.showModal();}
 mountMapNews(show);
@@ -15,3 +16,4 @@ document.querySelectorAll('[data-extra]').forEach(b=>b.addEventListener('click',
 if(location.hash==='#marches'){location.hash='markets';}
 
 initNearby(async place=>{const existed=!!local;pendingNearby=place;q('[data-extra=local]').click();const api=await localReady;if(existed&&place)await api.selectNearby(place);pendingNearby=null;});
+initPortalLinks();

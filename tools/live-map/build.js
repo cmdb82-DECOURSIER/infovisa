@@ -200,36 +200,17 @@ for(const name of fs.readdirSync('out/assets/live').filter(n=>n.endsWith('.js'))
 fs.writeFileSync('out/assets/live/assets/local-countries.json',JSON.stringify(wc.filter(c=>c.cca2).map(c=>({code:c.cca2,name:c.name.common,capital:c.capital?.[0]||c.name.common,lat:(c.capitalInfo?.latlng?.length===2?c.capitalInfo.latlng:c.latlng)[0],lon:(c.capitalInfo?.latlng?.length===2?c.capitalInfo.latlng:c.latlng)[1]}))));
 
 
-const SEO = {
-  fr: { h1: 'InfoVisa Live : le monde en direct', lead: 'Risques par pays, séismes, météo, actualités géopolitiques, radio et TV info — et le guide du visa Schengen.',
-    h: 'À propos de la carte InfoVisa Live',
-    p1: "InfoVisa Live est une carte du monde mise à jour en continu : niveau de risque de chaque pays (conseils aux voyageurs), séismes M4.5+ des 7 derniers jours (USGS), événements naturels en cours (NASA EONET), météo locale et actualités géopolitiques issues de la presse francophone et internationale. Les pays à éviter et ceux à surveiller sont repérés d'un coup d'œil avant de voyager.",
-    p2: "Écoutez les radios d'information en direct (France Info, RFI, RTL Lëtzebuerg, L'Essentiel Radio…) ou regardez les chaînes d'info gratuites (France 24, Euronews, franceinfo, RTL Télé Lëtzebuerg). Besoin d'un visa ? Consultez nos guides indépendants :",
-    links: [['Types de visa Schengen','/fr/types-de-visa.html'],['Pays Schengen','/fr/pays-schengen.html'],['ETIAS 2026','/fr/etias.html'],['Frais et coûts','/fr/frais-et-couts.html'],['FAQ visa','/fr/faq.html']] },
-  en: { h1: 'InfoVisa Live: the world in real time', lead: 'Country travel risk, earthquakes, weather, geopolitical news, live radio and news TV — plus the Schengen visa guide.',
-    h: 'About the InfoVisa Live map',
-    p1: 'InfoVisa Live is a continuously updated world map: travel risk level for every country (travel advisories), M4.5+ earthquakes from the last 7 days (USGS), ongoing natural events (NASA EONET), local weather and geopolitical headlines from international press. Spot the countries to avoid and the ones to watch at a glance before you travel.',
-    p2: 'Listen to live news radio (BBC World Service, NPR, RFI, Deutschlandfunk…) or watch free news channels (France 24, DW, Euronews). Need a visa? Read our independent guides:',
-    links: [['Schengen visa types','/en/visa-types.html'],['Schengen countries','/en/schengen-countries.html'],['ETIAS 2026','/en/etias.html'],['Fees and costs','/en/fees-and-costs.html'],['Visa FAQ','/en/faq.html']] },
-  de: { h1: 'InfoVisa Live: die Welt in Echtzeit', lead: 'Reiserisiko pro Land, Erdbeben, Wetter, Geopolitik-News, Live-Radio und Nachrichten-TV — plus der Schengen-Visum-Ratgeber.',
-    h: 'Über die InfoVisa-Live-Karte',
-    p1: 'InfoVisa Live ist eine laufend aktualisierte Weltkarte: Reiserisiko jedes Landes (Reisehinweise), Erdbeben ab M4,5 der letzten 7 Tage (USGS), aktuelle Naturereignisse (NASA EONET), lokales Wetter und geopolitische Schlagzeilen aus deutsch- und internationalsprachiger Presse. So erkennen Sie vor der Reise auf einen Blick, welche Länder Sie meiden sollten.',
-    p2: 'Hören Sie Nachrichtenradio live (Deutschlandfunk, BR24, BBC World Service…) oder sehen Sie kostenlose Nachrichtensender (DW, Euronews, France 24). Visum nötig? Unsere unabhängigen Ratgeber:',
-    links: [['Schengen-Visumarten','/de/visa-arten.html'],['Schengen-Länder','/de/schengen-laender.html'],['ETIAS 2026','/de/etias.html'],['Gebühren und Kosten','/de/gebuehren-und-kosten.html'],['Visum-FAQ','/de/faq.html']] },
-  es: { h1: 'InfoVisa Live: el mundo en directo', lead: 'Riesgo por país, terremotos, tiempo, noticias geopolíticas, radio y TV de noticias en vivo — y la guía del visado Schengen.',
-    h: 'Sobre el mapa InfoVisa Live',
-    p1: 'InfoVisa Live es un mapa del mundo actualizado de forma continua: nivel de riesgo de cada país (avisos de viaje), terremotos M4,5+ de los últimos 7 días (USGS), eventos naturales en curso (NASA EONET), tiempo local y titulares geopolíticos de la prensa en español e internacional. Identifica de un vistazo los países que conviene evitar antes de viajar.',
-    p2: 'Escucha radios de noticias en directo (RNE, BBC World Service, RFI…) o mira canales de noticias gratuitos (Euronews, France 24, DW). ¿Necesitas un visado? Consulta nuestras guías independientes:',
-    links: [['Tipos de visado Schengen','/es/tipos-de-visado.html'],['Países Schengen','/es/paises-schengen.html'],['ETIAS 2026','/es/etias.html'],['Tasas y costes','/es/tasas-y-costes.html'],['FAQ visado','/es/faq.html']] },
-  pt: { h1: 'InfoVisa Live: o mundo em direto', lead: 'Risco por país, sismos, meteorologia, notícias geopolíticas, rádio e TV de notícias em direto — e o guia do visto Schengen.',
-    h: 'Sobre o mapa InfoVisa Live',
-    p1: 'O InfoVisa Live é um mapa-mundo atualizado continuamente: nível de risco de cada país (avisos de viagem), sismos M4,5+ dos últimos 7 dias (USGS), eventos naturais em curso (NASA EONET), meteorologia local e manchetes geopolíticas da imprensa em português e internacional. Veja num relance os países a evitar antes de viajar.',
-    p2: 'Ouça rádios de notícias em direto (BBC World Service, RFI, Deutschlandfunk…) ou veja canais de notícias gratuitos (Euronews, France 24, DW). Precisa de um visto? Consulte os nossos guias independentes:',
-    links: [['Tipos de visto Schengen','/pt/tipos-de-visto.html'],['Países Schengen','/pt/paises-schengen.html'],['ETIAS 2026','/pt/etias.html'],['Taxas e custos','/pt/taxas-e-custos.html'],['FAQ visto','/pt/faq.html']] }
+const {content: SEO, routes: seoRoutes}=require('./seo.js');
+const guideLinks={
+fr:[['Types de visa Schengen','/fr/types-de-visa.html'],['Pays Schengen','/fr/pays-schengen.html'],['ETIAS 2026','/fr/etias.html'],['Frais et coûts','/fr/frais-et-couts.html'],['FAQ visa','/fr/faq.html']]
+,en:[['Schengen visa types','/en/visa-types.html'],['Schengen countries','/en/schengen-countries.html'],['ETIAS 2026','/en/etias.html'],['Fees and costs','/en/fees-and-costs.html'],['Visa FAQ','/en/faq.html']]
+,de:[['Schengen-Visumarten','/de/visa-arten.html'],['Schengen-Länder','/de/schengen-laender.html'],['ETIAS 2026','/de/etias.html'],['Gebühren und Kosten','/de/gebuehren-und-kosten.html'],['Visum-FAQ','/de/faq.html']]
+,es:[['Tipos de visado Schengen','/es/tipos-de-visado.html'],['Países Schengen','/es/paises-schengen.html'],['ETIAS 2026','/es/etias.html'],['Tasas y costes','/es/tasas-y-costes.html'],['FAQ visado','/es/faq.html']]
+,pt:[['Tipos de visto Schengen','/pt/tipos-de-visto.html'],['Países Schengen','/pt/paises-schengen.html'],['ETIAS 2026','/pt/etias.html'],['Taxas e custos','/pt/taxas-e-custos.html'],['FAQ visto','/pt/faq.html']]
 };
 
 for (const lang of LANGS) {
-  const L = I18N[lang];
+  const L = {...I18N[lang],title:SEO[lang].title,desc:SEO[lang].desc};
   let html = fs.readFileSync('template.html', 'utf8');
   const rep = (k, v) => { if (!html.includes(k)) throw new Error('missing ' + k); html = html.split(k).join(v); };
   const hreflang = LANGS.map(l => `<link rel="alternate" hreflang="${l}" href="https://www.infovisa.lu${I18N[l].path}">`).join('\n') + `\n<link rel="alternate" hreflang="x-default" href="https://www.infovisa.lu/">`;
@@ -238,17 +219,18 @@ for (const lang of LANGS) {
   const ldObj = { '@context': 'https://schema.org', '@graph': [
     { '@type': 'Organization', '@id': 'https://www.infovisa.lu/#org', name: 'InfoVisa.lu', url: 'https://www.infovisa.lu/', logo: 'https://www.infovisa.lu/assets/favicon.svg' },
     { '@type': 'WebSite', '@id': 'https://www.infovisa.lu/#site', url: 'https://www.infovisa.lu/', name: 'InfoVisa.lu', inLanguage: lang, publisher: { '@id': 'https://www.infovisa.lu/#org' } },
-    { '@type': 'WebApplication', name: L.title, url: 'https://www.infovisa.lu' + L.path, description: L.desc, inLanguage: lang, applicationCategory: 'TravelApplication', operatingSystem: 'Any', browserRequirements: 'Requires JavaScript', isAccessibleForFree: true, offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' }, publisher: { '@id': 'https://www.infovisa.lu/#org' } },
+    { '@type': 'WebApplication', name: L.title, url: 'https://www.infovisa.lu' + L.path, description: L.desc, inLanguage: lang, '@id': 'https://www.infovisa.lu' + L.path + '#app', applicationCategory: 'ReferenceApplication', featureList: K.cards.map(c=>c[0]), operatingSystem: 'Any', browserRequirements: 'Requires JavaScript', isAccessibleForFree: true, offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' }, publisher: { '@id': 'https://www.infovisa.lu/#org' } },
+    { '@type': 'WebPage', '@id': 'https://www.infovisa.lu' + L.path + '#page', url: 'https://www.infovisa.lu' + L.path, name: L.title, description: L.desc, inLanguage: lang, isPartOf: {'@id':'https://www.infovisa.lu/#site'}, mainEntity: {'@id':'https://www.infovisa.lu'+L.path+'#app'}, about: K.cards.map(c=>({'@type':'Thing',name:c[0]})) },
     { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'InfoVisa.lu', item: 'https://www.infovisa.lu/' }, { '@type': 'ListItem', position: 2, name: L.title, item: 'https://www.infovisa.lu' + L.path }] }
   ] };
   const ld = '<script type="application/ld+json">' + JSON.stringify(ldObj).replace(/</g, '\\u003c') + '</script>';
-  const seoBlock = '<section class="seo"><div class="card"><h2>' + esc(K.h) + '</h2><div class="pad"><p>' + esc(K.p1) + '</p><p>' + esc(K.p2) + '</p><p class="seol">' + K.links.map(l => '<a href="' + l[1] + '">' + esc(l[0]) + '</a>').join(' · ') + '</p></div></div></section>';
+  const seoBlock = `<section class="seo iv-explore" aria-labelledby="explore-title" data-i18n-skip><div class="card"><h2 id="explore-title">${esc(K.heading)}</h2><div class="pad"><p>${esc(K.intro)}</p><div class="iv-explore-grid">${K.cards.map((c,i)=>`<article><h3><a href="#${seoRoutes[i]}" data-live-route="${seoRoutes[i]}">${esc(c[0])} <span aria-hidden="true">↗</span></a></h3><p>${esc(c[1])}</p></article>`).join('')}</div><details class="iv-guide-archives"><summary>${esc(K.archive)}</summary><p class="seol">${guideLinks[lang].map(l=>`<a href="${l[1]}">${esc(l[0])}</a>`).join(' · ')}</p></details></div></div></section>`;
   const designWords={"fr": ["Météo & vents", "Sports nautiques & océan", "Radio & TV", "PAN · archives", "Fermer"], "en": ["Weather & wind", "Water sports & ocean", "Radio & TV", "UAP · archives", "Close"], "de": ["Wetter & Wind", "Wassersport & Ozean", "Radio & TV", "UAP · Archiv", "Schließen"], "es": ["Tiempo y viento", "Deportes acuáticos y océano", "Radio y TV", "FANI · archivo", "Cerrar"], "pt": ["Tempo e vento", "Desportos náuticos e oceano", "Rádio e TV", "FANI · arquivo", "Fechar"]};
   const [designWeather,designMarine,designMedia,designUap,designClose]=designWords[lang];
   const [designCrypto,designStocks,designWebcams,designLocal,designHealth]={fr:['Crypto','Bourse','Webcams live','Monde local','Pandémies & virus'],en:['Crypto','Stocks','Live webcams','Local world','Outbreaks & viruses'],de:['Krypto','Börse','Live-Webcams','Lokal','Ausbrüche & Viren'],es:['Cripto','Bolsa','Cámaras en directo','Mundo local','Brotes y virus'],pt:['Cripto','Bolsa','Webcams ao vivo','Mundo local','Surtos e vírus']}[lang];
   const designTraffic={fr:"TRAFIC mondial",en:"World traffic",de:"Verkehr weltweit",es:"Tráfico mundial",pt:"Trânsito mundial"}[lang];
   const [designLight,designDarkMode]={fr:["Clair","Mode sombre"],en:["Light","Dark mode"],de:["Hell","Dunkler Modus"],es:["Claro","Modo oscuro"],pt:["Claro","Modo escuro"]}[lang];
-  const html_tokens = {designLight,designDarkMode,designTraffic,assetVersion,designCrypto,designStocks,designWebcams,designLocal,designHealth, designWeather,designMarine,designMedia,designUap,designClose, mk_tabWorld: esc(MKI[lang].tabWorld), mk_tabMkt: esc(MKI[lang].tabMkt), lang, hreflang, langnav, ld, seoBlock, h1: esc(K.h1), lead: esc(K.lead) };
+  const html_tokens = {designLight,designDarkMode,designTraffic,assetVersion,designCrypto,designStocks,designWebcams,designLocal,designHealth, designWeather,designMarine,designMedia,designUap,designClose, mk_tabWorld: esc(MKI[lang].tabWorld), mk_tabMkt: esc(MKI[lang].tabMkt), lang, hreflang, langnav, ld, seoBlock, h1: esc(I18N[lang].path === "/" ? "InfoVisa Live : le monde en direct" : {en:"InfoVisa Live: the world in real time",de:"InfoVisa Live: die Welt in Echtzeit",es:"InfoVisa Live: el mundo en directo",pt:"InfoVisa Live: o mundo em direto"}[lang]), lead: esc(K.lead) };
   html = html.replace(/\{\{(\w+)\}\}/g, (m, k) => {
     if (k in html_tokens) return html_tokens[k];
     if (!(k in L)) throw new Error(`${lang}: missing key ${k}`);

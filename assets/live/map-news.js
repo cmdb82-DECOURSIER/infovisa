@@ -1,6 +1,6 @@
-import {mountFlashNews} from './flash-news.js?v=8ef1a578a38c';
-import {getMapAlerts} from './news-alerts.js?v=8ef1a578a38c';
-import {esc,labels,date} from './portal-utils.js?v=8ef1a578a38c';
+import {mountFlashNews} from './flash-news.js?v=ccf195ad2346';
+import {getMapAlerts} from './news-alerts.js?v=ccf195ad2346';
+import {esc,labels,date} from './portal-utils.js?v=ccf195ad2346';
 const rows={
  title:['Alertes info','News alerts','Nachrichtenmeldungen','Alertas de noticias','Alertas de notícias'],
  recent:['Publié dans les dernières 24 heures','Published in the last 24 hours','In den letzten 24 Stunden veröffentlicht','Publicado en las últimas 24 horas','Publicado nas últimas 24 horas'],
