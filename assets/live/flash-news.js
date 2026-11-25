@@ -1,4 +1,4 @@
-import {esc,labels,date} from './portal-utils.js?v=045848ab8651';
+import {esc,labels,date} from './portal-utils.js?v=737084a93dd4';
 const rows={
  eyebrow:['LE FIL · DERNIÈRE MINUTE','THE FEED · LATEST NEWS','DER TICKER · AKTUELLE MELDUNGEN','EL HILO · ÚLTIMA HORA','O FEED · ÚLTIMA HORA'],
  title:['Le monde, à l’instant.','The world, right now.','Die Welt, jetzt.','El mundo, ahora.','O mundo, agora.'],
