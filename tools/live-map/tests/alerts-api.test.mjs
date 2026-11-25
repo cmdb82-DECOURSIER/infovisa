@@ -20,3 +20,8 @@ test('all failed sources are distinct from a valid feed without recent headlines
  const original=globalThis.fetch;let calls=0;globalThis.fetch=async()=>{calls++;throw Error('offline');};
  try{let res=response();await handler({method:'POST',query:{}},res);assert.equal(res.code,405);assert.equal(calls,0);res=response();await handler({method:'GET',query:{}},res);assert.equal(res.code,502);assert.equal(res.data.items.length,0);globalThis.fetch=async()=>new Response('<rss><channel/></rss>');res=response();await handler({method:'GET',query:{}},res);assert.equal(res.code,200);assert.equal(res.data.items.length,0);}finally{globalThis.fetch=original;}
 });
+test('map can request dated reports from the last 24 hours while the default breaking feed stays one hour',async()=>{
+ const original=globalThis.fetch,now=Date.now(),entry=(name,hours)=>`<item><title>France ${name}</title><link>https://www.france24.com/fr/${name}</link><pubDate>${new Date(now-hours*3600000).toUTCString()}</pubDate></item>`;
+ globalThis.fetch=async url=>{if(!url.includes('france24'))throw Error('unavailable');return new Response('<rss><channel>'+entry('recent',.5)+entry('today',12)+entry('expired',25)+'</channel></rss>');};
+ try{let res=response();await handler({method:'GET',query:{lang:'fr',window:'24h'}},res);assert.equal(res.data.windowMinutes,1440);assert.equal(res.data.items.length,2);res=response();await handler({method:'GET',query:{lang:'fr'}},res);assert.equal(res.data.windowMinutes,60);assert.equal(res.data.items.length,1);res=response();await handler({method:'GET',query:{lang:'fr',window:'unbounded'}},res);assert.equal(res.data.windowMinutes,60);assert.equal(res.data.items.length,1);}finally{globalThis.fetch=original;}
+});

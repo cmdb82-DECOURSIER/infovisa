@@ -1,9 +1,9 @@
-import {mountFlashNews} from './flash-news.js?v=737084a93dd4';
-import {getMapAlerts} from './news-alerts.js?v=737084a93dd4';
-import {esc,labels,date} from './portal-utils.js?v=737084a93dd4';
+import {mountFlashNews} from './flash-news.js?v=8ef1a578a38c';
+import {getMapAlerts} from './news-alerts.js?v=8ef1a578a38c';
+import {esc,labels,date} from './portal-utils.js?v=8ef1a578a38c';
 const rows={
  title:['Alertes info','News alerts','Nachrichtenmeldungen','Alertas de noticias','Alertas de notícias'],
- recent:['Publié dans la dernière heure','Published in the last hour','In der letzten Stunde veröffentlicht','Publicado en la última hora','Publicado na última hora'],
+ recent:['Publié dans les dernières 24 heures','Published in the last 24 hours','In den letzten 24 Stunden veröffentlicht','Publicado en las últimas 24 horas','Publicado nas últimas 24 horas'],
  breaking:['Urgent · signalé par le média','Breaking · identified by source','Eilmeldung · vom Medium gekennzeichnet','Urgente · indicado por el medio','Urgente · indicado pela fonte'],
  live:['En direct · signalé par le média','Live · identified by source','Live · vom Medium gekennzeichnet','En directo · indicado por el medio','Em direto · indicado pela fonte'],
  note:['Source, lien et date contrôlés dans le flux du média ; les faits ne sont pas confirmés automatiquement. Les points indiquent le centre du pays associé aux lieux cités dans le titre, pas le lieu exact de l’événement.','Source, link and date checked against the publisher’s feed; facts are not automatically confirmed. Dots mark the centre of the country associated with places named in the headline, not the precise event location.','Quelle, Link und Datum anhand des Medienfeeds geprüft; keine automatische Bestätigung der Fakten. Punkte markieren das Zentrum eines im Titel genannten Landes, nicht den genauen Ereignisort.','Fuente, enlace y fecha comprobados en el canal del medio; los hechos no se confirman automáticamente. Los puntos marcan el centro de un país citado en el titular, no el lugar exacto.','Fonte, ligação e data verificadas no feed do meio; os factos não são confirmados automaticamente. Os pontos indicam o centro de um país citado no título, não o local exato.'],
@@ -14,7 +14,7 @@ const rows={
  checked:['Contrôle des sources','Source check','Quellenprüfung','Control de fuentes','Verificação das fontes'],
  country:['pays signalé','country marked','Land markiert','país señalado','país assinalado'],
  countries:['pays signalés','countries marked','Länder markiert','países señalados','países assinalados'],
- window:['dernière heure · actualisation chaque minute','last hour · refreshed every minute','letzte Stunde · Aktualisierung jede Minute','última hora · actualización cada minuto','última hora · atualização a cada minuto'],
+ window:['actualités · 24 h · actualisation chaque minute','news · 24 h · refreshed every minute','Nachrichten · 24 Std. · jede Minute aktualisiert','noticias · 24 h · actualización cada minuto','notícias · 24 h · atualização a cada minuto'],
  all:['Voir les alertes et les sources','View alerts and sources','Meldungen und Quellen ansehen','Ver alertas y fuentes','Ver alertas e fontes'],
  hidden:['Points masqués','Dots hidden','Punkte ausgeblendet','Puntos ocultos','Pontos ocultos'],
  sources:['Flux consultés','Feeds checked','Geprüfte Feeds','Canales consultados','Feeds consultados'],
@@ -30,16 +30,16 @@ export function mountMapNews(open){
  const onCountries=e=>{countries=e.detail.countries||countries;update();};
  function renderStatus(){
   if(!status)return;
-  const checked=payload?.checkedAt&&Number.isFinite(Date.parse(payload.checkedAt))?date(payload.checkedAt,lang):'',hidden=document.querySelector('[data-map-layer="news"]')?.getAttribute('aria-pressed')==='false';
-  if(!status.querySelector('[data-alerts-open]'))status.innerHTML=`<p></p><button type="button" data-alerts-open>${t('all')} ↗</button>`;
+  const checked=payload?.checkedAt&&Number.isFinite(Date.parse(payload.checkedAt))?date(payload.checkedAt,lang):'',hidden=(document.querySelector('[data-map-layer="risk"]')||document.querySelector('[data-map-layer="news"]'))?.getAttribute('aria-pressed')==='false';
+  if(!status.querySelector('[data-alerts-open]'))status.innerHTML=`<div><p></p><div class="map-poi-key"><span><i></i>${t('title')} · 24 h</span><span><i class="is-live"></i>${t('live')}</span><span><i class="is-urgent"></i>${t('breaking')}</span></div></div><button type="button" data-alerts-open>${t('all')} ↗</button>`;
   status.querySelector('p').innerHTML=`${failed?t('unavailable'):!payload?t('loading'):groups.size?`<b>${groups.size}</b> ${t(groups.size===1?'country':'countries')} · ${t('window')}`:t('empty')}${hidden?' · '+t('hidden'):''}${checked?`<small>${t('checked')} · ${esc(checked)}</small>`:''}`;
  }
  function update(){
-  items=getMapAlerts(payload,countries);groups=new Map();
+  items=getMapAlerts(payload,countries,{windowMinutes:payload?.windowMinutes===1440?1440:60});groups=new Map();
   for(const item of items)for(const iso of item.countryIsos){if(!groups.has(iso))groups.set(iso,[]);groups.get(iso).push(item);}
   const rank={breaking:0,live:1,recent:2};
   const markers=[...groups].map(([iso,list])=>{list.sort((a,b)=>rank[a.kind]-rank[b.kind]||Date.parse(b.publishedAt)-Date.parse(a.publishedAt));const c=countries.find(c=>c.iso===iso),top=list[0];return {iso,kind:top.kind,label:(c?.name||iso)+' · '+t(top.kind)+' · '+top.source+' · '+date(top.publishedAt,lang)+' · '+top.title};});
-  document.dispatchEvent(new CustomEvent('infovisa:news-markers',{detail:markers}));carousel.update({items,countries,checkedAt:payload?.checkedAt,failed,loaded:!!payload});renderStatus();syncDialog();
+  document.dispatchEvent(new CustomEvent('infovisa:news-markers',{detail:markers}));carousel.update({items:items.filter(a=>Date.now()-Date.parse(a.publishedAt)<=3600000),countries,checkedAt:payload?.checkedAt,failed,loaded:!!payload});renderStatus();syncDialog();
  }
  function selectedItems(iso){return iso?groups.get(iso)||[]:items;}
  function itemsSignature(list){return JSON.stringify({unavailable:!list.length&&failed,articles:list.slice(0,30).map(a=>[a.url,a.title,a.publishedAt,a.source,a.sourceUrl,a.kind,a.countryIsos.length])});}
@@ -67,7 +67,7 @@ export function mountMapNews(open){
   root.querySelector('[data-alert-checked]').textContent=checkedText();
  }
  function show(iso){update();openView={iso};dialogSignature=itemsSignature(selectedItems(iso));open(dialogMarkup(iso));}
- async function refresh(){if(busy||!alive)return;busy=true;controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),12000);try{const r=await fetch('/api/alerts?lang='+lang,{signal:controller.signal});if(!r.ok)throw Error('alerts_unavailable');const data=await r.json();if(!Array.isArray(data.items)||!Array.isArray(data.sourceStatus))throw Error('invalid_alerts');if(!alive)return;payload=data;failed=false;}catch{if(!alive)return;failed=true;}finally{clearTimeout(timeout);busy=false;if(alive)update();}}
+ async function refresh(){if(busy||!alive)return;busy=true;controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),12000);try{const r=await fetch('/api/alerts?lang='+lang+'&window=24h',{signal:controller.signal});if(!r.ok)throw Error('alerts_unavailable');const data=await r.json();if(!Array.isArray(data.items)||!Array.isArray(data.sourceStatus))throw Error('invalid_alerts');if(!alive)return;payload=data;failed=false;}catch{if(!alive)return;failed=true;}finally{clearTimeout(timeout);busy=false;if(alive)update();}}
  const onOpen=e=>show(e.detail),onAll=e=>{if(e.target.closest('[data-alerts-open]'))show();},onToggle=()=>queueMicrotask(renderStatus),onVisible=()=>{if(!document.hidden){update();refresh();}};
  document.addEventListener('infovisa:world-news',onCountries);document.addEventListener('infovisa:news-open',onOpen);document.addEventListener('visibilitychange',onVisible);status?.addEventListener('click',onAll);layerControls?.addEventListener('click',onToggle);
  update();refresh();const timer=setInterval(()=>{update();if(!document.hidden)refresh();},60000);

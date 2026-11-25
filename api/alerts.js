@@ -22,11 +22,11 @@ const decode=s=>s.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g,'$1').replace(/<[^>]*>/g
   if(named[entity])return named[entity];const n=entity[2].toLowerCase()==='x'?parseInt(entity.slice(3,-1),16):parseInt(entity.slice(2,-1),10);return Number.isInteger(n)&&n>0&&n<=0x10ffff?String.fromCodePoint(n):'';
 }).trim();
 const tag=(s,name)=>{const m=s.match(new RegExp('<'+name+'(?:\\s[^>]*)?>([\\s\\S]*?)</'+name+'>','i'));return m?decode(m[1]):'';};
-function parseFeed(xml,id,now){
+function parseFeed(xml,id,now,maxAge=3600000){
   const publisher=publishers[id],items=[];
   for(const match of xml.matchAll(/<item(?:\s[^>]*)?>([\s\S]*?)<\/item>/gi)){
     const block=match[1],title=tag(block,'title').replace(/<[^>]*>/g,'').slice(0,600),published=Date.parse(tag(block,'pubDate')||tag(block,'dc:date'));
-    if(!title||!Number.isFinite(published)||published>now||now-published>3600000)continue;
+    if(!title||!Number.isFinite(published)||published>now||now-published>maxAge)continue;
     let url;try{url=new URL(tag(block,'link'));if(url.protocol!=='https:'||url.username||url.password||!matchesHost(url.hostname,publisher.hosts))continue;}catch{continue;}
     items.push({title,url:url.href,source:publisher.name,sourceId:id,sourceUrl:publisher.site,publishedAt:new Date(published).toISOString(),verifiedAt:new Date(now).toISOString(),verification:'publisher-feed'});
   }
@@ -34,6 +34,7 @@ function parseFeed(xml,id,now){
 }
 module.exports=async(req,res)=>{
   if(req.method&&req.method!=='GET'){res.setHeader('Allow','GET');return res.status(405).json({error:'method_not_allowed'});}
+  const windowMinutes=req.query?.window==='24h'?1440:60,maxAge=windowMinutes*60000;
   const lang=Object.hasOwn(feeds,req.query?.lang)?req.query.lang:'fr',selected=[...feeds[lang],...international];
   const results=await Promise.allSettled(selected.map(async([id,url])=>{
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6500);
@@ -42,12 +43,12 @@ module.exports=async(req,res)=>{
       // A feed redirected to a different host cannot establish provenance.
       if(!response.ok||new URL(response.url||url).hostname!==new URL(url).hostname)throw Error('feed_unavailable');
       const xml=await response.text();if(xml.length>1500000||!/<(?:rss|rdf:RDF)\b/i.test(xml))throw Error('invalid_feed');
-      return parseFeed(xml,id,Date.now());
+      return parseFeed(xml,id,Date.now(),maxAge);
     }finally{clearTimeout(timer);}
   }));
   const sourceStatus=results.map((r,i)=>({source:publishers[selected[i][0]].name,available:r.status==='fulfilled',recentItems:r.status==='fulfilled'?r.value.length:0}));
   if(results.every(r=>r.status==='rejected')){res.setHeader('Cache-Control','s-maxage=15');return res.status(502).json({items:[],error:'alerts_unavailable',checkedAt:new Date().toISOString(),sourceStatus});}
-  const seen=new Set(),items=results.flatMap(r=>r.status==='fulfilled'?r.value:[]).sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt)).filter(item=>{const key=item.url.split('#')[0];if(seen.has(key))return false;seen.add(key);return true;}).slice(0,80);
+  const seen=new Set(),items=results.flatMap(r=>r.status==='fulfilled'?r.value:[]).sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt)).filter(item=>{const key=item.url.split('#')[0];if(seen.has(key))return false;seen.add(key);return true;}).slice(0,windowMinutes===1440?200:80);
   res.setHeader('Cache-Control','s-maxage=60, stale-while-revalidate=60');
-  return res.status(200).json({items,checkedAt:new Date().toISOString(),windowMinutes:60,sourceStatus});
+  return res.status(200).json({items,checkedAt:new Date().toISOString(),windowMinutes,sourceStatus});
 };
