@@ -200,7 +200,7 @@ for(const name of fs.readdirSync('out/assets/live').filter(n=>n.endsWith('.js'))
 fs.writeFileSync('out/assets/live/assets/local-countries.json',JSON.stringify(wc.filter(c=>c.cca2).map(c=>({code:c.cca2,name:c.name.common,capital:c.capital?.[0]||c.name.common,lat:(c.capitalInfo?.latlng?.length===2?c.capitalInfo.latlng:c.latlng)[0],lon:(c.capitalInfo?.latlng?.length===2?c.capitalInfo.latlng:c.latlng)[1]}))));
 
 
-const {content: SEO, routes: seoRoutes}=require('./seo.js');
+const {content: SEO, routes: seoRoutes, privacyPages}=require('./seo.js');
 const guideLinks={
 fr:[['Types de visa Schengen','/fr/types-de-visa.html'],['Pays Schengen','/fr/pays-schengen.html'],['ETIAS 2026','/fr/etias.html'],['Frais et coûts','/fr/frais-et-couts.html'],['FAQ visa','/fr/faq.html']]
 ,en:[['Schengen visa types','/en/visa-types.html'],['Schengen countries','/en/schengen-countries.html'],['ETIAS 2026','/en/etias.html'],['Fees and costs','/en/fees-and-costs.html'],['Visa FAQ','/en/faq.html']]
@@ -217,11 +217,11 @@ for (const lang of LANGS) {
   const langnav = LANGS.map(l => `<a href="${I18N[l].path}" hreflang="${l}" lang="${l}"${l === lang ? ' class="on" aria-current="page"' : ''}>${l.toUpperCase()}</a>`).join('');
   const K = SEO[lang];
   const ldObj = { '@context': 'https://schema.org', '@graph': [
-    { '@type': 'Organization', '@id': 'https://www.infovisa.lu/#org', name: 'InfoVisa.lu', url: 'https://www.infovisa.lu/', logo: 'https://www.infovisa.lu/assets/favicon.svg' },
-    { '@type': 'WebSite', '@id': 'https://www.infovisa.lu/#site', url: 'https://www.infovisa.lu/', name: 'InfoVisa.lu', inLanguage: lang, publisher: { '@id': 'https://www.infovisa.lu/#org' } },
+    { '@type': 'Organization', '@id': 'https://www.infovisa.lu/#org', name: 'InfoVisa', alternateName: ['InfoVisa.lu','InfoVisa Live'], url: 'https://www.infovisa.lu/', logo: 'https://www.infovisa.lu/assets/favicon.svg' },
+    { '@type': 'WebSite', '@id': 'https://www.infovisa.lu/#site', url: 'https://www.infovisa.lu/', name: 'InfoVisa', alternateName: ['InfoVisa.lu','InfoVisa Live'], inLanguage: LANGS, publisher: { '@id': 'https://www.infovisa.lu/#org' } },
     { '@type': 'WebApplication', name: L.title, url: 'https://www.infovisa.lu' + L.path, description: L.desc, inLanguage: lang, '@id': 'https://www.infovisa.lu' + L.path + '#app', applicationCategory: 'ReferenceApplication', featureList: K.cards.map(c=>c[0]), operatingSystem: 'Any', browserRequirements: 'Requires JavaScript', isAccessibleForFree: true, offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' }, publisher: { '@id': 'https://www.infovisa.lu/#org' } },
     { '@type': 'WebPage', '@id': 'https://www.infovisa.lu' + L.path + '#page', url: 'https://www.infovisa.lu' + L.path, name: L.title, description: L.desc, inLanguage: lang, isPartOf: {'@id':'https://www.infovisa.lu/#site'}, mainEntity: {'@id':'https://www.infovisa.lu'+L.path+'#app'}, about: K.cards.map(c=>({'@type':'Thing',name:c[0]})) },
-    { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'InfoVisa.lu', item: 'https://www.infovisa.lu/' }, { '@type': 'ListItem', position: 2, name: L.title, item: 'https://www.infovisa.lu' + L.path }] }
+    { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'InfoVisa', alternateName: ['InfoVisa.lu','InfoVisa Live'], item: 'https://www.infovisa.lu/' }, { '@type': 'ListItem', position: 2, name: L.title, item: 'https://www.infovisa.lu' + L.path }] }
   ] };
   const ld = '<script type="application/ld+json">' + JSON.stringify(ldObj).replace(/</g, '\\u003c') + '</script>';
   const seoBlock = `<section class="seo iv-explore" aria-labelledby="explore-title" data-i18n-skip><div class="card"><h2 id="explore-title">${esc(K.heading)}</h2><div class="pad"><p>${esc(K.intro)}</p><div class="iv-explore-grid">${K.cards.map((c,i)=>`<article><h3><a href="#${seoRoutes[i]}" data-live-route="${seoRoutes[i]}">${esc(c[0])} <span aria-hidden="true">↗</span></a></h3><p>${esc(c[1])}</p></article>`).join('')}</div><details class="iv-guide-archives"><summary>${esc(K.archive)}</summary><p class="seol">${guideLinks[lang].map(l=>`<a href="${l[1]}">${esc(l[0])}</a>`).join(' · ')}</p></details></div></div></section>`;
@@ -230,7 +230,7 @@ for (const lang of LANGS) {
   const [designCrypto,designStocks,designWebcams,designLocal,designHealth]={fr:['Crypto','Bourse','Webcams live','Monde local','Pandémies & virus'],en:['Crypto','Stocks','Live webcams','Local world','Outbreaks & viruses'],de:['Krypto','Börse','Live-Webcams','Lokal','Ausbrüche & Viren'],es:['Cripto','Bolsa','Cámaras en directo','Mundo local','Brotes y virus'],pt:['Cripto','Bolsa','Webcams ao vivo','Mundo local','Surtos e vírus']}[lang];
   const designTraffic={fr:"TRAFIC mondial",en:"World traffic",de:"Verkehr weltweit",es:"Tráfico mundial",pt:"Trânsito mundial"}[lang];
   const [designLight,designDarkMode]={fr:["Clair","Mode sombre"],en:["Light","Dark mode"],de:["Hell","Dunkler Modus"],es:["Claro","Modo oscuro"],pt:["Claro","Modo escuro"]}[lang];
-  const html_tokens = {designLight,designDarkMode,designTraffic,assetVersion,designCrypto,designStocks,designWebcams,designLocal,designHealth, designWeather,designMarine,designMedia,designUap,designClose, mk_tabWorld: esc(MKI[lang].tabWorld), mk_tabMkt: esc(MKI[lang].tabMkt), lang, hreflang, langnav, ld, seoBlock, h1: esc(I18N[lang].path === "/" ? "InfoVisa Live : le monde en direct" : {en:"InfoVisa Live: the world in real time",de:"InfoVisa Live: die Welt in Echtzeit",es:"InfoVisa Live: el mundo en directo",pt:"InfoVisa Live: o mundo em direto"}[lang]), lead: esc(K.lead) };
+  const html_tokens = {privacyPath:esc(privacyPages[lang].path),privacyLabel:esc(privacyPages[lang].label),designLight,designDarkMode,designTraffic,assetVersion,designCrypto,designStocks,designWebcams,designLocal,designHealth, designWeather,designMarine,designMedia,designUap,designClose, mk_tabWorld: esc(MKI[lang].tabWorld), mk_tabMkt: esc(MKI[lang].tabMkt), lang, hreflang, langnav, ld, seoBlock, h1: esc(I18N[lang].path === "/" ? "InfoVisa Live : le monde en direct" : {en:"InfoVisa Live: the world in real time",de:"InfoVisa Live: die Welt in Echtzeit",es:"InfoVisa Live: el mundo en directo",pt:"InfoVisa Live: o mundo em direto"}[lang]), lead: esc(K.lead) };
   html = html.replace(/\{\{(\w+)\}\}/g, (m, k) => {
     if (k in html_tokens) return html_tokens[k];
     if (!(k in L)) throw new Error(`${lang}: missing key ${k}`);
